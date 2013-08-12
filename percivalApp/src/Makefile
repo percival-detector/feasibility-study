@@ -2,59 +2,67 @@ TOP=../..
 
 include $(TOP)/configure/CONFIG
 
+USR_INCLUDES += -I$(HDF5)/include
+
 # -------------------------------
 # Build an Diamond Support Module
 # -------------------------------
 
-#LIBRARY_IOC += xxx
+LIBRARY_IOC += percival
 
 # xxxRecord.h will be created from xxxRecord.dbd
 #DBDINC += xxx.h
 
 # xxxRecord.dbd will be installed into <top>/dbd
-#DBD += xxx.dbd
+DBD += PercivalConfigurator.dbd
+DBD += PercivalGenerator.dbd
 
 # The following are compiled and added to the support library
-#xxx_SRCS += xxxCodeA.c
-#xxx_SRCS += xxxCodeB.c
+percival_SRCS += Configurator.cpp
+percival_SRCS += asynConfiguratorDriver.cpp
+percival_SRCS += asynGeneratorDriver.cpp
+
+percival_LIBS += asyn
+percival_LIBS += hdf5
+hdf5_DIR = $(HDF5)/lib
 
 # We need to link against the EPICS Base libraries
-#xxx_LIBS += $(EPICS_BASE_IOC_LIBS)
+#percival_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 
 # ------------------------
 # Build an IOC Application
 # ------------------------
 
-PROD_IOC = percival
+#PROD_IOC = percival
 
 # percival.dbd will be installed into <top>/dbd
-DBD += percival.dbd
+#DBD += percival.dbd
 
 # percival.dbd will be created from these files
-percival_DBD += base.dbd
+#percival_DBD += base.dbd
 #percival_DBD += xxx.dbd
 
 # percival_registerRecordDeviceDriver.cpp will be created
 # percival.dbd
-percival_SRCS += percival_registerRecordDeviceDriver.cpp
+#percival_SRCS += percival_registerRecordDeviceDriver.cpp
 
 # These two lines are needed for non-vxWorks builds, such as Linux
-percival_SRCS_DEFAULT += percivalMain.cpp
-percival_SRCS_vxWorks += -nil-
+#percival_SRCS_DEFAULT += percivalMain.cpp
+#percival_SRCS_vxWorks += -nil-
 
 # Add locally compiled object code
 #percival_SRCS +=
 
 # The following adds object code from base/src/vxWorks
-percival_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
+#percival_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 # This line says that this IOC Application depends on the
 # xxx Support Module
 #percival_LIBS += xxx
 
 # We need to link this IOC Application against the EPICS Base libraries
-percival_LIBS += $(EPICS_BASE_IOC_LIBS)
+#percival_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # ---------------------------------------------------
 

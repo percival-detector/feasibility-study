@@ -1,0 +1,581 @@
+# Database for configurator control using asyn driver and standard asyn device support
+# gnx91527
+# August 6, 2013
+
+# Macros:
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# % macro, TIMEOUT, Timeout
+# % macro, ADDR, Asyn Port address
+
+# This associates the template with an edm screen
+# % gui, $(PORT), edmtab, PercivalGenerator.edl, P=$(P),R=$(R)
+
+###################################################################
+#  This record contains the asyn port name of the configurator    #
+###################################################################
+
+# This makes the component icon reflect the severity
+# % gui, $(PORT), sevr
+record(stringin, "$(P)$(R)PortName_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PORT_NAME_SELF")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the image size                           #
+###################################################################
+
+# % autosave 2 
+record(longout, "$(P)$(R)ImageSizeX")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)ImageSizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)ImageSizeY")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)ImageSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records define the pattern repeat values                 #
+###################################################################
+
+# % autosave 2 
+record(longout, "$(P)$(R)ImagePatternX")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PATTERN_X")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)ImagePatternX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PATTERN_X")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)ImagePatternY")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PATTERN_Y")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)ImagePatternY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PATTERN_Y")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record defines the pattern type                           #
+###################################################################
+
+record(mbbo, "$(P)$(R)ImagePatternType")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PATTERN_TYPE")
+   field(ZRST, "Rectangle")
+   field(ZRVL, "0")
+   field(ONST, "Triangle")
+   field(ONVL, "1")
+   field(TWST, "Ellipse")
+   field(TWVL, "2")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)ImagePatternType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PATTERN_TYPE")
+   field(ZRST, "Rectangle")
+   field(ZRVL, "0")
+   field(ONST, "Triangle")
+   field(ONVL, "1")
+   field(TWST, "Ellipse")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record defines the scramble type                          #
+###################################################################
+
+record(mbbo, "$(P)$(R)ImageScrambleType")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SCRAMBLE_TYPE")
+   field(ZRST, "Excalibur")
+   field(ZRVL, "0")
+   field(ONST, "Percival")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)ImageScrambleType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SCRAMBLE_TYPE")
+   field(ZRST, "Excalibur")
+   field(ZRVL, "0")
+   field(ONST, "Percival")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records define the raw image path and filename           #
+###################################################################
+
+record(stringin, "$(P)$(R)FilePath_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FilePath")
+{
+   field(DTYP, "asynOctetWrite")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(stringin, "$(P)$(R)FileName_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FileName")
+{
+   field(DTYP, "asynOctetWrite")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(longin, "$(P)$(R)FilePathExists_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH_EXISTS")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)FullFileName_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide status                                   #
+###################################################################
+
+record(stringin, "$(P)$(R)FileWriteMessage_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MESSAGE")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record writes out the currently defined raw image         #
+###################################################################
+
+record(longout, "$(P)$(R)RawFileWrite")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RAW_FILE_WRITE")
+   field(VAL,  "0")
+}
+
+###################################################################
+#  This record reades the current file write status               #
+###################################################################
+
+record(longin, "$(P)$(R)FileWriteStatus_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_STATUS")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record reades the errors in file generation               #
+###################################################################
+
+record(longin, "$(P)$(R)FileErrorStatus_RBV")
+{
+#   field(DTYP, "asynInt32")
+#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_STATUS")
+#   field(SCAN, "I/O Intr")
+   field(VAL,  "0")
+}
+
+###################################################################
+#  These records define the physical layout of the detector       #
+###################################################################
+
+# % autosave 2 
+record(longout, "$(P)$(R)DPixelsPerChipX")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_PIXELS_PER_CHIP_X")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DPixelsPerChipX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_PIXELS_PER_CHIP_X")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DPixelsPerChipY")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_PIXELS_PER_CHIP_Y")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DPixelsPerChipY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_PIXELS_PER_CHIP_Y")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DChipsPerBlockX")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_BLOCK_X")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DChipsPerBlockX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_BLOCK_X")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DBlocksPerStripeX")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_BLOCKS_PER_STRIPE_X")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DBlocksPerStripeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_BLOCKS_PER_STRIPE_X")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DChipsPerStripeX")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_X")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DChipsPerStripeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_X")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DChipsPerStripeY")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_Y")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DChipsPerStripeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DStripesPerModule")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_MODULE")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DStripesPerModule_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_MODULE")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
+record(longout, "$(P)$(R)DStripesPerImage")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DStripesPerImage_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
+#  These records define the addresses for the UDP send            #
+###################################################################
+
+#record(stringin, "$(P)$(R)Channel1Address_RBV")
+#{
+#   field(DTYP, "asynOctetRead")
+#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+#   field(VAL,  "Unknown")
+#   field(SCAN, "I/O Intr")
+#}
+
+record(waveform, "$(P)$(R)Channel1Address")
+{
+#   field(DTYP, "asynOctetWrite")
+#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(waveform, "$(P)$(R)Channel2Address")
+{
+#   field(DTYP, "asynOctetWrite")
+#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(waveform, "$(P)$(R)Channel3Address")
+{
+#   field(DTYP, "asynOctetWrite")
+#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(waveform, "$(P)$(R)Channel4Address")
+{
+#   field(DTYP, "asynOctetWrite")
+#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+###################################################################
+#  These records allow enabling/disabling each channel            #
+###################################################################
+
+record(mbbo, "$(P)$(R)Channel1Enable")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_1")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Channel1Enable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_1")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Channel2Enable")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_2")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Channel2Enable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_2")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Channel3Enable")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_3")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Channel3Enable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_3")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Channel4Enable")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_4")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Channel4Enable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_4")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the start/stop posting                   #
+###################################################################
+
+record(longout, "$(P)$(R)GDPostCommand")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_COMMAND")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDPostCommand_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_COMMAND")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide the running state of individual channels #
+###################################################################
+
+record(longin, "$(P)$(R)GDPostChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDPostChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDPostChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDPostChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+

@@ -7,6 +7,7 @@
 
 #include "Configurator.h"
 #include <iostream>
+#include <cstring>
 
 Configurator::Configurator()
   : imageWidth_(2048),
@@ -326,6 +327,9 @@ void Configurator::readConfiguration(const std::string& filename)
   // Create a new HDF5 configuration file using the default properties
   openHDF5File(filename);
 
+  // Read in the scrambled image
+  readScrambledImage();
+
   // Read in the meta data
   readMetaData();
 
@@ -350,6 +354,11 @@ void Configurator::generateConfiguration(const std::string& filename)
   generateScrambledImage();
 
   generateMetaData();
+
+
+uint32_t *tmp;
+tmp = (uint32_t *)malloc(100 * 100 * sizeof(uint32_t));
+copyScrambledSection(0, 100, 99, 199, tmp);
 
   // Close the configuration file
   closeHDF5File();
@@ -461,7 +470,7 @@ void Configurator::generateScrambledImage()
 
   // Create the hdf5 file
   hid_t    dataset_id, dataspace_id;
-  hsize_t  dims[2];
+  hsize_t  dims[3];
   herr_t   status;
 
   // Create the data space for the dataset.
@@ -494,6 +503,45 @@ void Configurator::generateScrambledImage()
 
   // Write the dataset.
   status = H5Dwrite(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledData_);
+
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+}
+
+void Configurator::readScrambledImage()
+{
+  static const char *functionName = "Configurator::readScrambledImage";
+  if (debug_ > 2){
+    std::cout << "DEBUG " << functionName << std::endl;
+  }
+
+  // Create the hdf5 file
+  hid_t    dataset_id, dataspace_id;
+  hsize_t  dims[3];
+  herr_t   status;
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/scrambled_image", H5P_DEFAULT);
+
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+
+  // Find out the dimensions
+  H5Sget_simple_extent_dims(dataspace_id, dims, NULL);
+
+  noOfImages_ =  dims[0];
+  imageHeight_ = dims[1];
+  imageWidth_ =  dims[2];
+
+  // Allocate the memory required for the scrambled image
+  scrambledData_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
+
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledData_);
 
   // End access to the dataset and release resources used by it.
   status = H5Dclose(dataset_id);
@@ -790,6 +838,18 @@ void Configurator::freeDataArrays()
   }
 }
 
-
-
+void Configurator::copyScrambledSection(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer)
+{
+  uint32_t yIndex;
+  uint32_t width;
+  width = botRightX - topLeftX + 1;
+  // Just copy frame zero currently
+  uint32_t *ptr1 = buffer;
+  uint32_t *ptr2 = scrambledData_;
+  for (yIndex = topLeftY; yIndex <= botRightY; yIndex++){
+    ptr1 = buffer + ((yIndex-topLeftY) * width);
+    ptr2 = scrambledData_ + (yIndex * imageWidth_) + topLeftX;
+    memcpy(ptr1, ptr2, (width * sizeof(uint32_t)));
+  }
+}
 

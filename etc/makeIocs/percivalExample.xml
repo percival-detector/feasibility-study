@@ -2,4 +2,8 @@
 <components arch="linux-x86">
 	<percival.PercivalConfigurator ADDR="0" P="test:" PORT="perc.conf" R="conf:" TIMEOUT="1.0" name="configurator"/>
 	<percival.PercivalGenerator ADDR="0" P="test:" PORT="perc.gen" R="gen:" TIMEOUT="1.0" name="generator"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocAddrChannel1 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocPortChannel1 &quot;7273&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemAddrChannel1 &quot;localhost&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemPortChannel1 &quot;9876&quot;" post_init="True"/>
 </components>

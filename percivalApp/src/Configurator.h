@@ -87,12 +87,14 @@ class Configurator
     void generateConfiguration(const std::string& filename);
     void generateRawImage();
     void generateScrambledImage();
+    void readScrambledImage();
     void generateMetaData();
     void readMetaData();
     void scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out);
     void scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out);
     void allocateDataArrays();
     void freeDataArrays();
+    void copyScrambledSection(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer);
 
   private:
     // Raw image values

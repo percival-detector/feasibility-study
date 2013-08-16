@@ -27,6 +27,25 @@ record(stringin, "$(P)$(R)PortName_RBV")
 }
 
 ###################################################################
+#  This record controls the low level non-EPICS debug level       #
+###################################################################
+
+record(longout, "$(P)$(R)GDDebugLevel")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_DEBUG_LEVEL")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDDebugLevel_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_DEBUG_LEVEL")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records control the image size                           #
 ###################################################################
 
@@ -528,7 +547,7 @@ record(mbbi, "$(P)$(R)Channel4Enable_RBV")
 }
 
 ###################################################################
-#  These records control the start/stop posting                   #
+#  These records control the start/stop posting, frequency & qty  #
 ###################################################################
 
 record(longout, "$(P)$(R)GDPostCommand")
@@ -545,6 +564,22 @@ record(longin, "$(P)$(R)GDPostCommand_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_COMMAND")
    field(SCAN, "I/O Intr")
 }
+
+record(ao, "$(P)$(R)GDPostFrequency")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_FREQUENCY")
+   field(VAL,  "0.0")
+}
+
+record(ai, "$(P)$(R)GDPostFrequency_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_FREQUENCY")
+   field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  These records provide the running state of individual channels #
@@ -577,5 +612,771 @@ record(longin, "$(P)$(R)GDPostChannel4_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_CHANNEL_4")
    field(SCAN, "I/O Intr")
 }
+
+record(longin, "$(P)$(R)GDCounterChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_COUNTER_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDCounterChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_COUNTER_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDCounterChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_COUNTER_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDCounterChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_COUNTER_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
+#  These records setup the sub-frame for each channel             #
+###################################################################
+
+record(longout, "$(P)$(R)GDTopLeftXChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftXChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftXChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftXChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftXChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftXChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftXChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftXChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftYChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftYChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftYChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftYChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftYChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftYChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftYChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftYChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightXChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightXChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightXChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightXChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightXChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightXChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightXChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightXChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightYChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightYChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightYChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightYChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightYChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightYChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightYChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightYChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDWidthChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_WIDTH_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDWidthChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_WIDTH_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDWidthChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_WIDTH_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDWidthChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_WIDTH_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDHeightChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_HEIGHT_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDHeightChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_HEIGHT_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDHeightChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_HEIGHT_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDHeightChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_HEIGHT_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDSubFramesChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDSubFramesChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDSubFramesChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDSubFramesChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDSubFramesChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDSubFramesChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDSubFramesChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDSubFramesChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDPktSizeChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDPktSizeChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDPktSizeChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDPktSizeChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDPktSizeChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDPktSizeChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDPktSizeChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDPktSizeChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records setup the socket for each channel                #
+###################################################################
+
+record(stringout, "$(P)$(R)GDLocAddrChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_1")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDLocAddrChannel1_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_1")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDLocAddrChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_2")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDLocAddrChannel2_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_2")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDLocAddrChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_3")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDLocAddrChannel3_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_3")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDLocAddrChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_4")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDLocAddrChannel4_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_4")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDLocPortChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDLocPortChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDLocPortChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDLocPortChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDLocPortChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDLocPortChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDLocPortChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDLocPortChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDRemAddrChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_1")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDRemAddrChannel1_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_1")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDRemAddrChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_2")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDRemAddrChannel2_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_2")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDRemAddrChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_3")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDRemAddrChannel3_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_3")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDRemAddrChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_4")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDRemAddrChannel4_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_4")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDRemPortChannel1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDRemPortChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDRemPortChannel2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDRemPortChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDRemPortChannel3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDRemPortChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDRemPortChannel4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDRemPortChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide error status for each channel            #
+###################################################################
+
+record(longin, "$(P)$(R)GDErrorChannel1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_CHANNEL_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)GDErrorMsgChannel1_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_MSG_CHANNEL_1")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDErrorChannel2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_CHANNEL_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)GDErrorMsgChannel2_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_MSG_CHANNEL_2")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDErrorChannel3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_CHANNEL_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)GDErrorMsgChannel3_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_MSG_CHANNEL_3")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDErrorChannel4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_CHANNEL_4")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)GDErrorMsgChannel4_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_MSG_CHANNEL_4")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
 
 

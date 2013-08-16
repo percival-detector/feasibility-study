@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 515
-y 286
+x 998
+y 68
 w 390
 h 820
 font "arial-bold-r-12.0"
@@ -46,9 +46,24 @@ major 4
 minor 0
 release 0
 x 5
+y 430
+w 380
+h 375
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
 y 10
 w 380
-h 790
+h 410
 lineColor index 14
 fill
 fillColor index 3
@@ -59,8 +74,8 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
+release 1
+x 5
 y 20
 w 115
 h 20
@@ -80,7 +95,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
+x 135
 y 20
 w 50
 h 20
@@ -98,8 +113,8 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
+release 1
+x 5
 y 40
 w 115
 h 20
@@ -119,7 +134,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
+x 135
 y 40
 w 50
 h 20
@@ -137,8 +152,8 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
+release 1
+x 5
 y 60
 w 115
 h 20
@@ -158,7 +173,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
+x 135
 y 60
 w 50
 h 20
@@ -176,8 +191,8 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
+release 1
+x 5
 y 80
 w 115
 h 20
@@ -197,7 +212,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
+x 135
 y 80
 w 50
 h 20
@@ -215,16 +230,16 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 5
-w 69
-h 13
+w 86
+h 14
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
 value {
-  "  Generator  "
+  "  Configuration  "
 }
 autoSize
 border
@@ -235,9 +250,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
-y 310
+y 225
 w 370
 h 15
 font "arial-bold-r-12.0"
@@ -253,10 +268,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
-y 325
+y 240
 w 340
 h 20
 controlPv "$(P)$(R)FilePath_RBV"
@@ -276,10 +291,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
-y 345
+y 260
 w 370
 h 20
 controlPv "$(P)$(R)FilePath"
@@ -303,10 +318,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
-y 370
+y 285
 w 370
 h 18
 controlPv "$(P)$(R)FileName_RBV"
@@ -326,10 +341,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
-y 390
+y 305
 w 370
 h 20
 controlPv "$(P)$(R)FileName"
@@ -353,10 +368,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
-y 430
+y 345
 w 370
 h 18
 controlPv "$(P)$(R)FullFileName_RBV"
@@ -379,7 +394,7 @@ major 4
 minor 0
 release 0
 x 360
-y 325
+y 240
 w 18
 h 18
 controlPv "$(P)$(R)FilePathExists_RBV"
@@ -394,10 +409,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 185
-y 475
+y 390
 w 160
 h 20
 controlPv "$(P)$(R)FileWriteMessage_RBV"
@@ -421,7 +436,7 @@ major 4
 minor 0
 release 0
 x 355
-y 475
+y 390
 w 18
 h 18
 controlPv "$(P)$(R)FileErrorStatus_RBV"
@@ -437,9 +452,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 185
-y 455
+y 370
 w 40
 h 15
 font "arial-bold-r-12.0"
@@ -458,7 +473,7 @@ major 4
 minor 0
 release 0
 x 130
-y 475
+y 390
 w 18
 h 18
 controlPv "$(P)$(R)FileWriteStatus_RBV"
@@ -473,10 +488,10 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 10
-y 455
+y 370
 w 90
 h 40
 fgColor index 25
@@ -498,9 +513,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 105
+release 1
+x 195
+y 20
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -519,8 +534,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 105
+x 325
+y 20
 w 50
 h 20
 controlPv "$(P)$(R)DPixelsPerChipX_RBV"
@@ -537,9 +552,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 125
+release 1
+x 195
+y 40
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -558,8 +573,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 125
+x 325
+y 40
 w 50
 h 20
 controlPv "$(P)$(R)DPixelsPerChipY_RBV"
@@ -576,9 +591,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 145
+release 1
+x 195
+y 60
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -597,8 +612,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 145
+x 325
+y 60
 w 50
 h 20
 controlPv "$(P)$(R)DChipsPerBlockX_RBV"
@@ -615,9 +630,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 165
+release 1
+x 195
+y 80
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -636,8 +651,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 165
+x 325
+y 80
 w 50
 h 20
 controlPv "$(P)$(R)DBlocksPerStripeX_RBV"
@@ -654,9 +669,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 185
+release 1
+x 195
+y 100
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -675,8 +690,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 185
+x 325
+y 100
 w 50
 h 20
 controlPv "$(P)$(R)DChipsPerStripeX_RBV"
@@ -693,9 +708,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 205
+release 1
+x 195
+y 120
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -714,8 +729,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 205
+x 325
+y 120
 w 50
 h 20
 controlPv "$(P)$(R)DChipsPerStripeY_RBV"
@@ -732,9 +747,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 225
+release 1
+x 195
+y 140
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -753,8 +768,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 225
+x 325
+y 140
 w 50
 h 20
 controlPv "$(P)$(R)DStripesPerModule_RBV"
@@ -771,9 +786,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 245
+release 1
+x 195
+y 160
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -792,8 +807,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 245
+x 325
+y 160
 w 50
 h 20
 controlPv "$(P)$(R)DStripesPerImage_RBV"
@@ -810,9 +825,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 25
-y 275
+release 1
+x 20
+y 120
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -830,9 +845,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 105
-y 455
+y 370
 w 70
 h 15
 font "arial-bold-r-12.0"
@@ -850,9 +865,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
-y 415
+y 330
 w 370
 h 15
 font "arial-bold-r-12.0"
@@ -864,60 +879,14 @@ value {
 }
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 5
-release 0
-x 80
-y 565
-w 120
-h 20
-controlPv "$(P)$(R)Channel1Address"
-font "helvetica-medium-r-10.0"
-fgColor index 25
-bgColor index 3
-editable
-motifWidget
-limitsFromDb
-nullColor index 0
-useKp
-file
-useHexPrefix
-newPos
-inputFocusUpdates
-objType "controls"
-noExecuteClipMask
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 80
-y 540
-w 120
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Address"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
+release 1
 x 10
-y 565
+y 610
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -935,9 +904,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 560
-w 105
+x 80
+y 605
+w 90
 h 25
 fgColor index 25
 bgColor index 3
@@ -949,41 +918,14 @@ indicatorPv "$(P)$(R)Channel1Enable_RBV"
 font "arial-bold-r-12.0"
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 5
-release 0
-x 80
-y 595
-w 120
-h 20
-controlPv "$(P)$(R)Channel2Address"
-font "helvetica-medium-r-10.0"
-fgColor index 25
-bgColor index 3
-editable
-motifWidget
-limitsFromDb
-nullColor index 0
-useKp
-file
-useHexPrefix
-newPos
-inputFocusUpdates
-objType "controls"
-noExecuteClipMask
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
-y 595
+y 640
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -1001,9 +943,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 590
-w 105
+x 80
+y 635
+w 90
 h 25
 fgColor index 25
 bgColor index 3
@@ -1015,41 +957,14 @@ indicatorPv "$(P)$(R)Channel2Enable_RBV"
 font "arial-bold-r-12.0"
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 5
-release 0
-x 80
-y 625
-w 120
-h 20
-controlPv "$(P)$(R)Channel3Address"
-font "helvetica-medium-r-10.0"
-fgColor index 25
-bgColor index 3
-editable
-motifWidget
-limitsFromDb
-nullColor index 0
-useKp
-file
-useHexPrefix
-newPos
-inputFocusUpdates
-objType "controls"
-noExecuteClipMask
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
-y 625
+y 670
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -1067,9 +982,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 620
-w 105
+x 80
+y 665
+w 90
 h 25
 fgColor index 25
 bgColor index 3
@@ -1081,41 +996,14 @@ indicatorPv "$(P)$(R)Channel3Enable_RBV"
 font "arial-bold-r-12.0"
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 5
-release 0
-x 80
-y 655
-w 120
-h 20
-controlPv "$(P)$(R)Channel4Address"
-font "helvetica-medium-r-10.0"
-fgColor index 25
-bgColor index 3
-editable
-motifWidget
-limitsFromDb
-nullColor index 0
-useKp
-file
-useHexPrefix
-newPos
-inputFocusUpdates
-objType "controls"
-noExecuteClipMask
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
-y 655
+y 700
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -1133,9 +1021,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 650
-w 105
+x 80
+y 695
+w 90
 h 25
 fgColor index 25
 bgColor index 3
@@ -1152,10 +1040,10 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 220
-y 540
-w 105
+release 1
+x 80
+y 585
+w 95
 h 20
 font "arial-bold-r-12.0"
 fgColor index 14
@@ -1170,10 +1058,10 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
-x 50
-y 690
+x 85
+y 500
 w 45
 h 30
 fgColor index 25
@@ -1196,8 +1084,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 285
-y 710
+x 185
+y 505
 w 18
 h 18
 controlPv "$(P)$(R)GDPostCommand_RBV"
@@ -1212,10 +1100,10 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
-x 105
-y 690
+x 135
+y 500
 w 45
 h 30
 fgColor index 20
@@ -1238,8 +1126,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 345
-y 565
+x 190
+y 610
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel1_RBV"
@@ -1256,8 +1144,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 345
-y 595
+x 190
+y 640
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel2_RBV"
@@ -1274,8 +1162,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 345
-y 625
+x 190
+y 670
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel3_RBV"
@@ -1292,14 +1180,402 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 345
-y 655
+x 190
+y 700
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel4_RBV"
 lineColor index 14
 onColor index 15
 offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 145
+y 455
+w 50
+h 20
+controlPv "$(P)$(R)GDPostFrequency"
+displayMode "decimal"
+precision 1
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 205
+y 455
+w 50
+h 20
+controlPv "$(P)$(R)GDPostFrequency_RBV"
+displayMode "decimal"
+precision 1
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 425
+w 102
+h 14
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Channel Control  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 15
+y 455
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Post frequency"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 610
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel1_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 640
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel2_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 670
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel3_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 700
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel4_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 605
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=1"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 635
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=2"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 665
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=3"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 695
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=4"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 135
+y 195
+w 50
+h 20
+controlPv "$(P)$(R)GDDebugLevel"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 195
+y 195
+w 50
+h 20
+controlPv "$(P)$(R)GDDebugLevel_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 195
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Debug Level"
+}
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 610
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel1_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 640
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel2_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 670
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel3_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 700
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel4_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
 lineWidth 2
 numBits 1
 endObjectProperties

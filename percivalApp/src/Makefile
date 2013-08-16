@@ -3,6 +3,28 @@ TOP=../..
 include $(TOP)/configure/CONFIG
 
 USR_INCLUDES += -I$(HDF5)/include
+USR_INCLUDES += -I$(BOOST)/include
+
+# ----------------------------------------
+# Build a basic test application
+#-----------------------------------------
+PROD_IOC += testSend
+testSend_SRCS += sendTest.cpp
+testSend_SRCS += DataSender.cpp
+testSend_LIBS += boost_system
+testSend_LIBS += boost_thread
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
+
+# ----------------------------------------
+# Build a basic test application
+#-----------------------------------------
+PROD_IOC += testServer
+testServer_SRCS += testUDPServer.cpp
+testServer_LIBS += boost_system
+testServer_LIBS += boost_thread
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
 
 # -------------------------------
 # Build an Diamond Support Module
@@ -19,12 +41,17 @@ DBD += PercivalGenerator.dbd
 
 # The following are compiled and added to the support library
 percival_SRCS += Configurator.cpp
+percival_SRCS += DataSender.cpp
 percival_SRCS += asynConfiguratorDriver.cpp
 percival_SRCS += asynGeneratorDriver.cpp
 
 percival_LIBS += asyn
 percival_LIBS += hdf5
-hdf5_DIR = $(HDF5)/lib
+percival_LIBS += boost_system
+percival_LIBS += boost_thread
+hdf5_DIR         = $(HDF5)/lib
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
 
 # We need to link against the EPICS Base libraries
 #percival_LIBS += $(EPICS_BASE_IOC_LIBS)

@@ -149,6 +149,23 @@ record(mbbi, "$(P)$(R)ImagePatternType_RBV")
 }
 
 ###################################################################
+#  This record defines the data type                              #
+###################################################################
+
+record(mbbi, "$(P)$(R)ImageDataType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(ZRST, "UInt8")
+   field(ZRVL, "0")
+   field(ONST, "UInt16")
+   field(ONVL, "1")
+   field(TWST, "UInt32")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  This record defines the scramble type                          #
 ###################################################################
 

@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 998
-y 68
+x 1049
+y 55
 w 390
 h 820
 font "arial-bold-r-12.0"
@@ -826,7 +826,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 20
+x 5
 y 120
 w 115
 h 20
@@ -836,7 +836,7 @@ fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "Scramble Type"
+  "Data Type"
 }
 endObjectProperties
 
@@ -1578,5 +1578,24 @@ onColor index 20
 offColor index 24
 lineWidth 2
 numBits 1
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 135
+y 120
+w 50
+h 20
+controlPv "$(P)$(R)ImageDataType_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
 endObjectProperties
 

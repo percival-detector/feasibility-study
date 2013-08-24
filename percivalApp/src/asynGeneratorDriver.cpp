@@ -113,6 +113,14 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
     setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
     setIntegerParam(DStripesPerModule, configPtr->getStripesPerModule());
     setIntegerParam(DStripesPerImage,  configPtr->getStripesPerImage());
+    //int dtype = configPtr->getDataType();
+    //if (dtype == UnsignedInt8){
+      setIntegerParam(DataType, configPtr->getDataType());
+    //} else if (dtype == UnsignedInt16){
+    //  setIntegerParam(DataType, UInt16);
+    //} else if (dtype == UnsignedInt32){
+    //  setIntegerParam(DataType, UInt32);
+    //}
   } else if (function == GDPostCommand){
     // Are we starting posting
     if (value == 1){
@@ -343,6 +351,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
   int status;
   int debugLevel;
   uint32_t prevDebug = 0;
+  int imageDataType = 0;
   int postAttribute;         // Address of attribute used for starting/stopping posting
   int posting;               // Current posting value
   int counterAttribute;      // Address of attribute used for the current count of posted data
@@ -376,7 +385,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
   int sIWidth = 0;
   int sIHeight = 0;
-  uint32_t *buffer = 0;
+  void *buffer = 0;
 
   double postTime = 0.0;     // Time in seconds of each frame post
   double frequency;          // Frames per second
@@ -465,6 +474,8 @@ std::cout << "TASK " << taskNumber << " - Starting..." << std::endl;
       // Read the sub frame count and packet size
       getIntegerParam(subFrameAttribute, &subFrames);
       getIntegerParam(packetSizeAttribute, &packetSize);
+      // Read the image data type
+      getIntegerParam(DataType, &imageDataType);
       // Reset message
       setStringParam(errorMsgAttribute, "");
       // Reset status
@@ -476,10 +487,18 @@ std::cout << "TASK " << taskNumber << " - Starting..." << std::endl;
 
       sIWidth = subBrx - subTlx + 1;
       sIHeight = subBry - subTly + 1;
-      // Allocate the storage for the image
-      buffer = (uint32_t *)malloc(sIWidth * sIHeight * sizeof(uint32_t));
-      // Load the sub image into the buffer
-      configPtr->copyScrambledSection(subTlx, subTly, subBrx, subBry, buffer);
+      // Allocate the storage for the image and 
+      // load the sub image into the buffer
+      if (imageDataType == UInt8){
+        buffer = malloc(sIWidth * sIHeight * sizeof(uint8_t));
+        configPtr->copyScrambledSectionUInt8(subTlx, subTly, subBrx, subBry, (uint8_t *)buffer);
+      } else if (imageDataType == UInt16){
+        buffer = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+        configPtr->copyScrambledSectionUInt16(subTlx, subTly, subBrx, subBry, (uint16_t *)buffer);
+      } else if (imageDataType == UInt32){
+        buffer = malloc(sIWidth * sIHeight * sizeof(uint32_t));
+        configPtr->copyScrambledSectionUInt32(subTlx, subTly, subBrx, subBry, (uint32_t *)buffer);
+      }
 
       // Setup the debug level before doing any socket work
       senderPtr->setDebug(debugLevel);
@@ -510,7 +529,7 @@ std::cout << "TASK " << taskNumber << " - Starting..." << std::endl;
     counter++;
 
     // Send the sub image, along with the number of sub frames and packet size
-    senderPtr->sendImage(buffer, (sIWidth*sIHeight), subFrames, packetSize, ((uint32_t)(postTime * 1000000.0)));
+    senderPtr->sendImage(((uint32_t)pow(2.0, (double)imageDataType)), buffer, (sIWidth*sIHeight), subFrames, packetSize, ((uint32_t)(postTime * 1000000.0)));
 
     // Call the callbacks to update any changes
     this->lock();
@@ -719,7 +738,7 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   setIntegerParam(ImageSizeZ,           0);
   setIntegerParam(ImageSize,            0);
   setIntegerParam(NDimensions,          3);
-  //setIntegerParam(DataType,       UInt8);
+  setIntegerParam(DataType,             UInt8);
   setIntegerParam(FileWriteStatus,      0);
   setStringParam (FilePath,             "");
   setStringParam (FileName,             "");

@@ -151,16 +151,20 @@ int DataSender::shutdownSocket()
   return 0;
 }
 
-int DataSender::sendImage(uint32_t *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time)
+int DataSender::sendImage(uint32_t dataSize, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time)
 {
   uint32_t subFrameSize = size / subFrames;
 //  uint32_t totalBytes = size * sizeof(uint32_t);
-  uint32_t subFrameBytes = subFrameSize * sizeof(uint32_t);
-  uint32_t packetBytes = packetSize * sizeof(uint32_t);
+  uint32_t subFrameBytes = subFrameSize * dataSize;
+  uint32_t packetBytes = packetSize * dataSize;
   uint32_t packetNumber = 0;
   uint32_t bytesSent = 0;
   uint8_t *cBuffer = (uint8_t *)buffer;
-  uint32_t packetTime = time * 90 / (100 * (subFrameBytes / packetBytes) * subFrames);
+  uint32_t packetTime = time * 90 / (100.0 * ((subFrameBytes / packetBytes) + 1) * subFrames);
+std::cout << "Data bytes: " << dataSize << std::endl;
+std::cout << "subFrameSize: " << subFrameSize << std::endl;
+std::cout << "packetSize: " << packetSize << std::endl;
+std::cout << "packetBytes: " << packetBytes << std::endl;
 //std::cout << "* Packet Time: " << packetTime << std::endl;
   boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
   long startTime = now.time_of_day().total_microseconds();
@@ -172,8 +176,7 @@ int DataSender::sendImage(uint32_t *buffer, uint32_t size, uint32_t subFrames, u
     packetNumber = 0;
     while (bytesSent < subFrameBytes){
       startTime += packetTime;
-      packetNumber++;
-      if (packetNumber == 1){
+      if (packetNumber == 0){
         sof = true;
       } else {
         sof = false;
@@ -189,7 +192,8 @@ int DataSender::sendImage(uint32_t *buffer, uint32_t size, uint32_t subFrames, u
       }
       now = boost::posix_time::microsec_clock::local_time();
       sleepTime = startTime - now.time_of_day().total_microseconds();
-//std::cout << "SleepTime [" << sleepTime << std::endl;
+//std::cout << "SleepTime [" << sleepTime << "]" << std::endl;
+      packetNumber++;
       if (sleepTime > 100){
         usleep(sleepTime);
       }
@@ -209,22 +213,39 @@ void DataSender::send(uint32_t frameNumber, uint32_t packetNumber, bool sof, boo
   }
   if (eof){
     mPacketHeader.packetNumberFlags += kEndOfFrameMarker;
+//std::cout << "FrameNumber: " << frameNumber << std::endl;
+//std::cout << "PacketNumber: " << packetNumber << std::endl;
+//std::cout << "PayloadSize: " << payloadSize << std::endl;
   }
 //std::cout << "Header: " << mPacketHeader.packetNumberFlags << std::endl;
 
-  boost::array<boost::asio::mutable_buffer, 3> sndBufs;
-  if (headerPosition_ == headerAtStart){
-    sndBufs[0] = boost::asio::buffer((void*)&mPacketHeader, sizeof(mPacketHeader));
-    sndBufs[1] = boost::asio::buffer(payload, payloadSize);
-    sndBufs[2] = boost::asio::buffer((void*)&mCurrentFrameNumber, sizeof(mCurrentFrameNumber));
-  } else {
-    sndBufs[0] = boost::asio::buffer(payload, payloadSize);
-    sndBufs[1] = boost::asio::buffer((void*)&mPacketHeader, sizeof(mPacketHeader));
-    sndBufs[2] = boost::asio::buffer((void*)&mCurrentFrameNumber, sizeof(mCurrentFrameNumber));
+  uint16_t *test;
+  test = (uint16_t *)payload;
+  std::cout << test[0] << " " << test[1] << " " << test[2] << " " << test[3] << " " << test[4] << std::endl;
+
+  try
+  {
+    boost::array<boost::asio::mutable_buffer, 3> sndBufs;
+    if (headerPosition_ == headerAtStart){
+      sndBufs[0] = boost::asio::buffer((void*)&mPacketHeader, sizeof(mPacketHeader));
+      sndBufs[1] = boost::asio::buffer(payload, payloadSize);
+      sndBufs[2] = boost::asio::buffer((void*)&mCurrentFrameNumber, sizeof(mCurrentFrameNumber));
+    } else {
+      sndBufs[0] = boost::asio::buffer(payload, payloadSize);
+      sndBufs[1] = boost::asio::buffer((void*)&mPacketHeader, sizeof(mPacketHeader));
+      sndBufs[2] = boost::asio::buffer((void*)&mCurrentFrameNumber, sizeof(mCurrentFrameNumber));
+    }
+
+    sendSocket_->send_to(sndBufs, remoteEndpoint_);
+
+  } catch(boost::exception& e){
+    // HERE we need to return an error so that the acquisition can be stopped gracefully
+    std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
+    std::cout << "FrameNumber: " << frameNumber << std::endl;
+    std::cout << "PacketNumber: " << packetNumber << std::endl;
+    std::cout << "PayloadSize: " << payloadSize << std::endl;
+
   }
-
-
-  sendSocket_->send_to(sndBufs, remoteEndpoint_);
 
 }
 

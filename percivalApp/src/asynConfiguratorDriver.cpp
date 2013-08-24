@@ -98,6 +98,24 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
         configPtr->setScrambleType(percival);
         break;
     }
+  } else if (function == DataType){
+    switch (value){
+      case UInt8:
+        configPtr->setDataType(UnsignedInt8);
+        break;
+      case UInt16:
+        configPtr->setDataType(UnsignedInt16);
+        break;
+      case UInt32:
+        configPtr->setDataType(UnsignedInt32);
+        break;
+    }
+  } else if (function == ImageCount){
+    configPtr->setNoOfImages(value);
+  } else if (function == ImageMinValue){
+    configPtr->setMinValue(value);
+  } else if (function == ImageMaxValue){
+    configPtr->setMaxValue(value);
   }
 
   // Call base class
@@ -291,6 +309,9 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
   createParam(NDimensionsString,          asynParamInt32,           &NDimensions);
   createParam(DimensionsString,           asynParamInt32,           &Dimensions);
   createParam(DataTypeString,             asynParamInt32,           &DataType);
+  createParam(ImageCountString,           asynParamInt32,           &ImageCount);
+  createParam(ImageMinValueString,        asynParamInt32,           &ImageMinValue);
+  createParam(ImageMaxValueString,        asynParamInt32,           &ImageMaxValue);
   createParam(FilePathString,             asynParamOctet,           &FilePath);
   createParam(FilePathExistsString,       asynParamInt32,           &FilePathExists);
   createParam(FileNameString,             asynParamOctet,           &FileName);
@@ -325,7 +346,10 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
   setIntegerParam(ImageSizeZ,        0);
   setIntegerParam(ImageSize,         0);
   setIntegerParam(NDimensions,       3);
-  //setIntegerParam(DataType,       UInt8);
+  setIntegerParam(DataType,          UInt32);
+  setIntegerParam(ImageCount,        configPtr->getNoOfImages());
+  setIntegerParam(ImageMinValue,     configPtr->getMinValue());
+  setIntegerParam(ImageMaxValue,     configPtr->getMaxValue());
   setIntegerParam(FileWriteStatus,   0);
   setStringParam (FilePath,          "");
   setStringParam (FileName,          "");

@@ -14,6 +14,10 @@
 /** Maximum length of a filename or any of its components */
 #define MAX_FILENAME_LEN 256
 
+#define UInt8  0
+#define UInt16 1
+#define UInt32 2
+
 typedef enum {
     FileWriteOK,
     FileWriteError
@@ -33,6 +37,9 @@ typedef enum {
 #define NDimensionsString      "IMAGE_NDIMENSIONS" /**< (asynInt32,    r/o) Number of dimensions in array */
 #define DimensionsString       "IMAGE_DIMENSIONS"  /**< (asynInt32Array, r/o) Array dimensions */
 #define DataTypeString         "DATA_TYPE"         /**< (asynInt32,    r/w) Data type (NDDataType_t) */
+#define ImageCountString       "IMAGE_COUNT"       /**< (asynInt32,    r/w) Number of images to generate in the sequence */
+#define ImageMinValueString    "IMAGE_MIN_VALUE"   /**< (asynInt32,    r/w) Minimum pixel value */
+#define ImageMaxValueString    "IMAGE_MAX_VALUE"   /**< (asynInt32,    r/w) Maximum pixel value */
 
     /* File name related parameters for saving data.
      * The driver will normally combine NDFilePath, NDFileName, and NDFileNumber into
@@ -97,6 +104,9 @@ class epicsShareFunc asynConfiguratorDriver : public asynPortDriver
     int NDimensions;
     int Dimensions;
     int DataType;
+    int ImageCount;
+    int ImageMinValue;
+    int ImageMaxValue;
     int FilePath;
     int FilePathExists;
     int FileName;

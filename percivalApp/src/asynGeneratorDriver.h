@@ -19,6 +19,10 @@
 /** Maximum length of a filename or any of its components */
 #define MAX_FILENAME_LEN 256
 
+#define UInt8  0
+#define UInt16 1
+#define UInt32 2
+
 typedef enum {
     FileWriteOK,
     FileWriteError

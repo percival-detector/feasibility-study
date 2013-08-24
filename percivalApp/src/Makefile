@@ -19,6 +19,21 @@ boost_thread_DIR = $(BOOST)/lib
 # ----------------------------------------
 # Build a basic test application
 #-----------------------------------------
+PROD_IOC += testPercServer
+testPercServer_SRCS += testPercivalServer.cpp
+testPercServer_SRCS += PercivalServer.cpp
+testPercServer_SRCS += PercivalSubFrame.cpp
+testPercServer_SRCS += PercivalBuffer.cpp
+testPercServer_SRCS += PercivalBufferPool.cpp
+testPercServer_SRCS += DataReceiver.cpp
+testPercServer_LIBS += boost_system
+testPercServer_LIBS += boost_thread
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
+
+# ----------------------------------------
+# Build a basic test application
+#-----------------------------------------
 PROD_IOC += testServer
 testServer_SRCS += testUDPServer.cpp
 testServer_LIBS += boost_system

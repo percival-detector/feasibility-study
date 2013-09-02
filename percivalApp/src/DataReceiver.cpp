@@ -6,6 +6,7 @@
  */
 
 #include "DataReceiver.h"
+#include "PercivalDebug.h"
 
 
 DataReceiver::DataReceiver()
@@ -16,58 +17,39 @@ DataReceiver::DataReceiver()
     running_(false),
     frameHeaderLength_(sizeof(PacketHeader))
 {
-  static const char *functionName = "DataReceiver::DataReceiver";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-
 }
 
 DataReceiver::~DataReceiver()
 {
-  static const char *functionName = "DataReceiver::~DataReceiver";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-
+  PercivalDebug dbg(debug_, "DataReceiver::~DataReceiver");
 }
 
 void DataReceiver::setDebug(uint32_t level)
 {
-  static const char *functionName = "DataReceiver::setDebug";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-    std::cout << "[DEBUG] debug level set to " << level << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::setDebug");
+  dbg.log(1, "Debug level", level);
   debug_ = level;
 }
 
 std::string DataReceiver::errorMessage()
 {
-  static const char *functionName = "DataReceiver::errorMessage";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-    std::cout << "[DEBUG] message: " << errorMessage_ << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::errorMessage");
+  dbg.log(1, "Current error message", errorMessage_);
   return errorMessage_;
 }
 
 int DataReceiver::registerCallback(IPercivalCallback *callback)
 {
-  static const char *functionName = "DataReceiver::registerCallback";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::registerCallback");
   callback_ = callback;
   return 0;
 }
 
 int DataReceiver::setupSocket(const std::string& host, unsigned short port)
 {
-  static const char *functionName = "DataReceiver::setupSocket";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::setupSocket");
+  dbg.log(1, "Host", host);
+  dbg.log(1, "Port", (uint32_t)port);
   try
   {
     boost::asio::ip::udp::endpoint localEndpoint(boost::asio::ip::address::from_string(host), port);
@@ -75,20 +57,15 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
     {
       recvSocket_ = new boost::asio::ip::udp::socket(ioService_, localEndpoint);
     } catch (boost::exception& e){
-		  std::cout << "[ERROR] " << functionName << " - Unable to create the socket" << std::endl;
       errorMessage_ = "Unable to create the socket";
-      if (debug_ > 0){
-        std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-      }
+      dbg.log(0, "Unable to create the socket");
+      dbg.log(0, e);
       return -1;
     }
   } catch (boost::exception& e){
-		std::cout << "[ERROR] " << functionName << " - Unable to setup local endpoint" << std::endl;
     errorMessage_ = "Unable to setup local endpoint";
-    if (debug_ > 0){
-      std::cout << "[DEBUG] " << functionName << " - host [" << host << "]   port [" << port << "]" << std::endl;
-      std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-    }
+    dbg.log(0, "Unable to setup local endpoint");
+    dbg.log(0, e);
     return -1;
   }
 
@@ -96,7 +73,7 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
 	int rcvBufSize = 8388608;
 	int rc = setsockopt(nativeSocket, SOL_SOCKET, SO_RCVBUF, (void*)&rcvBufSize, sizeof(rcvBufSize));
 	if (rc != 0){
-		std::cout << "[ERROR] " << functionName << " - setsockopt failed" << std::endl;
+    dbg.log(0, "Setsockopt failed");
     errorMessage_ = "Setsockopt Failed";
     return -1;
 	}
@@ -106,23 +83,18 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
 
 int DataReceiver::shutdownSocket()
 {
-  static const char *functionName = "DataReceiver::shutdownSocket";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::shutdownSocket");
   // Only shutdown if we started up OK
   if (running_){
     try
     {
       recvSocket_->close();
       delete(recvSocket_);
-      ioService_.stop();    
+      ioService_.stop();
     } catch (boost::exception& e){
-		  std::cout << "[ERROR] " << functionName << " - Unable to shutdown socket" << std::endl;
       errorMessage_ = "Unable to shutdown socket";
-      if (debug_ > 0){
-        std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-      }
+		  dbg.log(0, "Unable to shutdown socket");
+      dbg.log(0, e);
       return -1;
     }
     running_ = false;
@@ -132,24 +104,17 @@ int DataReceiver::shutdownSocket()
 
 int DataReceiver::startAcquisition(uint32_t frameBytes, uint32_t subFrames)
 {
-  static const char *functionName = "DataReceiver::startAcquisition";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::startAcquisition");
 
-  if (debug_ > 1){
-    std::cout << "[DEBUG] " << functionName << " - frame size [" << frameBytes << "]" << std::endl;
-  }
+  dbg.log(1, "Frame size", frameBytes, "Subframes", subFrames);
   // First check we have a registered callback
   if (!callback_){
     errorMessage_ = "No callback registered";
-    std::cout << "[ERROR] " << functionName << " - cannot start acquisition without a registered callback" << std::endl;
+    dbg.log(0, "Cannot start acquisition without a registered callback");
   }
 
   if (!acquiring_){
-    if (debug_ > 1){
-      std::cout << "[DEBUG] " << functionName << " - starting acquisition loop" << std::endl;
-    }
+    dbg.log(1, "Starting acquisition loop");
 
     // Set acquisition flag
     acquiring_ = true;
@@ -177,16 +142,12 @@ int DataReceiver::startAcquisition(uint32_t frameBytes, uint32_t subFrames)
     // If the IO service is stopped (i.e. the receiver has been run before), restart it
     // and check that it is running OK
     if (ioService_.stopped()){
-      if (debug_ > 1){
-        std::cout << "[DEBUG] " << functionName << " - resetting IO service" << std::endl;
-      }
+      dbg.log(1, "Resetting IO service");
       ioService_.reset();
     }
 
     if (ioService_.stopped()){
-      if (debug_ > 0){
-        std::cout << "[ERROR] " << functionName << " - resetting IO service failed" << std::endl;
-      }
+      dbg.log(0, "Resetting IO service failed");
       errorMessage_ = "Resetting IO service failed";
       // Turn off acquiring
       acquiring_ = false;
@@ -195,7 +156,7 @@ int DataReceiver::startAcquisition(uint32_t frameBytes, uint32_t subFrames)
 
     // Pre-allocate an initial buffer via the callback
     currentBuffer_ = callback_->allocateBuffer();
-std::cout << "Current buffer address: " << currentBuffer_ << std::endl;
+    dbg.log(1, "Current buffer address", (int64_t)currentBuffer_);
 
     // Launch async receive on UDP socket
     boost::array<boost::asio::mutable_buffer, 3> rxBufs;
@@ -227,9 +188,7 @@ std::cout << "Current buffer address: " << currentBuffer_ << std::endl;
     receiverThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&boost::asio::io_service::run, &ioService_)));
 
   } else {
-    if (debug_ > 0){
-      std::cout << "[ERROR] " << functionName << " - resetting IO service failed" << std::endl;
-    }
+    dbg.log(0, "Resetting IO service failed");
     errorMessage_ = "Acquisition already running";
     return -1;
   }
@@ -239,15 +198,10 @@ std::cout << "Current buffer address: " << currentBuffer_ << std::endl;
 
 int DataReceiver::stopAcquisition()
 {
-  static const char *functionName = "DataReceiver::stopAcquisition";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataReceiver::stopAcquisition");
 
   if (!acquiring_){
-    if (debug_ > 1){
-      std::cout << "[DEBUG] " << functionName << " - called when no acquisition is taking place" << std::endl;
-    }
+    dbg.log(1, "Called when no acquisition is taking place");
     errorMessage_ = "No acquisition running";
     return -1;
   } else {
@@ -265,12 +219,9 @@ int DataReceiver::stopAcquisition()
 
 void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std::size_t bytesReceived)
 {
-  static const char *functionName = "DataReceiver::handleReceive";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-  std::cout << "Thread ID: " << boost::this_thread::get_id() << std::endl;
-  std::cout << "Bytes received: " << bytesReceived << std::endl;
+  PercivalDebug dbg(debug_, "DataReceiver::handleReceive");
+  dbg.log(1, "Thread ID", boost::this_thread::get_id());
+  dbg.log(2, "Bytes received", (uint32_t)bytesReceived);
 
 	//time_t recvTime;
 	//FemDataReceiverSignal::FemDataReceiverSignals errorSignal = FemDataReceiverSignal::femAcquisitionNullSignal;
@@ -288,15 +239,15 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     // at the end of each subframe
     framePayloadBytesReceived_ += payloadBytesReceived;
 
-  std::cout << "payloadBytesRecevied: " << payloadBytesReceived << std::endl;
-  std::cout << "frameTotalBytesReceived_: " << frameTotalBytesReceived_ << std::endl;
-  std::cout << "subFrameBytesReceived_: " << subFrameBytesReceived_ << std::endl;
-  std::cout << "framePayloadBytesRecevied_: " << framePayloadBytesReceived_ << std::endl;
+    dbg.log(2, "payloadBytesReceived", payloadBytesReceived);
+    dbg.log(2, "frameTotalBytesReceived_", frameTotalBytesReceived_);
+    dbg.log(2, "subFrameBytesReceived_", subFrameBytesReceived_);
+    dbg.log(2, "framePayloadBytesRecevied_", framePayloadBytesReceived_);
     // If this is the first packet in a sub-frame, we expect packet header to have SOF marker and packet number to
     // be zero. Otherwise, check that the packet number is incrementing correctly, i.e. we have not dropped any packets
     if (subFramePacketsReceived_ == 0){
       if (!(packetHeader_.packetNumberFlags & kStartOfFrameMarker)){
-        std::cout << "Missing SOF marker" << std::endl;
+        dbg.log(0, "Missing SOF marker");
         //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
       } else {
         subFramePacketsReceived_++;
@@ -304,8 +255,7 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     } else {
       // Check packet number is incrementing as expected within subframe
       if ((packetHeader_.packetNumberFlags & kPacketNumberMask) != subFramePacketsReceived_){
-        std::cout << "Incorrect packet number sequence, got: " << (packetHeader_.packetNumberFlags & kPacketNumberMask);
-        std::cout << " expected: " << subFramePacketsReceived_ << std::endl;
+        dbg.log(0, "Incorrect packet number sequence", (packetHeader_.packetNumberFlags & kPacketNumberMask), "Expected", subFramePacketsReceived_);
         //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
       }
 
@@ -353,11 +303,10 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
         // frame, check that we have received the correct amount of data
         if (subFramesReceived_ == subFrames_){
           if (framePayloadBytesReceived_ != frameBytes_){
-            std::cout << "Received complete frame with incorrect size, got " << framePayloadBytesReceived_;
-            std::cout << " expected " << frameBytes_ << std::endl;
+            dbg.log(0, "Received complete frame with incorrect size", framePayloadBytesReceived_, "Expected", frameBytes_);
             //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
           } else {
-            std::cout << "Frame completed OK counter = " << currentFrameNumber_ << std::endl;
+            dbg.log(1, "Frame completed OK, counter", currentFrameNumber_);
           }
           framesReceived_++;
         }
@@ -371,8 +320,8 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     }
 
     if (framePayloadBytesReceived_ > frameBytes_){
-      std::cout << "Buffer overrun detected in receive of frame number " << currentFrameNumber_;
-      std::cout << " subframe " << subFramesReceived_ << " packet " << subFramePacketsReceived_ << std::endl;
+      dbg.log(0, "Buffer overrun detected in receive of frame number", currentFrameNumber_);
+      dbg.log(0, "Subframe", subFramesReceived_, "Packet", subFramePacketsReceived_);
       //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
     }
 
@@ -416,7 +365,8 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
       //mLatchedErrorSignal = FemDataReceiverSignal::femAcquisitionNullSignal;
     }
   } else {
-    std::cout << "Got error during receive: " << errorCode.value() << " : " << errorCode.message() << " recvd=" << bytesReceived << std::endl;
+    dbg.log(0, "Got error during receive", (uint32_t)errorCode.value());
+    dbg.log(0, errorCode.message() + " recvd", (uint32_t)bytesReceived);
     //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
   }
 
@@ -432,14 +382,14 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     // points to the next position in the current buffer
     boost::array<boost::asio::mutable_buffer, 3> rxBufs;
     if (headerPosition_ == headerAtStart){
-std::cout << "Buff size: " << (subFrameLength_ - framePayloadBytesReceived_) << std::endl;
+      dbg.log(2, "Buff size", (frameBytes_ - framePayloadBytesReceived_));
       rxBufs[0] = boost::asio::buffer((void *)&packetHeader_, sizeof(packetHeader_));
       //rxBufs[1] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, subFrameLength_);
-      rxBufs[1] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, (subFrameLength_ - framePayloadBytesReceived_ + 4));
+      rxBufs[1] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, (frameBytes_ - framePayloadBytesReceived_ + 4));
       //rxBufs[1] = boost::asio::buffer(currentBuffer_->raw(), subFrameLength_);
       rxBufs[2] = boost::asio::buffer((void *)&currentFrameNumber_, sizeof(currentFrameNumber_));
     } else {
-      rxBufs[0] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, subFrameLength_ - framePayloadBytesReceived_);
+      rxBufs[0] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, frameBytes_ - framePayloadBytesReceived_);
       rxBufs[1] = boost::asio::buffer((void *)&packetHeader_, sizeof(packetHeader_));
       rxBufs[2] = boost::asio::buffer((void *)&currentFrameNumber_, sizeof(currentFrameNumber_));
     }

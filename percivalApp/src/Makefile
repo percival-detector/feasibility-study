@@ -11,6 +11,7 @@ USR_INCLUDES += -I$(BOOST)/include
 PROD_IOC += testSend
 testSend_SRCS += sendTest.cpp
 testSend_SRCS += DataSender.cpp
+testSend_SRCS += PercivalDebug.cpp
 testSend_LIBS += boost_system
 testSend_LIBS += boost_thread
 boost_system_DIR = $(BOOST)/lib
@@ -26,6 +27,7 @@ testPercServer_SRCS += PercivalSubFrame.cpp
 testPercServer_SRCS += PercivalBuffer.cpp
 testPercServer_SRCS += PercivalBufferPool.cpp
 testPercServer_SRCS += DataReceiver.cpp
+testPercServer_SRCS += PercivalDebug.cpp
 testPercServer_LIBS += boost_system
 testPercServer_LIBS += boost_thread
 boost_system_DIR = $(BOOST)/lib
@@ -45,7 +47,7 @@ boost_thread_DIR = $(BOOST)/lib
 # Build an Diamond Support Module
 # -------------------------------
 
-LIBRARY_IOC += percival
+LIBRARY_IOC += percGen
 
 # xxxRecord.h will be created from xxxRecord.dbd
 #DBDINC += xxx.h
@@ -55,16 +57,56 @@ DBD += PercivalConfigurator.dbd
 DBD += PercivalGenerator.dbd
 
 # The following are compiled and added to the support library
-percival_SRCS += Configurator.cpp
-percival_SRCS += DataSender.cpp
+percGen_SRCS += asynConfiguratorDriver.cpp
+percGen_SRCS += asynGeneratorDriver.cpp
+percGen_SRCS += Configurator.cpp
+percGen_SRCS += DataSender.cpp
+percGen_SRCS += PercivalDebug.cpp
+
+percGen_LIBS += asyn
+percGen_LIBS += hdf5
+percGen_LIBS += boost_system
+percGen_LIBS += boost_thread
+hdf5_DIR         = $(HDF5)/lib
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
+
+# We need to link against the EPICS Base libraries
+#percival_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+# -------------------------------
+# Build an Diamond Support Module
+# -------------------------------
+
+LIBRARY_IOC += percival
+
+# xxxRecord.h will be created from xxxRecord.dbd
+#DBDINC += xxx.h
+
+# xxxRecord.dbd will be installed into <top>/dbd
+DBD += PercivalConfigurator.dbd
+DBD += PercivalGenerator.dbd
+DBD += ADPercivalDriver.dbd
+
+# The following are compiled and added to the support library
 percival_SRCS += asynConfiguratorDriver.cpp
 percival_SRCS += asynGeneratorDriver.cpp
+percival_SRCS += ADPercivalDriver.cpp
+percival_SRCS += Configurator.cpp
+percival_SRCS += DataSender.cpp
+percival_SRCS += DataReceiver.cpp
+percival_SRCS += PercivalDebug.cpp
+percival_SRCS += PercivalBuffer.cpp
+percival_SRCS += PercivalBufferPool.cpp
+percival_SRCS += PercivalServer.cpp
+percival_SRCS += PercivalSubFrame.cpp
 
-percival_LIBS += asyn
-percival_LIBS += hdf5
+#percival_LIBS += asyn
+#percival_LIBS += hdf5
+#percival_LIBS += ADBase
 percival_LIBS += boost_system
 percival_LIBS += boost_thread
-hdf5_DIR         = $(HDF5)/lib
+#hdf5_DIR         = $(HDF5)/lib
 boost_system_DIR = $(BOOST)/lib
 boost_thread_DIR = $(BOOST)/lib
 

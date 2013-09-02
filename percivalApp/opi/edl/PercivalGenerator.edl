@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1049
-y 55
+x 889
+y 56
 w 390
 h 820
 font "arial-bold-r-12.0"
@@ -632,7 +632,7 @@ major 4
 minor 1
 release 1
 x 195
-y 80
+y 100
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -652,7 +652,7 @@ major 10
 minor 0
 release 0
 x 325
-y 80
+y 100
 w 50
 h 20
 controlPv "$(P)$(R)DBlocksPerStripeX_RBV"
@@ -671,7 +671,7 @@ major 4
 minor 1
 release 1
 x 195
-y 100
+y 140
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -691,7 +691,7 @@ major 10
 minor 0
 release 0
 x 325
-y 100
+y 140
 w 50
 h 20
 controlPv "$(P)$(R)DChipsPerStripeX_RBV"
@@ -710,7 +710,7 @@ major 4
 minor 1
 release 1
 x 195
-y 120
+y 160
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -730,7 +730,7 @@ major 10
 minor 0
 release 0
 x 325
-y 120
+y 160
 w 50
 h 20
 controlPv "$(P)$(R)DChipsPerStripeY_RBV"
@@ -749,7 +749,7 @@ major 4
 minor 1
 release 1
 x 195
-y 140
+y 180
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -758,7 +758,7 @@ fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "Stripes per module"
+  "Stripes per image X"
 }
 endObjectProperties
 
@@ -769,10 +769,10 @@ major 10
 minor 0
 release 0
 x 325
-y 140
+y 180
 w 50
 h 20
-controlPv "$(P)$(R)DStripesPerModule_RBV"
+controlPv "$(P)$(R)DStripesPerImageX_RBV"
 fgColor index 16
 fgAlarm
 bgColor index 10
@@ -788,7 +788,7 @@ major 4
 minor 1
 release 1
 x 195
-y 160
+y 200
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -797,7 +797,7 @@ fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "Stripes per image"
+  "Stripes per image Y"
 }
 endObjectProperties
 
@@ -808,10 +808,10 @@ major 10
 minor 0
 release 0
 x 325
-y 160
+y 200
 w 50
 h 20
-controlPv "$(P)$(R)DStripesPerImage_RBV"
+controlPv "$(P)$(R)DStripesPerImageY_RBV"
 fgColor index 16
 fgAlarm
 bgColor index 10
@@ -1458,7 +1458,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 135
+x 40
 y 195
 w 50
 h 20
@@ -1475,7 +1475,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 195
+x 100
 y 195
 w 50
 h 20
@@ -1494,12 +1494,12 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 5
-y 195
+x 35
+y 170
 w 115
 h 20
 font "arial-bold-r-12.0"
-fontAlign "right"
+fontAlign "center"
 fgColor index 14
 bgColor index 3
 useDisplayBg
@@ -1591,6 +1591,84 @@ y 120
 w 50
 h 20
 controlPv "$(P)$(R)ImageDataType_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 195
+y 80
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Chips per block Y"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 325
+y 80
+w 50
+h 20
+controlPv "$(P)$(R)DChipsPerBlockY_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 195
+y 120
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Blocks per stripe Y"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 325
+y 120
+w 50
+h 20
+controlPv "$(P)$(R)DBlocksPerStripeY_RBV"
 fgColor index 16
 fgAlarm
 bgColor index 10

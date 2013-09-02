@@ -15,6 +15,7 @@ int main()
   {
 
     PercivalServer *sPtr = new PercivalServer();
+    //sPtr->setDebug(5);
     sPtr->setupFullFrame(2048, 1024, UnsignedInt16, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
     sPtr->setupSubFrame(0, "127.0.0.1", 9876, 4, 4, 8, 8, 1);
     //sPtr->setupSubFrame(1, "127.0.0.1", 9877, 0, 256, 2047, 511, 2);

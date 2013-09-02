@@ -25,10 +25,8 @@ PercivalBuffer *PercivalBufferPool::allocate()
   boost::lock_guard<boost::mutex> lock(access_);
   PercivalBuffer *ptr;
   if (freeBuffers_.empty()){
-std::cout << "Freebuffers empty" << std::endl;
     ptr = new PercivalBuffer(bufferSize_);
   } else {
-std::cout << "Freebuffers NOT empty, popping off the stack" << std::endl;
     ptr = freeBuffers_.top();
     freeBuffers_.pop();
   }

@@ -12,16 +12,21 @@
 
 PercivalBuffer::PercivalBuffer(uint32_t bufferSize)
 {
-  buffer = malloc(bufferSize);
+  buffer_ = malloc(bufferSize);
+  bufferSize_ = bufferSize;
 }
 
 PercivalBuffer::~PercivalBuffer()
 {
-  free(buffer);
+  free(buffer_);
 }
 
 void *PercivalBuffer::raw()
 {
-  return buffer;
+  return buffer_;
 }
 
+uint32_t PercivalBuffer::size()
+{
+  return bufferSize_;
+}

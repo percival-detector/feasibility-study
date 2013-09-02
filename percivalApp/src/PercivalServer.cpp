@@ -6,6 +6,7 @@
  */
 
 #include "PercivalServer.h"
+#include "PercivalDebug.h"
 
 
 PercivalServer::PercivalServer()
@@ -16,39 +17,29 @@ PercivalServer::PercivalServer()
     serverReady_(0),
     callback_(0)
 {
-  static const char *functionName = "PercivalServer::PercivalServer";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-
 }
 
 PercivalServer::~PercivalServer()
 {
-  static const char *functionName = "PercivalServer::~PercivalServer";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-
+  PercivalDebug dbg(debug_, "PercivalServer::~PercivalServer");
 }
 
 void PercivalServer::setDebug(uint32_t level)
 {
-  static const char *functionName = "PercivalServer::setDebug";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-    std::cout << "[DEBUG] debug level set to " << level << std::endl;
-  }
+  PercivalDebug dbg(debug_, "PercivalServer::setDebug");
+  dbg.log(1, "Debug level", level);
   debug_ = level;
+  // Iterate over sub-frames and set debug levels
+  std::map<int, PercivalSubFrame *>::const_iterator iterator;
+  for(iterator = subFrameMap_.begin(); iterator != subFrameMap_.end(); iterator++){
+    iterator->second->setDebug(level);
+  }
 }
 
 std::string PercivalServer::errorMessage()
 {
-  static const char *functionName = "PercivalServer::errorMessage";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-    std::cout << "[DEBUG] message: " << errorMessage_ << std::endl;
-  }
+  PercivalDebug dbg(debug_, "PercivalServer::errorMessage");
+  dbg.log(1, "Message", errorMessage_);
   return errorMessage_;
 }
 
@@ -63,6 +54,7 @@ int PercivalServer::setupFullFrame(uint32_t width,              // Width of full
                                    float    *stageGains,      // Gain to apply for each of the output stages (in scrambled order)
                                    float    *stageOffsets)    // Offsets to apply for each of the output stages (in scrambled order)
 {
+  PercivalDebug dbg(debug_, "PercivalServer::setupFullFrame");
   width_ = width;
   height_ = height;
   type_ = type;
@@ -78,7 +70,7 @@ int PercivalServer::setupFullFrame(uint32_t width,              // Width of full
   return 0;
 }
 
-int PercivalServer::setupSubFrame(int frameID,
+int PercivalServer::setupSubFrame(uint32_t frameID,
                                   const std::string& host,
                                   unsigned short port,
                                   uint32_t topLeftX,
@@ -87,6 +79,7 @@ int PercivalServer::setupSubFrame(int frameID,
                                   uint32_t bottomRightY,
                                   uint32_t subFrames)
 {
+  PercivalDebug dbg(debug_, "PercivalServer::setupSubFrame");
   subFrameMap_[frameID] = new PercivalSubFrame(this,
                                                frameID,
                                                host,
@@ -97,23 +90,26 @@ int PercivalServer::setupSubFrame(int frameID,
                                                bottomRightX,
                                                bottomRightY,
                                                subFrames);
+  subFrameMap_[frameID]->setDebug(debug_);
   serverMask_ = serverMask_ + (1 << frameID);
-std::cout << "Server Mask: " << serverMask_ << std::endl;
+  dbg.log(1, "Server Mask", serverMask_);
   return 0;
 }
 
 int PercivalServer::releaseSubFrame(int frameID)
 {
+  PercivalDebug dbg(debug_, "PercivalServer::releaseSubFrame");
   PercivalSubFrame *sfPtr = subFrameMap_[frameID];
   subFrameMap_.erase(frameID);
   delete(sfPtr);
   serverMask_ = serverMask_ - (1 << frameID);
-std::cout << "Server Mask: " << serverMask_ << std::endl;
+  dbg.log(1, "Server Mask", serverMask_);
   return 0;
 }
 
 int PercivalServer::startAcquisition()
 {
+  PercivalDebug dbg(debug_, "PercivalServer::startAcquisition");
   std::map<int, PercivalSubFrame *>::const_iterator iterator;
   for(iterator = subFrameMap_.begin(); iterator != subFrameMap_.end(); iterator++){
     iterator->second->startAcquisition();
@@ -123,17 +119,22 @@ int PercivalServer::startAcquisition()
 
 int PercivalServer::stopAcquisition()
 {
+  PercivalDebug dbg(debug_, "PercivalServer::stopAcquisition");
   return 0;
 }
 
 int PercivalServer::registerCallback(IPercivalCallback *callback)
 {
+  PercivalDebug dbg(debug_, "PercivalServer::registerCallback");
   callback_ = callback;
   return 0;
 }
 
-int PercivalServer::processSubFrame(int frameID, PercivalBuffer *buffer)
+int PercivalServer::processSubFrame(uint32_t frameID, PercivalBuffer *buffer)
 {
+  PercivalDebug dbg(debug_, "PercivalServer::processSubFrame");
+  dbg.log(1, "Frame ID", frameID);
+  dbg.log(1, "Buffer Address", (int64_t)buffer);
   // LOCK
   {
     boost::lock_guard<boost::mutex> lock(access_);
@@ -145,21 +146,20 @@ int PercivalServer::processSubFrame(int frameID, PercivalBuffer *buffer)
       }
     } else if (serverReady_ & (1 << frameID)){
       // If this frame already in mask then serious error
-      std::cout << "**** ERROR - two subframes with same ID, subframes out of order ****" << std::endl;
+      dbg.log(0, "Two subframes with same ID, subframes out of order");
     }
   // UNLOCK
   }
   // Process data (DANGER CALL, PROCESSING ON SAME BUFFER CONCURRENTLY)
-std::cout << "Processing data..." << std::endl;
-usleep(1000000);
-PercivalSubFrame *sfPtr = subFrameMap_[frameID];
-unscramble(sfPtr->getNumberOfPixels(),
-           NULL,
-           NULL,
-           NULL,
-           sfPtr->getTopLeftX(),
-           sfPtr->getBottomRightX(),
-           sfPtr->getTopLeftY());
+  dbg.log(1, "Processing data...");
+  PercivalSubFrame *sfPtr = subFrameMap_[frameID];
+  unscramble(sfPtr->getNumberOfPixels(),
+             (uint16_t *)buffer->raw(),
+             NULL,
+             (uint16_t *)fullFrame_->raw(),
+             sfPtr->getTopLeftX(),
+             sfPtr->getBottomRightX(),
+             sfPtr->getTopLeftY());
 
   // LOCK
   {
@@ -168,9 +168,9 @@ unscramble(sfPtr->getNumberOfPixels(),
     serverReady_ = serverReady_ + (1 << frameID);
     // If last call (mask full) then notify and zero mask
     if (serverReady_ == serverMask_){
-std::cout << "Notify frame complete" << std::endl;
+      dbg.log(2, "Notify frame complete");
       if (callback_){
-
+        callback_->imageReceived(fullFrame_);
       }
       serverReady_ = 0;
     }
@@ -182,11 +182,12 @@ std::cout << "Notify frame complete" << std::endl;
 void PercivalServer::unscramble(int      numPts,       // Number of points to process
                                 uint16_t *in_data,     // Input data
                                 uint16_t *reset_data,  // Reset data
-                                float    *out_data,    // Output data
+                                uint16_t *out_data,    // Output data
                                 uint32_t x1,
                                 uint32_t x2,
                                 uint32_t y1)
 {
+  PercivalDebug dbg(debug_, "PercivalServer::unscramble");
   int index; // Index of point in subframe
   int xp;    // X prime, x coordinate within subframe
   int yp;    // Y prime, y coordinate within subframe
@@ -199,7 +200,9 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
     xp = index - (yp * (x2 - x1 + 1));
     ip = (width_ * (yp + y1)) + x1 + xp;
 
-std::cout << "Calculated x [" << xp << "]  y [" << yp << "]  index [" << ip << "]" << std::endl;
+//std::cout << "Calculated x [" << xp << "]  y [" << yp << "]  index [" << ip << "]" << std::endl;
+
+    out_data[ip] = in_data[index];
 
 /*
     gain     = in_data[ip] & 0x3;

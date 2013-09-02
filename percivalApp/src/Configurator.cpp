@@ -22,11 +22,13 @@ Configurator::Configurator()
     pixelsPerChipX_(256),
     pixelsPerChipY_(256),
     chipsPerBlockX_(4),
+    chipsPerBlockY_(1),
     blocksPerStripeX_(2),
+    blocksPerStripeY_(1),
     chipsPerStripeX_(8),
     chipsPerStripeY_(1),
-    stripesPerModule_(2),
-    stripesPerImage_(6),
+    stripesPerImageX_(1),
+    stripesPerImageY_(6),
     scramble_(excalibur),
     arraysAllocated_(false),
     debug_(0)
@@ -44,22 +46,10 @@ void Configurator::setDebugLevel(uint32_t level)
   debug_ = level;
 }
 
-void Configurator::setImageWidth(uint32_t width)
-{
-  // Set the image width in pixels
-  imageWidth_ = width;
-}
-
 uint32_t Configurator::getImageWidth()
 {
   // Return the current image width
   return imageWidth_;
-}
-
-void Configurator::setImageHeight(uint32_t height)
-{
-  // Set the image height in pixels
-  imageHeight_ = height;
 }
 
 uint32_t Configurator::getImageHeight()
@@ -156,6 +146,7 @@ void Configurator::setPixelsPerChipX(uint32_t ppcx)
 {
   // Set the number of pixels per chip in the x direction
   pixelsPerChipX_ = ppcx;
+  imageWidth_ = pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_;
 }
 
 uint32_t Configurator::getPixelsPerChipX()
@@ -168,6 +159,7 @@ void Configurator::setPixelsPerChipY(uint32_t ppcy)
 {
   // Set the number of pixels per chip in the y direction
   pixelsPerChipY_ = ppcy;
+  imageHeight_ = pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_;
 }
 
 uint32_t Configurator::getPixelsPerChipY()
@@ -180,6 +172,9 @@ void Configurator::setChipsPerBlockX(uint32_t cpbx)
 {
   // Set the number of chips per block in the x direction
   chipsPerBlockX_ = cpbx;
+  // Set the number of chips per stripe in the x direction
+  chipsPerStripeX_ = chipsPerBlockX_ * blocksPerStripeX_;
+  imageWidth_ = pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_;
 }
 
 uint32_t Configurator::getChipsPerBlockX()
@@ -188,10 +183,28 @@ uint32_t Configurator::getChipsPerBlockX()
   return chipsPerBlockX_;
 }
 
+void Configurator::setChipsPerBlockY(uint32_t cpby)
+{
+  // Set the number of chips per block in the y direction
+  chipsPerBlockY_ = cpby;
+  // Set the number of chips per stripe in the y direction
+  chipsPerStripeY_ = chipsPerBlockY_ * blocksPerStripeY_;
+  imageHeight_ = pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_;
+}
+
+uint32_t Configurator::getChipsPerBlockY()
+{
+  // Return the number of chips per block in the x direction
+  return chipsPerBlockY_;
+}
+
 void Configurator::setBlocksPerStripeX(uint32_t bpsx)
 {
   // Set the number of blocks per stripe in the x direction
   blocksPerStripeX_ = bpsx;
+  // Set the number of chips per stripe in the x direction
+  chipsPerStripeX_ = chipsPerBlockX_ * blocksPerStripeX_;
+  imageWidth_ = pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_;
 }
 
 uint32_t Configurator::getBlocksPerStripeX()
@@ -200,10 +213,19 @@ uint32_t Configurator::getBlocksPerStripeX()
   return blocksPerStripeX_;
 }
 
-void Configurator::setChipsPerStripeX(uint32_t cpsx)
+void Configurator::setBlocksPerStripeY(uint32_t bpsy)
 {
-  // Set the number of chips per stripe in the x direction
-  chipsPerStripeX_ = cpsx;
+  // Set the number of blocks per stripe in the y direction
+  blocksPerStripeY_ = bpsy;
+  // Set the number of chips per stripe in the y direction
+  chipsPerStripeY_ = chipsPerBlockY_ * blocksPerStripeY_;
+  imageHeight_ = pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_;
+}
+
+uint32_t Configurator::getBlocksPerStripeY()
+{
+  // Return the number of blocks per stripe in the y direction
+  return blocksPerStripeY_;
 }
 
 uint32_t Configurator::getChipsPerStripeX()
@@ -212,40 +234,36 @@ uint32_t Configurator::getChipsPerStripeX()
   return chipsPerStripeX_;
 }
 
-void Configurator::setChipsPerStripeY(uint32_t cpsy)
-{
-  // Set the number of chips per stripe in the y direction
-  chipsPerStripeY_ = cpsy;
-}
-
 uint32_t Configurator::getChipsPerStripeY()
 {
   // Return the number of chips per stripe in the y direction
   return chipsPerStripeY_;
 }
 
-void Configurator::setStripesPerModule(uint32_t spm)
+void Configurator::setStripesPerImageX(uint32_t spix)
 {
-  // Set the number of stipes per module
-  stripesPerModule_ = spm;
+  // Set the number of stipes per image in the x direction
+  stripesPerImageX_ = spix;
+  imageWidth_ = pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_;
 }
 
-uint32_t Configurator::getStripesPerModule()
+uint32_t Configurator::getStripesPerImageX()
 {
-  // Return the number of stripes per module
-  return stripesPerModule_;
+  // Return the number of stripes per image in the x direction
+  return stripesPerImageX_;
 }
 
-void Configurator::setStripesPerImage(uint32_t spi)
+void Configurator::setStripesPerImageY(uint32_t spiy)
 {
-  // Set the number of stripes per image
-  stripesPerImage_ = spi;
+  // Set the number of stripes per image in the y direction
+  stripesPerImageY_ = spiy;
+  imageHeight_ = pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_;
 }
 
-uint32_t Configurator::getStripesPerImage()
+uint32_t Configurator::getStripesPerImageY()
 {
-  // Return the number of stripes per image
-  return stripesPerImage_;
+  // Return the number of stripes per image in the y direction
+  return stripesPerImageY_;
 }
 
 void Configurator::setScrambleType(ScrambleType scramble)
@@ -528,17 +546,32 @@ void Configurator::generateScrambledImage()
   scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
   uint32_t pixelsPerStripe = pixelsPerChipX_ * pixelsPerChipY_ * chipsPerStripeX_ * chipsPerStripeY_;
   for (uint32_t imageNo = 0; imageNo < noOfImages_; imageNo++){
-    for (uint32_t stripe = 0; stripe < stripesPerImage_; stripe++){
-      // Check for which type of scrambling we are going to carry out
-      if (scramble_ == excalibur){
+    // Check for which type of scrambling we are going to carry out
+    if (scramble_ == excalibur){
+      for (uint32_t stripe = 0; stripe < stripesPerImageX_; stripe++){
         // Scramble each stripe of data.
         if (stripe % 2 == 1){
           scrambleOddStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe));
         } else {
           scrambleEvenStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe));
         }
-      } else if (scramble_ == percival){
-        // We don't have a method for this yet
+      }
+    } else if (scramble_ == percival){
+      // We don't have a method for this yet
+      for (uint32_t indexY = 0; indexY < (pixelsPerChipY_ * chipsPerStripeY_); indexY++){
+        for (uint32_t pixel = 0; pixel < pixelsPerChipX_; pixel++){
+          for (uint32_t chip = 0; chip < chipsPerStripeX_; chip++){
+            int pixelSourceAddress = (chip * pixelsPerChipX_) + pixel + (indexY * pixelsPerChipX_ * chipsPerStripeX_) + (imageNo * imageWidth_ * imageHeight_);
+            int pixelDestAddress = chip + (pixel * chipsPerStripeX_) + (indexY * pixelsPerChipX_ * chipsPerStripeX_) + (imageNo * imageWidth_ * imageHeight_);
+            if (dataType_ == UnsignedInt8){
+              scrambledDataUInt8_[pixelDestAddress] = rawDataUInt8_[pixelSourceAddress];
+            } else if (dataType_ == UnsignedInt16){
+              scrambledDataUInt16_[pixelDestAddress] = rawDataUInt16_[pixelSourceAddress];
+            } else if (dataType_ == UnsignedInt32){
+              scrambledDataUInt32_[pixelDestAddress] = rawDataUInt32_[pixelSourceAddress];
+            }
+          }
+        }
       }
     }
   }
@@ -631,6 +664,20 @@ void Configurator::generateMetaData()
   // Create the dataset.
   dataset_id = H5Dcreate2(file_id_, "/meta_data", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
+  // Create the full frame width attribute.
+  attribute_id = H5Acreate2 (dataset_id, "FULL_FRAME_WIDTH", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  // Write the attribute data.
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &imageWidth_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+
+  // Create the full frame height attribute.
+  attribute_id = H5Acreate2 (dataset_id, "FULL_FRAME_HEIGHT", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  // Write the attribute data.
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &imageHeight_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+
   // Create a dataset attribute.
   attribute_id = H5Acreate2 (dataset_id, "DATA_TYPE", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
   // Write the attribute data.
@@ -656,9 +703,21 @@ void Configurator::generateMetaData()
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Create a dataset attribute.
+  attribute_id = H5Acreate2 (dataset_id, "CHIPS_PER_BLOCK_Y", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  // Write the attribute data.
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &chipsPerBlockY_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+  // Create a dataset attribute.
   attribute_id = H5Acreate2 (dataset_id, "BLOCKS_PER_STRIPE_X", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
   // Write the attribute data.
   status = H5Awrite(attribute_id, H5T_STD_U32LE, &blocksPerStripeX_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+  // Create a dataset attribute.
+  attribute_id = H5Acreate2 (dataset_id, "BLOCKS_PER_STRIPE_Y", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  // Write the attribute data.
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &blocksPerStripeY_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Create a dataset attribute.
@@ -674,15 +733,15 @@ void Configurator::generateMetaData()
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Create a dataset attribute.
-  attribute_id = H5Acreate2 (dataset_id, "STRIPES_PER_MODULE", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  attribute_id = H5Acreate2 (dataset_id, "STRIPES_PER_IMAGE_X", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
   // Write the attribute data.
-  status = H5Awrite(attribute_id, H5T_STD_U32LE, &stripesPerModule_);
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &stripesPerImageX_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Create a dataset attribute.
-  attribute_id = H5Acreate2 (dataset_id, "STRIPES_PER_IMAGE", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  attribute_id = H5Acreate2 (dataset_id, "STRIPES_PER_IMAGE_Y", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
   // Write the attribute data.
-  status = H5Awrite(attribute_id, H5T_STD_U32LE, &stripesPerImage_);
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &stripesPerImageY_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
 
@@ -736,9 +795,21 @@ void Configurator::readMetaData()
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Open the attribute.
+  attribute_id = H5Aopen(dataset_id, "CHIPS_PER_BLOCK_Y", H5P_DEFAULT);
+  // Read the attribute data.
+  status = H5Aread(attribute_id, H5T_STD_U32LE, &chipsPerBlockY_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+  // Open the attribute.
   attribute_id = H5Aopen(dataset_id, "BLOCKS_PER_STRIPE_X", H5P_DEFAULT);
   // Read the attribute data.
   status = H5Aread(attribute_id, H5T_STD_U32LE, &blocksPerStripeX_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+  // Open the attribute.
+  attribute_id = H5Aopen(dataset_id, "BLOCKS_PER_STRIPE_Y", H5P_DEFAULT);
+  // Read the attribute data.
+  status = H5Aread(attribute_id, H5T_STD_U32LE, &blocksPerStripeY_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Open the attribute.
@@ -754,15 +825,15 @@ void Configurator::readMetaData()
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Open the attribute.
-  attribute_id = H5Aopen(dataset_id, "STRIPES_PER_MODULE", H5P_DEFAULT);
+  attribute_id = H5Aopen(dataset_id, "STRIPES_PER_IMAGE_X", H5P_DEFAULT);
   // Read the attribute data.
-  status = H5Aread(attribute_id, H5T_STD_U32LE, &stripesPerModule_);
+  status = H5Aread(attribute_id, H5T_STD_U32LE, &stripesPerImageX_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
   // Open the attribute.
-  attribute_id = H5Aopen(dataset_id, "STRIPES_PER_IMAGE", H5P_DEFAULT);
+  attribute_id = H5Aopen(dataset_id, "STRIPES_PER_IMAGE_Y", H5P_DEFAULT);
   // Read the attribute data.
-  status = H5Aread(attribute_id, H5T_STD_U32LE, &stripesPerImage_);
+  status = H5Aread(attribute_id, H5T_STD_U32LE, &stripesPerImageY_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
 

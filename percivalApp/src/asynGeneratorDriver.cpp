@@ -108,11 +108,13 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
     setIntegerParam(DPixelsPerChipX,   configPtr->getPixelsPerChipX());
     setIntegerParam(DPixelsPerChipY,   configPtr->getPixelsPerChipY());
     setIntegerParam(DChipsPerBlockX,   configPtr->getChipsPerBlockX());
+    setIntegerParam(DChipsPerBlockY,   configPtr->getChipsPerBlockY());
     setIntegerParam(DBlocksPerStripeX, configPtr->getBlocksPerStripeX());
+    setIntegerParam(DBlocksPerStripeY, configPtr->getBlocksPerStripeY());
     setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
     setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
-    setIntegerParam(DStripesPerModule, configPtr->getStripesPerModule());
-    setIntegerParam(DStripesPerImage,  configPtr->getStripesPerImage());
+    setIntegerParam(DStripesPerImageX, configPtr->getStripesPerImageX());
+    setIntegerParam(DStripesPerImageY, configPtr->getStripesPerImageY());
     //int dtype = configPtr->getDataType();
     //if (dtype == UnsignedInt8){
       setIntegerParam(DataType, configPtr->getDataType());
@@ -393,7 +395,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
   static const char *functionName = "asynGeneratorDriver::posting_task";
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s\n", functionName);
 
-std::cout << "TASK " << taskNumber << " - Starting..." << std::endl;
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s: Task %d starting\n", functionName, taskNumber);
 
   // Create the new data sender
   senderPtr = new DataSender();
@@ -604,11 +606,13 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   createParam(DPixelsPerChipXString,      asynParamInt32,           &DPixelsPerChipX);
   createParam(DPixelsPerChipYString,      asynParamInt32,           &DPixelsPerChipY);
   createParam(DChipsPerBlockXString,      asynParamInt32,           &DChipsPerBlockX);
+  createParam(DChipsPerBlockYString,      asynParamInt32,           &DChipsPerBlockY);
   createParam(DBlocksPerStripeXString,    asynParamInt32,           &DBlocksPerStripeX);
+  createParam(DBlocksPerStripeYString,    asynParamInt32,           &DBlocksPerStripeY);
   createParam(DChipsPerStripeXString,     asynParamInt32,           &DChipsPerStripeX);
   createParam(DChipsPerStripeYString,     asynParamInt32,           &DChipsPerStripeY);
-  createParam(DStripesPerModuleString,    asynParamInt32,           &DStripesPerModule);
-  createParam(DStripesPerImageString,     asynParamInt32,           &DStripesPerImage);
+  createParam(DStripesPerImageXString,    asynParamInt32,           &DStripesPerImageX);
+  createParam(DStripesPerImageYString,    asynParamInt32,           &DStripesPerImageY);
   createParam(ImageScrambleTypeString,    asynParamInt32,           &ImageScrambleType);
 
   createParam(GDDebugLevelString,         asynParamInt32,           &GDDebugLevel);
@@ -710,18 +714,16 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   // Create the Configurator object
   configPtr = new Configurator();
   // Initialise all values to zero
-  configPtr->setImageWidth(0);
-  configPtr->setImageHeight(0);
   configPtr->setRepeatX(0);
   configPtr->setRepeatY(0);
   configPtr->setPixelsPerChipX(0);
   configPtr->setPixelsPerChipY(0);
   configPtr->setChipsPerBlockX(0);
+  configPtr->setChipsPerBlockY(0);
   configPtr->setBlocksPerStripeX(0);
-  configPtr->setChipsPerStripeX(0);
-  configPtr->setChipsPerStripeY(0);
-  configPtr->setStripesPerModule(0);
-  configPtr->setStripesPerImage(0);
+  configPtr->setBlocksPerStripeY(0);
+  configPtr->setStripesPerImageX(0);
+  configPtr->setStripesPerImageY(0);
 
 
   /* Here we set the values of read-only parameters and of read/write parameters that cannot
@@ -747,11 +749,13 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   setIntegerParam(DPixelsPerChipX,      configPtr->getPixelsPerChipX());
   setIntegerParam(DPixelsPerChipY,      configPtr->getPixelsPerChipY());
   setIntegerParam(DChipsPerBlockX,      configPtr->getChipsPerBlockX());
+  setIntegerParam(DChipsPerBlockY,      configPtr->getChipsPerBlockY());
   setIntegerParam(DBlocksPerStripeX,    configPtr->getBlocksPerStripeX());
+  setIntegerParam(DBlocksPerStripeY,    configPtr->getBlocksPerStripeY());
   setIntegerParam(DChipsPerStripeX,     configPtr->getChipsPerStripeX());
   setIntegerParam(DChipsPerStripeY,     configPtr->getChipsPerStripeY());
-  setIntegerParam(DStripesPerModule,    configPtr->getStripesPerModule());
-  setIntegerParam(DStripesPerImage,     configPtr->getStripesPerImage());
+  setIntegerParam(DStripesPerImageX,    configPtr->getStripesPerImageX());
+  setIntegerParam(DStripesPerImageY,    configPtr->getStripesPerImageY());
 
   setIntegerParam(GDDebugLevel,         0);
 

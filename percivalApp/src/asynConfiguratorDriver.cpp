@@ -60,11 +60,7 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
   int function = pasynUser->reason;
   int status = asynSuccess;
 
-  if (function == ImageSizeX){
-    configPtr->setImageWidth(value);
-  } else if (function == ImageSizeY){
-    configPtr->setImageHeight(value);
-  } else if (function == ImagePatternX){
+  if (function == ImagePatternX){
     configPtr->setRepeatX(value);
   } else if (function == ImagePatternY){
     configPtr->setRepeatY(value);
@@ -80,6 +76,36 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
         configPtr->setPattern(ellipse);
         break;
     }
+  } else if (function == DPixelsPerChipX){
+    configPtr->setPixelsPerChipX(value);
+    setIntegerParam(ImageSizeX, configPtr->getImageWidth());
+  } else if (function == DChipsPerBlockX){
+    configPtr->setChipsPerBlockX(value);
+    setIntegerParam(ImageSizeX, configPtr->getImageWidth());
+    setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
+  } else if (function == DBlocksPerStripeX){
+    configPtr->setBlocksPerStripeX(value);
+    setIntegerParam(ImageSizeX, configPtr->getImageWidth());
+    setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
+  } else if (function == DStripesPerImageX){
+    configPtr->setStripesPerImageX(value);
+    setIntegerParam(ImageSizeX, configPtr->getImageWidth());
+    setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
+  } else if (function == DPixelsPerChipY){
+    configPtr->setPixelsPerChipY(value);
+    setIntegerParam(ImageSizeY, configPtr->getImageHeight());
+  } else if (function == DChipsPerBlockY){
+    configPtr->setChipsPerBlockY(value);
+    setIntegerParam(ImageSizeY, configPtr->getImageHeight());
+    setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
+  } else if (function == DBlocksPerStripeY){
+    configPtr->setBlocksPerStripeY(value);
+    setIntegerParam(ImageSizeY, configPtr->getImageHeight());
+    setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeY());
+  } else if (function == DStripesPerImageY){
+    configPtr->setStripesPerImageY(value);
+    setIntegerParam(ImageSizeY, configPtr->getImageHeight());
+    setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
   } else if (function == RawFileWrite){
     char fileName[MAX_FILENAME_LEN];
     setIntegerParam(FileWriteStatus, 1);
@@ -322,11 +348,13 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
   createParam(DPixelsPerChipXString,      asynParamInt32,           &DPixelsPerChipX);
   createParam(DPixelsPerChipYString,      asynParamInt32,           &DPixelsPerChipY);
   createParam(DChipsPerBlockXString,      asynParamInt32,           &DChipsPerBlockX);
+  createParam(DChipsPerBlockYString,      asynParamInt32,           &DChipsPerBlockY);
   createParam(DBlocksPerStripeXString,    asynParamInt32,           &DBlocksPerStripeX);
+  createParam(DBlocksPerStripeYString,    asynParamInt32,           &DBlocksPerStripeY);
   createParam(DChipsPerStripeXString,     asynParamInt32,           &DChipsPerStripeX);
   createParam(DChipsPerStripeYString,     asynParamInt32,           &DChipsPerStripeY);
-  createParam(DStripesPerModuleString,    asynParamInt32,           &DStripesPerModule);
-  createParam(DStripesPerImageString,     asynParamInt32,           &DStripesPerImage);
+  createParam(DStripesPerImageXString,    asynParamInt32,           &DStripesPerImageX);
+  createParam(DStripesPerImageYString,    asynParamInt32,           &DStripesPerImageY);
   createParam(ImageScrambleTypeString,    asynParamInt32,           &ImageScrambleType);
 
   // Create the configurator object
@@ -358,11 +386,13 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
   setIntegerParam(DPixelsPerChipX,   configPtr->getPixelsPerChipX());
   setIntegerParam(DPixelsPerChipY,   configPtr->getPixelsPerChipY());
   setIntegerParam(DChipsPerBlockX,   configPtr->getChipsPerBlockX());
+  setIntegerParam(DChipsPerBlockY,   configPtr->getChipsPerBlockY());
   setIntegerParam(DBlocksPerStripeX, configPtr->getBlocksPerStripeX());
+  setIntegerParam(DBlocksPerStripeY, configPtr->getBlocksPerStripeY());
   setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
   setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
-  setIntegerParam(DStripesPerModule, configPtr->getStripesPerModule());
-  setIntegerParam(DStripesPerImage,  configPtr->getStripesPerImage());
+  setIntegerParam(DStripesPerImageX, configPtr->getStripesPerImageX());
+  setIntegerParam(DStripesPerImageY, configPtr->getStripesPerImageY());
 
 //  FILE* fp = stdout;
 //  reportParams(fp, 3);

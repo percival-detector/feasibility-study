@@ -30,29 +30,11 @@ record(stringin, "$(P)$(R)PortName_RBV")
 #  These records control the image size                           #
 ###################################################################
 
-# % autosave 2 
-record(longout, "$(P)$(R)ImageSizeX")
-{
-   field(PINI, "NO")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
-   field(VAL,  "0")
-}
-
 record(longin, "$(P)$(R)ImageSizeX_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
    field(SCAN, "I/O Intr")
-}
-
-# % autosave 2 
-record(longout, "$(P)$(R)ImageSizeY")
-{
-   field(PINI, "NO")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
-   field(VAL,  "0")
 }
 
 record(longin, "$(P)$(R)ImageSizeY_RBV")
@@ -387,6 +369,22 @@ record(longin, "$(P)$(R)DChipsPerBlockX_RBV")
 }
 
 # % autosave 2 
+record(longout, "$(P)$(R)DChipsPerBlockY")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_BLOCK_Y")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DChipsPerBlockY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_BLOCK_Y")
+   field(SCAN, "I/O Intr")
+}
+
+# % autosave 2 
 record(longout, "$(P)$(R)DBlocksPerStripeX")
 {
    field(PINI, "NO")
@@ -403,12 +401,19 @@ record(longin, "$(P)$(R)DBlocksPerStripeX_RBV")
 }
 
 # % autosave 2 
-record(longout, "$(P)$(R)DChipsPerStripeX")
+record(longout, "$(P)$(R)DBlocksPerStripeY")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_X")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_BLOCKS_PER_STRIPE_Y")
    field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DBlocksPerStripeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_BLOCKS_PER_STRIPE_Y")
+   field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)DChipsPerStripeX_RBV")
@@ -416,15 +421,6 @@ record(longin, "$(P)$(R)DChipsPerStripeX_RBV")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_X")
    field(SCAN, "I/O Intr")
-}
-
-# % autosave 2 
-record(longout, "$(P)$(R)DChipsPerStripeY")
-{
-   field(PINI, "NO")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_CHIPS_PER_STRIPE_Y")
-   field(VAL,  "0")
 }
 
 record(longin, "$(P)$(R)DChipsPerStripeY_RBV")
@@ -435,34 +431,34 @@ record(longin, "$(P)$(R)DChipsPerStripeY_RBV")
 }
 
 # % autosave 2 
-record(longout, "$(P)$(R)DStripesPerModule")
+record(longout, "$(P)$(R)DStripesPerImageX")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_MODULE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE_X")
    field(VAL,  "0")
 }
 
-record(longin, "$(P)$(R)DStripesPerModule_RBV")
+record(longin, "$(P)$(R)DStripesPerImageX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_MODULE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE_X")
    field(SCAN, "I/O Intr")
 }
 
 # % autosave 2 
-record(longout, "$(P)$(R)DStripesPerImage")
+record(longout, "$(P)$(R)DStripesPerImageY")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE_Y")
    field(VAL,  "0")
 }
 
-record(longin, "$(P)$(R)DStripesPerImage_RBV")
+record(longin, "$(P)$(R)DStripesPerImageY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_STRIPES_PER_IMAGE_Y")
    field(SCAN, "I/O Intr")
 }
 

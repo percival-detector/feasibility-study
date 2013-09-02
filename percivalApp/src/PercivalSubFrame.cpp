@@ -9,6 +9,7 @@
  */
 
 #include "PercivalSubFrame.h"
+#include "PercivalDebug.h"
 
 PercivalSubFrame::PercivalSubFrame(PercivalServer *owner,
                                    uint32_t frameID,
@@ -20,6 +21,7 @@ PercivalSubFrame::PercivalSubFrame(PercivalServer *owner,
                                    uint32_t bottomRightX,
                                    uint32_t bottomRightY,
                                    uint32_t subFrames)
+	: debug_(0)
 {
   owner_ = owner;
   frameID_ = frameID;
@@ -38,11 +40,8 @@ PercivalSubFrame::PercivalSubFrame(PercivalServer *owner,
 
   // Create the buffer pool
   buffers_ = new PercivalBufferPool(byteSize_);
-
   // Create the data receiver
   server_ = new DataReceiver();
-  // Set the debug level
-  server_->setDebug(5);
   // Register this class as the callback
   server_->registerCallback(this);
   // Setup the socket for receiving
@@ -51,50 +50,67 @@ PercivalSubFrame::PercivalSubFrame(PercivalServer *owner,
 
 PercivalSubFrame::~PercivalSubFrame()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::~PercivalSubFrame");
+}
 
+void PercivalSubFrame::setDebug(uint32_t level)
+{
+  PercivalDebug dbg(debug_, "PercivalSubFrame::setDebug");
+  dbg.log(1, "Debug level", level);
+  debug_ = level;
+  // Set the debug level
+  server_->setDebug(level);
 }
 
 uint32_t PercivalSubFrame::getNumberOfPixels()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::getNumberOfPixels");
   return pixelSize_;
 }
 
 uint32_t PercivalSubFrame::getTopLeftX()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::getTopLeftX");
   return topLeftX_;
 }
 
 uint32_t PercivalSubFrame::getTopLeftY()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::getTopLeftY");
   return topLeftY_;
 }
 
 uint32_t PercivalSubFrame::getBottomRightX()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::getBottomRightX");
   return bottomRightX_;
 }
 
 uint32_t PercivalSubFrame::getBottomRightY()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::getBottomRightY");
   return bottomRightY_;
 }
 
 void PercivalSubFrame::startAcquisition()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::startAcquisition");
   server_->startAcquisition(byteSize_, subFrames_);
 }
 
 void PercivalSubFrame::imageReceived(PercivalBuffer *buffer)
 {
-  std::cout << "SubFrame worker Thread ID: " << boost::this_thread::get_id() << std::endl;
+  PercivalDebug dbg(debug_, "PercivalSubFrame::imageReceived");
+  dbg.log(1, "Thread ID", boost::this_thread::get_id());
   owner_->processSubFrame(frameID_, buffer);
   buffers_->free(buffer);
 }
 
 PercivalBuffer *PercivalSubFrame::allocateBuffer()
 {
+  PercivalDebug dbg(debug_, "PercivalSubFrame::allocateBuffer");
   PercivalBuffer *buffer = buffers_->allocate();
-std::cout << "Allocated buffer address: " << buffer << std::endl;
+  dbg.log(1, "Allocated buffer address", (int64_t)buffer);
   return buffer;
 }
 

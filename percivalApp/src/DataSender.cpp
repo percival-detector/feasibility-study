@@ -6,6 +6,7 @@
  */
 
 #include "DataSender.h"
+#include "PercivalDebug.h"
 #include <iostream>
 #include <time.h>
 
@@ -16,45 +17,25 @@ DataSender::DataSender()
     errorMessage_(""),
     running_(false),
     mCurrentFrameNumber(0)
-	  //mNumSubFrames(1),
-	  //mSubFrameLength(0),
-	  //mEnableFrameCounterCheck(true),
-	  //mFrameTotalBytesSent(0),
-	  //mFramePayloadBytesSent(0)
 {
-  static const char *functionName = "DataSender::DataSender";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-
 }
 
 DataSender::~DataSender()
 {
-  static const char *functionName = "DataSender::~DataSender";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
-
+  PercivalDebug dbg(debug_, "DataSender::~DataSender");
 }
 
 void DataSender::setDebug(uint32_t level)
 {
-  static const char *functionName = "DataSender::setDebug";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-    std::cout << "[DEBUG] debug level set to " << level << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataSender::setDebug");
+  dbg.log(1, "Debug level", level);
   debug_ = level;
 }
 
 std::string DataSender::errorMessage()
 {
-  static const char *functionName = "DataSender::errorMessage";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-    std::cout << "[DEBUG] message: " << errorMessage_ << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataSender::errorMessage");
+  dbg.log(1, "Current error message", errorMessage_);
   return errorMessage_;
 }
 
@@ -63,10 +44,11 @@ int DataSender::setupSocket(const std::string& localHost,
                             const std::string& remoteHost,
                             unsigned short remotePort)
 {
-  static const char *functionName = "DataSender::setupSocket";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataSender::setupSocket");
+  dbg.log(1, "Local Host", localHost);
+  dbg.log(1, "Local Port", (uint32_t)localPort);
+  dbg.log(1, "Remote Host", remoteHost);
+  dbg.log(1, "Remote Port", (uint32_t)remotePort);
   try
   {
     boost::asio::ip::udp::resolver resolver(ioService_);
@@ -74,12 +56,9 @@ int DataSender::setupSocket(const std::string& localHost,
     remoteEndpoint_ = *resolver.resolve(query);
     remoteEndpoint_.port(remotePort);
   } catch (boost::exception& e){
-		std::cout << "[ERROR] " << functionName << " - Unable to setup and resolve remote endpoint" << std::endl;
     errorMessage_ = "Unable to resolve remote endpoint";
-    if (debug_ > 0){
-      std::cout << "[DEBUG] " << functionName << " - remoteHost [" << remoteHost << "]   remotePort [" << remotePort << "]" << std::endl;
-      std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-    }
+    dbg.log(0, "Unable to setup and resolve remote endpoint");
+    dbg.log(0, e);
     return -1;
   }
   try
@@ -90,20 +69,15 @@ int DataSender::setupSocket(const std::string& localHost,
       sendSocket_ = new boost::asio::ip::udp::socket(ioService_, localEndpoint);
       //mSendSocket->open(boost::asio::ip::udp::v4());
     } catch (boost::exception& e){
-		  std::cout << "[ERROR] " << functionName << " - Unable to create the socket" << std::endl;
       errorMessage_ = "Unable to create the socket";
-      if (debug_ > 0){
-        std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-      }
+      dbg.log(0, "Unable to create the socket");
+      dbg.log(0, e);
       return -1;
     }
   } catch (boost::exception& e){
-		std::cout << "[ERROR] " << functionName << " - Unable to setup local endpoint" << std::endl;
     errorMessage_ = "Unable to setup local endpoint";
-    if (debug_ > 0){
-      std::cout << "[DEBUG] " << functionName << " - localHost [" << localHost << "]   localPort [" << localPort << "]" << std::endl;
-      std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-    }
+    dbg.log(0, "Unable to setup local endpoint");
+    dbg.log(0, e);
     return -1;
   }
 
@@ -112,25 +86,19 @@ int DataSender::setupSocket(const std::string& localHost,
 	int sndBufSize = 8388608;
 	int rc = setsockopt(nativeSocket, SOL_SOCKET, SO_SNDBUF, (void*)&sndBufSize, sizeof(sndBufSize));
 	if (rc != 0){
-		std::cout << "[ERROR] " << functionName << " - setsockopt failed" << std::endl;
+    dbg.log(0, "Setsockopt failed");
     errorMessage_ = "Setsockopt Failed";
     return -1;
 	}
 
   running_ = true;
 
-  //boost::array<char, 1> send_buf  = {{ 43 }};
-  //sendSocket_->send_to(boost::asio::buffer(send_buf), remoteEndpoint_);
-
   return 0;
 }
 
 int DataSender::shutdownSocket()
 {
-  static const char *functionName = "DataSender::shutdownSocket";
-  if (debug_ > 2){
-    std::cout << "[DEBUG] " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "DataSender::shutdownSocket");
   // Only shutdown if we started up OK
   if (running_){
     try
@@ -139,11 +107,9 @@ int DataSender::shutdownSocket()
       delete(sendSocket_);
       ioService_.stop();    
     } catch (boost::exception& e){
-		  std::cout << "[ERROR] " << functionName << " - Unable to shutdown socket" << std::endl;
       errorMessage_ = "Unable to shutdown socket";
-      if (debug_ > 0){
-        std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-      }
+      dbg.log(0, "Unable to shutdown socket");
+      dbg.log(0, e);
       return -1;
     }
     running_ = false;
@@ -153,19 +119,20 @@ int DataSender::shutdownSocket()
 
 int DataSender::sendImage(uint32_t dataSize, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time)
 {
+  PercivalDebug dbg(debug_, "DataSender::sendImage");
   uint32_t subFrameSize = size / subFrames;
-//  uint32_t totalBytes = size * sizeof(uint32_t);
   uint32_t subFrameBytes = subFrameSize * dataSize;
   uint32_t packetBytes = packetSize * dataSize;
   uint32_t packetNumber = 0;
   uint32_t bytesSent = 0;
   uint8_t *cBuffer = (uint8_t *)buffer;
   uint32_t packetTime = time * 90 / (100.0 * ((subFrameBytes / packetBytes) + 1) * subFrames);
-std::cout << "Data bytes: " << dataSize << std::endl;
-std::cout << "subFrameSize: " << subFrameSize << std::endl;
-std::cout << "packetSize: " << packetSize << std::endl;
-std::cout << "packetBytes: " << packetBytes << std::endl;
-//std::cout << "* Packet Time: " << packetTime << std::endl;
+
+  dbg.log(1, "Data bytes", dataSize);
+  dbg.log(1, "subFrameSize", subFrameSize);
+  dbg.log(1, "packetSize", packetSize);
+  dbg.log(1, "packetBytes", packetBytes);
+
   boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
   long startTime = now.time_of_day().total_microseconds();
   long sleepTime = 0;
@@ -205,23 +172,23 @@ std::cout << "packetBytes: " << packetBytes << std::endl;
 
 void DataSender::send(uint32_t frameNumber, uint32_t packetNumber, bool sof, bool eof, uint8_t *payload, uint32_t payloadSize)
 {
+  PercivalDebug dbg(debug_, "DataSender::send");
   // Create the packet header
   mPacketHeader.frameNumber = frameNumber;
   mPacketHeader.packetNumberFlags = (packetNumber & kPacketNumberMask);
+  dbg.log(2, "FrameNumber", frameNumber);
+  dbg.log(2, "PacketNumber", packetNumber);
+  dbg.log(2, "PayloadSize", payloadSize);
   if (sof){
     mPacketHeader.packetNumberFlags += kStartOfFrameMarker;
   }
   if (eof){
     mPacketHeader.packetNumberFlags += kEndOfFrameMarker;
-//std::cout << "FrameNumber: " << frameNumber << std::endl;
-//std::cout << "PacketNumber: " << packetNumber << std::endl;
-//std::cout << "PayloadSize: " << payloadSize << std::endl;
   }
-//std::cout << "Header: " << mPacketHeader.packetNumberFlags << std::endl;
+  dbg.log(3, "Header", mPacketHeader.packetNumberFlags);
 
   uint16_t *test;
   test = (uint16_t *)payload;
-  std::cout << test[0] << " " << test[1] << " " << test[2] << " " << test[3] << " " << test[4] << std::endl;
 
   try
   {
@@ -240,11 +207,10 @@ void DataSender::send(uint32_t frameNumber, uint32_t packetNumber, bool sof, boo
 
   } catch(boost::exception& e){
     // HERE we need to return an error so that the acquisition can be stopped gracefully
-    std::cout << "[DEBUG] Exception: " << diagnostic_information(e);
-    std::cout << "FrameNumber: " << frameNumber << std::endl;
-    std::cout << "PacketNumber: " << packetNumber << std::endl;
-    std::cout << "PayloadSize: " << payloadSize << std::endl;
-
+    dbg.log(0, e);
+    dbg.log(0, "FrameNumber", frameNumber);
+    dbg.log(0, "PacketNumber", packetNumber);
+    dbg.log(0, "PayloadSize", payloadSize);
   }
 
 }

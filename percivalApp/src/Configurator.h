@@ -13,19 +13,14 @@
 #include <hdf5.h>
 #include <hdf5_hl.h>
 
+#include "PercivalDataType.h"
+
 typedef enum
 {
   rectangle,
   triangle,
   ellipse
 } PatternType;
-
-typedef enum
-{
-  UnsignedInt8,
-  UnsignedInt16,
-  UnsignedInt32
-} DataType;
 
 typedef enum
 {
@@ -42,9 +37,7 @@ class Configurator
 
     void setDebugLevel(uint32_t level);
 
-    void setImageWidth(uint32_t width);
     uint32_t getImageWidth();
-    void setImageHeight(uint32_t height);
     uint32_t getImageHeight();
     void setRepeatX(uint32_t repeatX);
     uint32_t getRepeatX();
@@ -67,16 +60,18 @@ class Configurator
     uint32_t getPixelsPerChipY();
     void setChipsPerBlockX(uint32_t cpbx);
     uint32_t getChipsPerBlockX();
+    void setChipsPerBlockY(uint32_t cpby);
+    uint32_t getChipsPerBlockY();
     void setBlocksPerStripeX(uint32_t bpsx);
     uint32_t getBlocksPerStripeX();
-    void setChipsPerStripeX(uint32_t cpsx);
+    void setBlocksPerStripeY(uint32_t bpsy);
+    uint32_t getBlocksPerStripeY();
     uint32_t getChipsPerStripeX();
-    void setChipsPerStripeY(uint32_t cpsy);
     uint32_t getChipsPerStripeY();
-    void setStripesPerModule(uint32_t spm);
-    uint32_t getStripesPerModule();
-    void setStripesPerImage(uint32_t spi);
-    uint32_t getStripesPerImage();
+    void setStripesPerImageX(uint32_t spix);
+    uint32_t getStripesPerImageX();
+    void setStripesPerImageY(uint32_t spiy);
+    uint32_t getStripesPerImageY();
     void setScrambleType(ScrambleType scramble);
     ScrambleType getScrambleType();
 
@@ -114,11 +109,13 @@ class Configurator
     uint32_t pixelsPerChipX_;
     uint32_t pixelsPerChipY_;
     uint32_t chipsPerBlockX_;
+    uint32_t chipsPerBlockY_;
     uint32_t blocksPerStripeX_;
+    uint32_t blocksPerStripeY_;
     uint32_t chipsPerStripeX_;
     uint32_t chipsPerStripeY_;
-    uint32_t stripesPerModule_;
-    uint32_t stripesPerImage_;
+    uint32_t stripesPerImageX_;
+    uint32_t stripesPerImageY_;
 
     // Which setup should we use
     ScrambleType scramble_;

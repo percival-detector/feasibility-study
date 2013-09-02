@@ -19,10 +19,12 @@ class PercivalBuffer
     PercivalBuffer(uint32_t bufferSize);
     ~PercivalBuffer();
     void *raw();
+    uint32_t size();
 
   private:
 
-    void *buffer;
+    void *buffer_;
+    uint32_t bufferSize_;
 
 };
 

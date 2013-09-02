@@ -45,31 +45,6 @@ typedef enum
 
 typedef uint64_t FrameNumber;
 
-/*
-typedef boost::function<BufferInfo(void)> allocateCallback_t;
-typedef boost::function<void(int)> freeCallback_t;
-typedef boost::function<void(int, time_t)> receiveCallback_t;
-typedef boost::function<void(int)> signalCallback_t;
-*/
-/*
-typedef struct callbackBundle_t
-{
-	allocateCallback_t allocate;
-	freeCallback_t     free;
-	receiveCallback_t  receive;
-	signalCallback_t   signal;
-
-} CallbackBundle;
-
-namespace FemDataSenderSignal {
-	typedef enum {
-		femAcquisitionNullSignal,
-		femAcquisitionComplete,
-		femAcquisitionCorruptImage
-	} FemDataReceiverSignals;
-}
-*/
-
 const unsigned int kWatchdogHandlerIntervalMs = 1000;
 
 class DataReceiver

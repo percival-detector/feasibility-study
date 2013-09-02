@@ -1,0 +1,200 @@
+# Database for configurator control using asyn driver and standard asyn device support
+# gnx91527
+# August 6, 2013
+
+# Macros:
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# % macro, TIMEOUT, Timeout
+# % macro, ADDR, Asyn Port address
+
+# This associates the template with an edm screen
+# % gui, $(PORT), edmtab, ADPercivalDetector.edl, P=$(P),R=$(R)
+
+###################################################################
+#  This record controls the low level non-EPICS debug level       #
+###################################################################
+
+record(longout, "$(P)$(R)DebugLevel")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_DEBUG_LEVEL")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DebugLevel_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_DEBUG_LEVEL")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records define the raw image path and filename           #
+###################################################################
+
+record(stringin, "$(P)$(R)PercFilePath_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_PATH")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)PercFilePath")
+{
+   field(DTYP, "asynOctetWrite")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_PATH")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(stringin, "$(P)$(R)PercFileName_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_NAME")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)PercFileName")
+{
+   field(DTYP, "asynOctetWrite")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_NAME")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
+}
+
+record(longin, "$(P)$(R)PercFilePathExists_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_PATH_EXISTS")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)PercFullFileName_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FULL_FILE_NAME")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide status                                   #
+###################################################################
+
+record(stringin, "$(P)$(R)PercFileReadMessage_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_READ_MESSAGE")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercFileReadStatus_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_READ_STATUS")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record initiates the config file read                     #
+###################################################################
+
+record(longout, "$(P)$(R)PercConfigFileRead")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_READ")
+   field(VAL,  "0")
+}
+
+###################################################################
+#  Overrides for records that are not required for Percival       #
+###################################################################
+
+record(ao, "$(P)$(R)AcquireTime") {
+  field(DISA, "1")
+}
+
+record(ao, "$(P)$(R)AcquirePeriod") {
+  field(DISA, "1")
+}
+
+record(ao, "$(P)$(R)Gain") {
+  field(DISA, "1")
+}
+
+record(longout, "$(P)$(R)BinX") {
+  field(DISA, "1")
+}
+
+record(longout, "$(P)$(R)BinY") {
+  field(DISA, "1")
+}
+
+record(longout, "$(P)$(R)MinX") {
+  field(DISA, "1")
+}
+
+record(longout, "$(P)$(R)MinY") {
+  field(DISA, "1")
+}
+
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(ZRST, "UInt8")
+   field(ZRVL, "0")
+   field(ONST, "UInt16")
+   field(ONVL, "1")
+   field(TWST, "UInt32")
+   field(TWVL, "2")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(ZRST, "UInt8")
+   field(ZRVL, "0")
+   field(ONST, "UInt16")
+   field(ONVL, "1")
+   field(TWST, "UInt32")
+   field(TWVL, "2")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  Substitutions for each of the channels available               #
+###################################################################
+
+substitute "CHAN=1"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=2"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=3"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=4"
+include "ADPercivalDriverChannel.template"

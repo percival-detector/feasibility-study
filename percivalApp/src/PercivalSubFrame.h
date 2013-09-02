@@ -36,6 +36,8 @@ class PercivalSubFrame : public IPercivalCallback
 
     virtual ~PercivalSubFrame();
 
+    void setDebug(uint32_t level);
+
     uint32_t getNumberOfPixels();
 
     uint32_t getTopLeftX();
@@ -55,6 +57,7 @@ class PercivalSubFrame : public IPercivalCallback
 
   private:
 
+    uint32_t       debug_;        // Debug level
     uint32_t       frameID_;      // Numerical unique ID for this sub-frame
     std::string    host_;         // NIC to bind UDP socket to
     unsigned short port_;         // Port number for UDP socket to listen on

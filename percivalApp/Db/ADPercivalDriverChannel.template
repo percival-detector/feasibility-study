@@ -1,0 +1,159 @@
+# Database for percival channel
+# gnx91527
+# September 2, 2013
+
+###################################################################
+#  These records allow enabling/disabling each channel            #
+###################################################################
+
+record(mbbo, "$(P)$(R)Channel$(CHAN)Enable")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ENABLE_CHANNEL_$(CHAN)")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Channel$(CHAN)Enable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ENABLE_CHANNEL_$(CHAN)")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records setup the sub-frame for each channel             #
+###################################################################
+
+record(longout, "$(P)$(R)PercTopLeftXChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_X_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercTopLeftXChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_X_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercTopLeftYChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_Y_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercTopLeftYChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_Y_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercBotRightXChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_X_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercBotRightXChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_X_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercBotRightYChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_Y_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercBotRightYChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_Y_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercWidthChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_WIDTH_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercHeightChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_HEIGHT_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercSubFramesChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAMES_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercSubFramesChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAMES_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records setup the socket for each channel                #
+###################################################################
+
+record(stringout, "$(P)$(R)PercAddrChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ADDR_CHANNEL_$(CHAN)")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)PercAddrChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ADDR_CHANNEL_$(CHAN)")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercPortChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PORT_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercPortChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PORT_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+

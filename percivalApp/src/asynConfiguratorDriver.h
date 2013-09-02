@@ -57,11 +57,13 @@ typedef enum {
 #define DPixelsPerChipXString    "D_PIXELS_PER_CHIP_X"         /**< (asynInt32,    r/w) Number of pixels per chip in the x direction */
 #define DPixelsPerChipYString    "D_PIXELS_PER_CHIP_Y"         /**< (asynInt32,    r/w) Number of pixels per chip in the y direction */
 #define DChipsPerBlockXString    "D_CHIPS_PER_BLOCK_X"         /**< (asynInt32,    r/w) Number of chips in a block in the x direction */
+#define DChipsPerBlockYString    "D_CHIPS_PER_BLOCK_Y"         /**< (asynInt32,    r/w) Number of chips in a block in the y direction */
 #define DBlocksPerStripeXString  "D_BLOCKS_PER_STRIPE_X"       /**< (asynInt32,    r/w) Number of blocks in a stripe in the x direction */
+#define DBlocksPerStripeYString  "D_BLOCKS_PER_STRIPE_Y"       /**< (asynInt32,    r/w) Number of blocks in a stripe in the y direction */
 #define DChipsPerStripeXString   "D_CHIPS_PER_STRIPE_X"        /**< (asynInt32,    r/w) Number of chips in a stripe in the x direction */
 #define DChipsPerStripeYString   "D_CHIPS_PER_STRIPE_Y"        /**< (asynInt32,    r/w) Number of chips in a stripe in the y direction */
-#define DStripesPerModuleString  "D_STRIPES_PER_MODULE"        /**< (asynInt32,    r/w) Number of stripes in a module */
-#define DStripesPerImageString   "D_STRIPES_PER_IMAGE"         /**< (asynInt32,    r/w) Number of stripes in an image */
+#define DStripesPerImageXString  "D_STRIPES_PER_IMAGE_X"       /**< (asynInt32,    r/w) Number of stripes in an image in the x direction */
+#define DStripesPerImageYString  "D_STRIPES_PER_IMAGE_Y"       /**< (asynInt32,    r/w) Number of stripes in an image in the y direction */
 
 #define ImageScrambleTypeString  "IMAGE_SCRAMBLE_TYPE"         /**< (asynInt32,    r/w) Type of image scramble to execute (excalibur, percival) */
 
@@ -117,11 +119,13 @@ class epicsShareFunc asynConfiguratorDriver : public asynPortDriver
     int DPixelsPerChipX;
     int DPixelsPerChipY;
     int DChipsPerBlockX;
+    int DChipsPerBlockY;
     int DBlocksPerStripeX;
+    int DBlocksPerStripeY;
     int DChipsPerStripeX;
     int DChipsPerStripeY;
-    int DStripesPerModule;
-    int DStripesPerImage;
+    int DStripesPerImageX;
+    int DStripesPerImageY;
     int ImageScrambleType;
     #define LAST_CONFIGURATOR_PARAM ImageScrambleType
 

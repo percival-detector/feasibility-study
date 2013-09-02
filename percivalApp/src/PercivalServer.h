@@ -48,7 +48,7 @@ class PercivalServer
                        float    *stageGains,        // Gain to apply for each of the output stages (in scrambled order)
                        float    *stageOffsets);     // Offsets to apply for each of the output stages (in scrambled order)
 
-    int setupSubFrame(int frameID,
+    int setupSubFrame(uint32_t frameID,
                       const std::string& host,
                       unsigned short port,
                       uint32_t topLeftX,
@@ -65,12 +65,12 @@ class PercivalServer
 
     int registerCallback(IPercivalCallback *callback);
 
-    int processSubFrame(int frameID, PercivalBuffer *buffer);
+    int processSubFrame(uint32_t frameID, PercivalBuffer *buffer);
 
     void unscramble(int      numPts,       // Number of points to process
                     uint16_t *in_data,     // Input data
                     uint16_t *reset_data,  // Reset data
-                    float    *out_data,    // Output data
+                    uint16_t *out_data,    // Output data
                     uint32_t x1,
                     uint32_t x2,
                     uint32_t y1);

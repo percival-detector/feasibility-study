@@ -13,6 +13,8 @@ include $(TOP)/configure/CONFIG
 #
 DB += PercivalConfigurator.template
 DB += PercivalGenerator.template
+DB += ADPercivalDriver.template
+DB += ADPercivalDriverChannel.template
 
 #----------------------------------------------------
 # In a Diamond IOC Application, build db files from

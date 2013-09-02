@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<components arch="linux-x86">
+	<percival.ADPercivalDriver ADDR="0" P="PERCIVAL:" PORT="perc.cam" R="cam:" TIMEOUT="1"/>
+	<ffmpegServer.ffmpegStream ADDR="0" HTTP_PORT="8081" MAXH="256" MAXW="256" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERCIVAL:" PORT="perc.mpg" R="mpg:" TIMEOUT="1"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:mpg:EnableCallbacks &quot;Enable&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:mpg:MinCallbackTime &quot;0.1&quot;" post_init="True"/>
+</components>

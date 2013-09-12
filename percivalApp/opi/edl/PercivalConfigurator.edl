@@ -48,7 +48,7 @@ release 0
 x 5
 y 10
 w 380
-h 690
+h 795
 lineColor index 14
 fill
 fillColor index 3
@@ -311,7 +311,7 @@ major 4
 minor 1
 release 1
 x 10
-y 480
+y 610
 w 370
 h 15
 font "arial-bold-r-12.0"
@@ -330,7 +330,7 @@ major 4
 minor 6
 release 0
 x 10
-y 495
+y 625
 w 340
 h 20
 controlPv "$(P)$(R)FilePath_RBV"
@@ -353,7 +353,7 @@ major 4
 minor 6
 release 0
 x 10
-y 515
+y 645
 w 370
 h 20
 controlPv "$(P)$(R)FilePath"
@@ -380,7 +380,7 @@ major 4
 minor 6
 release 0
 x 10
-y 540
+y 670
 w 370
 h 18
 controlPv "$(P)$(R)FileName_RBV"
@@ -403,7 +403,7 @@ major 4
 minor 6
 release 0
 x 10
-y 560
+y 690
 w 370
 h 20
 controlPv "$(P)$(R)FileName"
@@ -430,7 +430,7 @@ major 4
 minor 6
 release 0
 x 10
-y 600
+y 730
 w 370
 h 18
 controlPv "$(P)$(R)FullFileName_RBV"
@@ -453,7 +453,7 @@ major 4
 minor 0
 release 0
 x 360
-y 495
+y 625
 w 18
 h 18
 controlPv "$(P)$(R)FilePathExists_RBV"
@@ -471,7 +471,7 @@ major 4
 minor 6
 release 0
 x 185
-y 645
+y 775
 w 160
 h 20
 controlPv "$(P)$(R)FileWriteMessage_RBV"
@@ -495,7 +495,7 @@ major 4
 minor 0
 release 0
 x 355
-y 645
+y 775
 w 18
 h 18
 controlPv "$(P)$(R)FileErrorStatus_RBV"
@@ -513,7 +513,7 @@ major 4
 minor 1
 release 1
 x 185
-y 625
+y 755
 w 40
 h 15
 font "arial-bold-r-12.0"
@@ -532,7 +532,7 @@ major 4
 minor 0
 release 0
 x 130
-y 645
+y 775
 w 18
 h 18
 controlPv "$(P)$(R)FileWriteStatus_RBV"
@@ -550,7 +550,7 @@ major 4
 minor 1
 release 0
 x 10
-y 625
+y 755
 w 90
 h 40
 fgColor index 25
@@ -1028,7 +1028,7 @@ major 4
 minor 1
 release 1
 x 105
-y 625
+y 755
 w 70
 h 15
 font "arial-bold-r-12.0"
@@ -1047,7 +1047,7 @@ major 4
 minor 1
 release 1
 x 10
-y 585
+y 715
 w 370
 h 15
 font "arial-bold-r-12.0"
@@ -1371,6 +1371,286 @@ y 235
 w 50
 h 20
 controlPv "$(P)$(R)DBlocksPerStripeY_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 470
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Number of ADCs"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 150
+y 470
+w 50
+h 20
+controlPv "$(P)$(R)DNumberOfADCs"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 205
+y 470
+w 50
+h 20
+controlPv "$(P)$(R)DNumberOfADCs_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 490
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Gain Threshold 1"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 150
+y 490
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold1"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 205
+y 490
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold1_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 510
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Gain Threshold 2"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 150
+y 510
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold2"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 205
+y 510
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold2_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 530
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Gain Threshold 3"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 150
+y 530
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold3"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 205
+y 530
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold3_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 550
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Gain Threshold 4"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 150
+y 550
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold4"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 205
+y 550
+w 50
+h 20
+controlPv "$(P)$(R)DGainThreshold4_RBV"
 fgColor index 16
 fgAlarm
 bgColor index 10

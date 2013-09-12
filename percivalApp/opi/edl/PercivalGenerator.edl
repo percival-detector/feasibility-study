@@ -1060,12 +1060,12 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 85
-y 500
+x 260
+y 530
 w 45
 h 30
 fgColor index 25
-onColor index 4
+onColor index 3
 offColor index 3
 topShadowColor index 1
 botShadowColor index 11
@@ -1084,8 +1084,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 185
-y 505
+x 360
+y 535
 w 18
 h 18
 controlPv "$(P)$(R)GDPostCommand_RBV"
@@ -1102,12 +1102,12 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 135
-y 500
+x 310
+y 530
 w 45
 h 30
 fgColor index 20
-onColor index 4
+onColor index 3
 offColor index 3
 topShadowColor index 1
 botShadowColor index 11
@@ -1198,8 +1198,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 145
-y 455
+x 265
+y 450
 w 50
 h 20
 controlPv "$(P)$(R)GDPostFrequency"
@@ -1217,8 +1217,8 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 205
-y 455
+x 325
+y 450
 w 50
 h 20
 controlPv "$(P)$(R)GDPostFrequency_RBV"
@@ -1258,8 +1258,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 15
-y 455
+x 135
+y 450
 w 115
 h 20
 font "arial-bold-r-12.0"
@@ -1268,7 +1268,7 @@ fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "Post frequency"
+  "Post frequency (Hz)"
 }
 endObjectProperties
 
@@ -1675,5 +1675,101 @@ bgColor index 10
 fill
 font "arial-bold-r-12.0"
 fontAlign "center"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 265
+y 470
+w 50
+h 20
+controlPv "$(P)$(R)GDNumImages"
+fgColor index 25
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 325
+y 470
+w 50
+h 20
+controlPv "$(P)$(R)GDNumImages_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 110
+y 470
+w 140
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "No Of Images To Post"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 135
+y 500
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Post Mode"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 260
+y 495
+w 115
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)GDImageMode"
+indicatorPv "$(P)$(R)GDImageMode_RBV"
+font "arial-bold-r-12.0"
 endObjectProperties
 

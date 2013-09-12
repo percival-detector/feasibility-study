@@ -2,6 +2,46 @@
 <components arch="linux-x86">
 	<percival.ADPercivalDriver ADDR="0" P="PERCIVAL:" PORT="perc.cam" R="cam:" TIMEOUT="1"/>
 	<ffmpegServer.ffmpegStream ADDR="0" HTTP_PORT="8081" MAXH="256" MAXW="256" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERCIVAL:" PORT="perc.mpg" R="mpg:" TIMEOUT="1"/>
+	<areaDetector.NDFileHDF5 ADDR="0" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERCIVAL:" PORT="perc.hdf" QUEUE="10000" R="hdf:" TIMEOUT="1"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:mpg:EnableCallbacks &quot;Enable&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:mpg:MinCallbackTime &quot;0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftXChannel1 &quot;0&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftYChannel1 &quot;0&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightXChannel1 &quot;127&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightYChannel1 &quot;127&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercSubFramesChannel1 &quot;2&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercAddrChannel1 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercPortChannel1 &quot;9876&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:Channel1Enable &quot;Enabled&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftXChannel2 &quot;128&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftYChannel2 &quot;0&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightXChannel2 &quot;255&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightYChannel2 &quot;127&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercSubFramesChannel2 &quot;2&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercAddrChannel2 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercPortChannel2 &quot;9877&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:Channel2Enable &quot;Enabled&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftXChannel3 &quot;0&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftYChannel3 &quot;128&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightXChannel3 &quot;127&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightYChannel3 &quot;255&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercSubFramesChannel3 &quot;2&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercAddrChannel3 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercPortChannel3 &quot;9878&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:Channel3Enable &quot;Enabled&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftXChannel4 &quot;128&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftYChannel4 &quot;128&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightXChannel4 &quot;255&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightYChannel4 &quot;255&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercSubFramesChannel4 &quot;2&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercAddrChannel4 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercPortChannel4 &quot;9879&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:Channel4Enable &quot;Enabled&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:FileWriteMode &quot;Stream&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:FilePath &quot;/home/gnx91527/images&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:FileName &quot;test&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:EnableCallbacks &quot;Enable&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:NumFramesChunks &quot;20&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:BoundaryAlign &quot;1048576&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:hdf:BoundaryThreshold &quot;65536&quot;" post_init="True"/>
 </components>

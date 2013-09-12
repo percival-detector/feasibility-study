@@ -1,9 +1,20 @@
 <?xml version="1.0" ?>
 <components arch="linux-x86">
-	<percival.PercivalConfigurator ADDR="0" P="test:" PORT="perc.conf" R="conf:" TIMEOUT="1.0" name="configurator"/>
 	<percival.PercivalGenerator ADDR="0" P="test:" PORT="perc.gen" R="gen:" TIMEOUT="1.0" name="generator"/>
 	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocAddrChannel1 &quot;127.0.0.1&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocPortChannel1 &quot;7273&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemAddrChannel1 &quot;localhost&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemPortChannel1 &quot;9876&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocAddrChannel2 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocPortChannel2 &quot;7274&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemAddrChannel2 &quot;localhost&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemPortChannel2 &quot;9877&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocAddrChannel3 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocPortChannel3 &quot;7275&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemAddrChannel3 &quot;localhost&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemPortChannel3 &quot;9878&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocAddrChannel4 &quot;127.0.0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDLocPortChannel4 &quot;7276&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemAddrChannel4 &quot;localhost&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf test:gen:GDRemPortChannel4 &quot;9879&quot;" post_init="True"/>
 </components>

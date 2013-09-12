@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<components arch="linux-x86">
+	<percival.PercivalConfigurator ADDR="0" P="test:" PORT="perc.conf" R="conf:" TIMEOUT="1.0" name="configurator"/>
+</components>

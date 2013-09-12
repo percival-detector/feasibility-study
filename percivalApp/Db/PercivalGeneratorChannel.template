@@ -1,0 +1,242 @@
+# Database for percival generator channel
+# gnx91527
+# September 10, 2013
+
+###################################################################
+#  These records allow enabling/disabling each channel            #
+###################################################################
+
+record(mbbo, "$(P)$(R)Channel$(CHAN)Enable")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_$(CHAN)")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Channel$(CHAN)Enable_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ENABLE_CHANNEL_$(CHAN)")
+   field(ZRST, "Disabled")
+   field(ZRVL, "0")
+   field(ONST, "Enabled")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide the running state of individual channels #
+###################################################################
+
+record(longin, "$(P)$(R)GDPostChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_POST_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDCounterChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_COUNTER_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records setup the sub-frame for each channel             #
+###################################################################
+
+record(longout, "$(P)$(R)GDTopLeftXChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftXChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_X_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDTopLeftYChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDTopLeftYChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_TOP_LEFT_Y_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightXChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightXChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_X_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDBotRightYChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDBotRightYChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_BOT_RIGHT_Y_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDWidthChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_WIDTH_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)GDHeightChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_HEIGHT_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDSubFramesChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDSubFramesChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDPktSizeChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDPktSizeChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_PKT_SIZE_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records setup the socket for each channel                #
+###################################################################
+
+record(stringout, "$(P)$(R)GDLocAddrChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_$(CHAN)")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDLocAddrChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_ADDR_CHANNEL_$(CHAN)")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDLocPortChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDLocPortChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_LOC_PORT_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)GDRemAddrChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_$(CHAN)")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)GDRemAddrChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_ADDR_CHANNEL_$(CHAN)")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GDRemPortChannel$(CHAN)")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_$(CHAN)")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)GDRemPortChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REM_PORT_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide error status for each channel            #
+###################################################################
+
+record(longin, "$(P)$(R)GDErrorChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)GDErrorMsgChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_ERROR_MSG_CHANNEL_$(CHAN)")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+

@@ -157,3 +157,31 @@ record(longin, "$(P)$(R)PercPortChannel$(CHAN)_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  This record shows if the channel is receiving, and the status  #
+###################################################################
+
+record(longin, "$(P)$(R)PercReceiveChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_RECEIVE_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERROR_CHANNEL_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)PercStatusChannel$(CHAN)_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_STATUS_CHANNEL_$(CHAN)")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+

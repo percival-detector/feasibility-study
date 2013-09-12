@@ -32,7 +32,34 @@ record(longin, "$(P)$(R)DebugLevel_RBV")
 }
 
 ###################################################################
-#  These records define the raw image path and filename           #
+#  Should the incoming frames be de-scrambled or left as raw      #
+###################################################################
+
+record(mbbo, "$(P)$(R)Descramble")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_DESCRAMBLE")
+   field(ZRST, "Raw")
+   field(ZRVL, "0")
+   field(ONST, "Descramble")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)Descramble_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_DESCRAMBLE")
+   field(ZRST, "Raw")
+   field(ZRVL, "0")
+   field(ONST, "Descramble")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records define the configuration file path and filename  #
 ###################################################################
 
 record(stringin, "$(P)$(R)PercFilePath_RBV")
@@ -83,7 +110,7 @@ record(stringin, "$(P)$(R)PercFullFileName_RBV")
 }
 
 ###################################################################
-#  These records provide status                                   #
+#  These records provide configuration file read status           #
 ###################################################################
 
 record(stringin, "$(P)$(R)PercFileReadMessage_RBV")
@@ -98,6 +125,13 @@ record(longin, "$(P)$(R)PercFileReadStatus_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_READ_STATUS")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercFileErrorStatus_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_ERROR_STATUS")
    field(SCAN, "I/O Intr")
 }
 

@@ -462,5 +462,83 @@ record(longin, "$(P)$(R)DStripesPerImageY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  These records define the ADC parameters                        #
+###################################################################
+
+record(longout, "$(P)$(R)DNumberOfADCs")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_NUMBER_OF_ADCS")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DNumberOfADCs_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_NUMBER_OF_ADCS")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)DGainThreshold1")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_1")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DGainThreshold1_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)DGainThreshold2")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_2")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DGainThreshold2_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)DGainThreshold3")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_3")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DGainThreshold3_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)DGainThreshold4")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_4")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DGainThreshold4_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))D_GAIN_THRESHOLD_4")
+   field(SCAN, "I/O Intr")
+}
 
 

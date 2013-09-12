@@ -37,6 +37,8 @@ class PercivalServer
 
     std::string errorMessage();
 
+    void setDescramble(bool descramble);
+
     int setupFullFrame(uint32_t width,              // Width of full frame in pixels
                        uint32_t height,             // Height of full frame in pixels
                        DataType type,               // Data type (unsigned 8, 16 or 32 bit)
@@ -59,13 +61,15 @@ class PercivalServer
 
     int releaseSubFrame(int frameID);
 
+    int releaseAllSubFrames();
+
     int startAcquisition();
 
     int stopAcquisition();
 
     int registerCallback(IPercivalCallback *callback);
 
-    int processSubFrame(uint32_t frameID, PercivalBuffer *buffer);
+    int processSubFrame(uint32_t frameID, PercivalBuffer *buffer, uint32_t frameNumber);
 
     void unscramble(int      numPts,       // Number of points to process
                     uint16_t *in_data,     // Input data
@@ -81,6 +85,7 @@ class PercivalServer
     std::string  errorMessage_;      // Error message string
     bool         acquiring_;         // Are we acquiring
     boost::mutex access_;            // Mutex for mask locking
+    bool         descramble_;        // Should we descramble or just reconstruct the raw input frame
 
     uint32_t     width_;             // Width of full frame
     uint32_t     height_;            // Height of full frame
@@ -98,6 +103,7 @@ class PercivalServer
     std::map<int, PercivalSubFrame *>   subFrameMap_; // Map to contain sub-image UDP data receivers
     uint32_t                            serverMask_;  // bitmask of servers setup
     uint32_t                            serverReady_; // bitmask of servers that have notified of frames
+    uint32_t                            frameNumber_; // Current frame number
 
     IPercivalCallback                   *callback_;   // Callback interface
     PercivalBuffer                      *fullFrame_;   // Full frame buffer

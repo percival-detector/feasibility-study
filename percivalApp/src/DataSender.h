@@ -28,6 +28,7 @@ typedef struct bufferInfo_t
 typedef struct packetHeader_t
 {
 	uint32_t frameNumber;
+	uint32_t subFrameNumber;
 	uint32_t packetNumberFlags;
 } PacketHeader;
 
@@ -41,7 +42,7 @@ typedef enum
 	headerAtEnd
 } DataSenderHeaderPosition;
 
-typedef uint64_t FrameNumber;
+typedef uint32_t FrameNumber;
 
 /*
 typedef boost::function<BufferInfo(void)> allocateCallback_t;
@@ -90,7 +91,7 @@ class DataSender
 
 
 //    void sendImage(uint32_t frameNumber, 
-    int sendImage(uint32_t dataType, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time);
+    int sendImage(uint32_t dataType, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time, uint32_t frameNumber);
 
     void send(uint32_t frameNumber, uint32_t packetNumber, bool sof, bool eof, uint8_t *payload, uint32_t payloadSize);
 

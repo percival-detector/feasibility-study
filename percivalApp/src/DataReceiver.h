@@ -30,6 +30,7 @@ typedef struct bufferInfo_t
 typedef struct packetHeader_t
 {
 	uint32_t frameNumber;
+	uint32_t subFrameNumber;
 	uint32_t packetNumberFlags;
 } PacketHeader;
 
@@ -43,7 +44,7 @@ typedef enum
 	headerAtEnd
 } DataSenderHeaderPosition;
 
-typedef uint64_t FrameNumber;
+typedef uint32_t FrameNumber;
 
 const unsigned int kWatchdogHandlerIntervalMs = 1000;
 

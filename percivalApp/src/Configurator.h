@@ -37,6 +37,8 @@ class Configurator
 
     void setDebugLevel(uint32_t level);
 
+    std::string errorMessage();
+
     uint32_t getImageWidth();
     uint32_t getImageHeight();
     void setRepeatX(uint32_t repeatX);
@@ -75,23 +77,45 @@ class Configurator
     void setScrambleType(ScrambleType scramble);
     ScrambleType getScrambleType();
 
-    void openHDF5File(const std::string& filename);
+    void setNumberOfADCs(uint32_t noOfADCs);
+    uint32_t getNumberOfADCs();
+    void setGainThreshold(uint32_t number, uint32_t threshold);
+    uint32_t getGainThreshold(uint32_t number);
+
+    int openHDF5File(const std::string& filename);
     void createHDF5File(const std::string& filename);
-    void closeHDF5File();
-    void readConfiguration(const std::string& filename);
+    int closeHDF5File();
+    int readConfiguration(const std::string& filename);
     void generateConfiguration(const std::string& filename);
     void generateRawImage();
     void generateScrambledImage();
-    void readScrambledImage();
+    uint32_t applyGains(uint32_t index,           // Unscrambled index of point
+                        uint32_t in_data,         // Input data
+                        uint32_t *ADC_index,      // Index of ADC to use for each input data point
+                        float    *ADC_low_gain,   // Array of low gain ADC gains, one per ADC
+                        float    *ADC_high_gain,  // Array of high gain ADC gains, one per ADC
+                        float    *ADC_offset,     // Combined offset for both ADC's
+                        float    *stage_gains,    // Gain to apply for each of the output stages
+                        float    *stage_offsets); // Offsets to apply for each of the output stages (in scrambled order)
+
+    int readScrambledImage();
     void generateMetaData();
-    void readMetaData();
-    void scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8);
-    void scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8);
+    int readMetaData();
+    void scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray);
+    void scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray);
     void allocateDataArrays();
     void freeDataArrays();
-    void copyScrambledSectionUInt32(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer);
-    void copyScrambledSectionUInt16(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer);
-    void copyScrambledSectionUInt8(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer);
+    void copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer);
+    void copyScrambledSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer);
+    void copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer);
+    void copyDescrambleArray(uint32_t *buffer);
+    void copyGainThresholds(uint32_t *buffer);
+    void copyADCIndex(uint32_t *buffer);
+    void copyADCLowGain(float *buffer);
+    void copyADCHighGain(float *buffer);
+    void copyADCOffsets(float *buffer);
+    void copyStageGains(float *buffer);
+    void copyStageOffsets(float *buffer);
 
   private:
     // Raw image values
@@ -131,11 +155,25 @@ class Configurator
     uint32_t *scrambledDataUInt32_;
     uint16_t *scrambledDataUInt16_;
     uint8_t *scrambledDataUInt8_;
+    // Pointer to the descramble array
+    uint32_t *descrambleArray_;
     // Are the arrays allocated
     bool arraysAllocated_;
 
-    // Debug level
-    uint32_t debug_;
+    // Data structures for gain information
+    uint32_t noOfADCs_;
+    uint32_t gainThresholds_[4];
+    uint32_t *ADC_index_;         // Index of ADC to use for each input data point
+    float    *ADC_low_gain_;      // Array of low gain ADC gains, one per ADC
+    float    *ADC_high_gain_;     // Array of high gain ADC gains, one per ADC
+    float    *ADC_offset_;        // Combined offset for both ADC's
+    float    *stage_gains_;       // Gain to apply for each of the output stages
+    float    *stage_offsets_;     // Offsets to apply for each of the output stages (in scrambled order)
+    //float    gain_thresholds_[4]; // Threshold at which output gain stage switches
+
+
+    uint32_t    debug_;          // Debug level
+    std::string errorMessage_;   // Error message string
 };
 
 #endif // CONFIGURATOR_H_

@@ -141,6 +141,10 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
   } else if (function == ImageMinValue){
     configPtr->setMinValue(value);
   } else if (function == ImageMaxValue){
+    if (value > 8191){
+      value = 8191;
+      setStringParam(FileWriteMessage, "Maximum allowed value is 8191");
+    }
     configPtr->setMaxValue(value);
   }
 
@@ -355,6 +359,11 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
   createParam(DChipsPerStripeYString,     asynParamInt32,           &DChipsPerStripeY);
   createParam(DStripesPerImageXString,    asynParamInt32,           &DStripesPerImageX);
   createParam(DStripesPerImageYString,    asynParamInt32,           &DStripesPerImageY);
+  createParam(DNumberOfADCsString,        asynParamInt32,           &DNumberOfADCs);
+  createParam(DGainThreshold1String,      asynParamInt32,           &DGainThreshold1);
+  createParam(DGainThreshold2String,      asynParamInt32,           &DGainThreshold2);
+  createParam(DGainThreshold3String,      asynParamInt32,           &DGainThreshold3);
+  createParam(DGainThreshold4String,      asynParamInt32,           &DGainThreshold4);
   createParam(ImageScrambleTypeString,    asynParamInt32,           &ImageScrambleType);
 
   // Create the configurator object
@@ -393,6 +402,11 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
   setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
   setIntegerParam(DStripesPerImageX, configPtr->getStripesPerImageX());
   setIntegerParam(DStripesPerImageY, configPtr->getStripesPerImageY());
+  setIntegerParam(DNumberOfADCs,     configPtr->getNumberOfADCs());
+  setIntegerParam(DGainThreshold1,   configPtr->getGainThreshold(0));
+  setIntegerParam(DGainThreshold2,   configPtr->getGainThreshold(1));
+  setIntegerParam(DGainThreshold3,   configPtr->getGainThreshold(2));
+  setIntegerParam(DGainThreshold4,   configPtr->getGainThreshold(3));
 
 //  FILE* fp = stdout;
 //  reportParams(fp, 3);

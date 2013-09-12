@@ -50,7 +50,9 @@ class PercivalSubFrame : public IPercivalCallback
 
     void startAcquisition();
 
-    virtual void imageReceived(PercivalBuffer *buffer);
+    void stopAcquisition();
+
+    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
 
     virtual PercivalBuffer *allocateBuffer();
 

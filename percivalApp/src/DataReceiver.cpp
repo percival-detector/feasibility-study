@@ -77,6 +77,7 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
     errorMessage_ = "Setsockopt Failed";
     return -1;
 	}
+  running_ = true;
 
   return 0;
 }
@@ -220,11 +221,20 @@ int DataReceiver::stopAcquisition()
 void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std::size_t bytesReceived)
 {
   PercivalDebug dbg(debug_, "DataReceiver::handleReceive");
+  uint32_t errorSignal = 0;
+
+
   dbg.log(1, "Thread ID", boost::this_thread::get_id());
   dbg.log(2, "Bytes received", (uint32_t)bytesReceived);
 
 	//time_t recvTime;
 	//FemDataReceiverSignal::FemDataReceiverSignals errorSignal = FemDataReceiverSignal::femAcquisitionNullSignal;
+  dbg.log(2, "****************************");
+  dbg.log(2, "Frame   ", packetHeader_.frameNumber);
+  dbg.log(2, "SubFrame", packetHeader_.subFrameNumber);
+  dbg.log(2, "Packet  ", packetHeader_.packetNumberFlags & kPacketNumberMask);
+  dbg.log(2, "SOF", (packetHeader_.packetNumberFlags & kStartOfFrameMarker) >> 31);
+  dbg.log(2, "EOF", (packetHeader_.packetNumberFlags & kEndOfFrameMarker) >> 30);
 
   if (!errorCode && bytesReceived > 0){
     unsigned int payloadBytesReceived = bytesReceived - frameHeaderLength_ - sizeof(FrameNumber);
@@ -239,16 +249,16 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     // at the end of each subframe
     framePayloadBytesReceived_ += payloadBytesReceived;
 
-    dbg.log(2, "payloadBytesReceived", payloadBytesReceived);
-    dbg.log(2, "frameTotalBytesReceived_", frameTotalBytesReceived_);
-    dbg.log(2, "subFrameBytesReceived_", subFrameBytesReceived_);
-    dbg.log(2, "framePayloadBytesRecevied_", framePayloadBytesReceived_);
+    dbg.log(3, "payloadBytesReceived", payloadBytesReceived);
+    dbg.log(3, "frameTotalBytesReceived_", frameTotalBytesReceived_);
+    dbg.log(3, "subFrameBytesReceived_", subFrameBytesReceived_);
+    dbg.log(3, "framePayloadBytesRecevied_", framePayloadBytesReceived_);
     // If this is the first packet in a sub-frame, we expect packet header to have SOF marker and packet number to
     // be zero. Otherwise, check that the packet number is incrementing correctly, i.e. we have not dropped any packets
     if (subFramePacketsReceived_ == 0){
       if (!(packetHeader_.packetNumberFlags & kStartOfFrameMarker)){
         dbg.log(0, "Missing SOF marker");
-        //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
+        errorSignal = 1;
       } else {
         subFramePacketsReceived_++;
       }
@@ -278,7 +288,7 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
               //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
 //            }
 //          } else {
-            currentFrameNumber_ = latchedFrameNumber_+1;
+            currentFrameNumber_ = packetHeader_.frameNumber;  //latchedFrameNumber_+1;
 //          }
           latchedFrameNumber_ = currentFrameNumber_;
         } else {
@@ -304,7 +314,7 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
         if (subFramesReceived_ == subFrames_){
           if (framePayloadBytesReceived_ != frameBytes_){
             dbg.log(0, "Received complete frame with incorrect size", framePayloadBytesReceived_, "Expected", frameBytes_);
-            //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
+            errorSignal = 1;
           } else {
             dbg.log(1, "Frame completed OK, counter", currentFrameNumber_);
           }
@@ -322,7 +332,7 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     if (framePayloadBytesReceived_ > frameBytes_){
       dbg.log(0, "Buffer overrun detected in receive of frame number", currentFrameNumber_);
       dbg.log(0, "Subframe", subFramesReceived_, "Packet", subFramePacketsReceived_);
-      //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
+      errorSignal = 1;
     }
 
     // Signal current buffer as received if completed, and request a new one unless
@@ -333,26 +343,15 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
 //        callback_->imageReceived(currentBuffer_);
 
         // Launch a thread to start the io_service for receiving data, running the watchdog etc
-        workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&IPercivalCallback::imageReceived, callback_, currentBuffer_)));
+        workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&IPercivalCallback::imageReceived, callback_, currentBuffer_, currentFrameNumber_)));
          
 
       }
 
-//      if (remainingFrames_ == 1){
-//        // On last frame, stop acquisition loop and signal completion
-//        acquiring_ = false;
-//        //callbacks.signal(FemDataReceiverSignal::femAcquisitionComplete);
-//      } else if (remainingFrames_ == 0) {
-//        // Do nothing, running continuously
-//      } else {
-        // Allocate new buffer
-        if (callback_){
-          currentBuffer_ = callback_->allocateBuffer();
-        }
-
-//        // Decrement remaining frame counter
-//        remainingFrames_--;
-//      }
+      // Allocate new buffer
+      if (callback_){
+        currentBuffer_ = callback_->allocateBuffer();
+      }
 
       // Reset frame counters
       framePayloadBytesReceived_ = 0;
@@ -367,15 +366,19 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
   } else {
     dbg.log(0, "Got error during receive", (uint32_t)errorCode.value());
     dbg.log(0, errorCode.message() + " recvd", (uint32_t)bytesReceived);
-    //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
+    errorSignal = 1;
   }
 
-  // If an error condition has been set during packet decoding, signal it through the callback only if the
-  // value has changed, so that this is only done once per frame
-  //if ((errorSignal != FemDataReceiverSignal::femAcquisitionNullSignal) && (errorSignal != mLatchedErrorSignal)){
-  //  mCallbacks.signal(errorSignal);
-  //  mLatchedErrorSignal = errorSignal;
-  //}
+  // If an error condition has been set during packet decoding, signal it through the callback
+  if (errorSignal){
+    // First callback with an error to notify the caller
+    // Reset all counters, we are going to try and recover
+    framePayloadBytesReceived_ = 0;
+    frameTotalBytesReceived_   = 0;
+    subFramePacketsReceived_   = 0;
+    subFramesReceived_         = 0;
+    subFrameBytesReceived_     = 0;
+  }
 
   if (acquiring_){
     // Construct buffer sequence for reception of next packet header and payload. Payload buffer
@@ -384,9 +387,7 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     if (headerPosition_ == headerAtStart){
       dbg.log(2, "Buff size", (frameBytes_ - framePayloadBytesReceived_));
       rxBufs[0] = boost::asio::buffer((void *)&packetHeader_, sizeof(packetHeader_));
-      //rxBufs[1] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, subFrameLength_);
       rxBufs[1] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, (frameBytes_ - framePayloadBytesReceived_ + 4));
-      //rxBufs[1] = boost::asio::buffer(currentBuffer_->raw(), subFrameLength_);
       rxBufs[2] = boost::asio::buffer((void *)&currentFrameNumber_, sizeof(currentFrameNumber_));
     } else {
       rxBufs[0] = boost::asio::buffer(((uint8_t *)currentBuffer_->raw()) + framePayloadBytesReceived_, frameBytes_ - framePayloadBytesReceived_);

@@ -24,7 +24,7 @@ class IPercivalCallback
   public:
     virtual ~IPercivalCallback() {};
     
-    virtual void imageReceived(PercivalBuffer *buffer) = 0;
+    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber) = 0;
 
     virtual PercivalBuffer *allocateBuffer() = 0;
 };

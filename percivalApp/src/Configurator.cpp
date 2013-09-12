@@ -6,144 +6,176 @@
  */
 
 #include "Configurator.h"
+#include "PercivalDebug.h"
 #include <iostream>
 #include <cstring>
 
 Configurator::Configurator()
-  : imageWidth_(2048),
-    imageHeight_(1536),
-    repeatX_(64),
-    repeatY_(64),
+  : imageWidth_(256),
+    imageHeight_(256),
+    repeatX_(256),
+    repeatY_(256),
     pattern_(rectangle),
     noOfImages_(10),
     minValue_(0),
-    maxValue_(256),
-    dataType_(UnsignedInt32),
-    pixelsPerChipX_(256),
-    pixelsPerChipY_(256),
-    chipsPerBlockX_(4),
-    chipsPerBlockY_(1),
-    blocksPerStripeX_(2),
+    maxValue_(1000),
+    dataType_(UnsignedInt16),
+    pixelsPerChipX_(128),
+    pixelsPerChipY_(128),
+    chipsPerBlockX_(2),
+    chipsPerBlockY_(2),
+    blocksPerStripeX_(1),
     blocksPerStripeY_(1),
-    chipsPerStripeX_(8),
-    chipsPerStripeY_(1),
+    chipsPerStripeX_(2),
+    chipsPerStripeY_(2),
     stripesPerImageX_(1),
-    stripesPerImageY_(6),
-    scramble_(excalibur),
+    stripesPerImageY_(1),
+    scramble_(percival),
     arraysAllocated_(false),
-    debug_(0)
+    noOfADCs_(32),
+    debug_(0),
+    errorMessage_("")
 {
-
+  gainThresholds_[0] = 200;
+  gainThresholds_[1] = 2500;
+  gainThresholds_[2] = 5000;
+  gainThresholds_[3] = 8000;
 }
 
 Configurator::~Configurator()
 {
+  PercivalDebug dbg(debug_, "Configurator::~Configurator");
+}
 
+std::string Configurator::errorMessage()
+{
+  PercivalDebug dbg(debug_, "Configurator::errorMessage");
+  dbg.log(1, "Message", errorMessage_);
+  return errorMessage_;
 }
 
 void Configurator::setDebugLevel(uint32_t level)
 {
+  PercivalDebug dbg(debug_, "Configurator::setDebugLevel");
+  dbg.log(1, "Debug Level", level);
   debug_ = level;
 }
 
 uint32_t Configurator::getImageWidth()
 {
+  PercivalDebug dbg(debug_, "Configurator::getImageWidth");
   // Return the current image width
   return imageWidth_;
 }
 
 uint32_t Configurator::getImageHeight()
 {
+  PercivalDebug dbg(debug_, "Configurator::getImageHeight");
   // Return the current image height
   return imageHeight_;
 }
 
 void Configurator::setRepeatX(uint32_t repeatX)
 {
+  PercivalDebug dbg(debug_, "Configurator::setRepeatX");
   // Set the pattern repeat in x (pixels)
   repeatX_ = repeatX;
 }
 
 uint32_t Configurator::getRepeatX()
 {
+  PercivalDebug dbg(debug_, "Configurator::getRepeatX");
   // Return the pattern repeat in x
   return repeatX_;
 }
 
 void Configurator::setRepeatY(uint32_t repeatY)
 {
+  PercivalDebug dbg(debug_, "Configurator::setRepeatY");
   // Set the pattern repeat in y (pixels)
   repeatY_ = repeatY;
 }
 
 uint32_t Configurator::getRepeatY()
 {
+  PercivalDebug dbg(debug_, "Configurator::getRepeatY");
   // Return the pattern repeat in y
   return repeatY_;
 }
 
 void Configurator::setPattern(PatternType pattern)
 {
+  PercivalDebug dbg(debug_, "Configurator::setPattern");
   // Set the pattern type for the image
   pattern_ = pattern;
 }
 
 PatternType Configurator::getPattern()
 {
+  PercivalDebug dbg(debug_, "Configurator::getPattern");
   // Return the pattern type
   return pattern_;
 }
 
 void Configurator::setNoOfImages(uint32_t noOfImages)
 {
+  PercivalDebug dbg(debug_, "Configurator::setNoOfImages");
   // Set the number of images in the sequence
   noOfImages_ = noOfImages;
 }
 
 uint32_t Configurator::getNoOfImages()
 {
+  PercivalDebug dbg(debug_, "Configurator::getNoOfImages");
   // Return the number of images in the sequence
   return noOfImages_;
 }
 
 void Configurator::setMinValue(uint32_t minValue)
 {
+  PercivalDebug dbg(debug_, "Configurator::setMinValue");
   // Set the minimum value for images
   minValue_ = minValue;
 }
 
 uint32_t Configurator::getMinValue()
 {
+  PercivalDebug dbg(debug_, "Configurator::getMinValue");
   // Return the minimum value for images
   return minValue_;
 }
 
 void Configurator::setMaxValue(uint32_t maxValue)
 {
+  PercivalDebug dbg(debug_, "Configurator::setMaxValue");
   // Set the maximum value for images
   maxValue_ = maxValue;
 }
 
 uint32_t Configurator::getMaxValue()
 {
+  PercivalDebug dbg(debug_, "Configurator::getMaxValue");
   // Return the maximum value for images
   return maxValue_;
 }
 
 void Configurator::setDataType(DataType dataType)
 {
+  PercivalDebug dbg(debug_, "Configurator::setDataType");
   // Set the data type for the images
   dataType_ = dataType;
 }
 
 DataType Configurator::getDataType()
 {
+  PercivalDebug dbg(debug_, "Configurator::getDataType");
   // Return the data type of the images
   return dataType_;
 }
 
 void Configurator::setPixelsPerChipX(uint32_t ppcx)
 {
+  PercivalDebug dbg(debug_, "Configurator::setPixelsPerChipX");
   // Set the number of pixels per chip in the x direction
   pixelsPerChipX_ = ppcx;
   imageWidth_ = pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_;
@@ -151,12 +183,14 @@ void Configurator::setPixelsPerChipX(uint32_t ppcx)
 
 uint32_t Configurator::getPixelsPerChipX()
 {
+  PercivalDebug dbg(debug_, "Configurator::getPixelsPerChipX");
   // Return the number of pixels per chip in the x direction
   return pixelsPerChipX_;
 }
 
 void Configurator::setPixelsPerChipY(uint32_t ppcy)
 {
+  PercivalDebug dbg(debug_, "Configurator::setPixelsPerChipY");
   // Set the number of pixels per chip in the y direction
   pixelsPerChipY_ = ppcy;
   imageHeight_ = pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_;
@@ -164,12 +198,14 @@ void Configurator::setPixelsPerChipY(uint32_t ppcy)
 
 uint32_t Configurator::getPixelsPerChipY()
 {
+  PercivalDebug dbg(debug_, "Configurator::getPixelsPerChipY");
   // Return the number of pixels per chip in the y direction
   return pixelsPerChipY_;
 }
 
 void Configurator::setChipsPerBlockX(uint32_t cpbx)
 {
+  PercivalDebug dbg(debug_, "Configurator::setChipsPerBlockX");
   // Set the number of chips per block in the x direction
   chipsPerBlockX_ = cpbx;
   // Set the number of chips per stripe in the x direction
@@ -179,12 +215,14 @@ void Configurator::setChipsPerBlockX(uint32_t cpbx)
 
 uint32_t Configurator::getChipsPerBlockX()
 {
+  PercivalDebug dbg(debug_, "Configurator::getChipsPerBlockX");
   // Return the number of chips per block in the x direction
   return chipsPerBlockX_;
 }
 
 void Configurator::setChipsPerBlockY(uint32_t cpby)
 {
+  PercivalDebug dbg(debug_, "Configurator::setChipsPerBlockY");
   // Set the number of chips per block in the y direction
   chipsPerBlockY_ = cpby;
   // Set the number of chips per stripe in the y direction
@@ -194,12 +232,14 @@ void Configurator::setChipsPerBlockY(uint32_t cpby)
 
 uint32_t Configurator::getChipsPerBlockY()
 {
+  PercivalDebug dbg(debug_, "Configurator::getChipsPerBlockY");
   // Return the number of chips per block in the x direction
   return chipsPerBlockY_;
 }
 
 void Configurator::setBlocksPerStripeX(uint32_t bpsx)
 {
+  PercivalDebug dbg(debug_, "Configurator::setBlocksPerStripeX");
   // Set the number of blocks per stripe in the x direction
   blocksPerStripeX_ = bpsx;
   // Set the number of chips per stripe in the x direction
@@ -209,12 +249,14 @@ void Configurator::setBlocksPerStripeX(uint32_t bpsx)
 
 uint32_t Configurator::getBlocksPerStripeX()
 {
+  PercivalDebug dbg(debug_, "Configurator::getBlocksPerStripeX");
   // Return the number of blocks per stripe in the x direction
   return blocksPerStripeX_;
 }
 
 void Configurator::setBlocksPerStripeY(uint32_t bpsy)
 {
+  PercivalDebug dbg(debug_, "Configurator::setBlocksPerStripeY");
   // Set the number of blocks per stripe in the y direction
   blocksPerStripeY_ = bpsy;
   // Set the number of chips per stripe in the y direction
@@ -224,24 +266,28 @@ void Configurator::setBlocksPerStripeY(uint32_t bpsy)
 
 uint32_t Configurator::getBlocksPerStripeY()
 {
+  PercivalDebug dbg(debug_, "Configurator::getBlocksPerStripeY");
   // Return the number of blocks per stripe in the y direction
   return blocksPerStripeY_;
 }
 
 uint32_t Configurator::getChipsPerStripeX()
 {
+  PercivalDebug dbg(debug_, "Configurator::getChipsPerStripeX");
   // Return the number of chips per stripe in the x direction
   return chipsPerStripeX_;
 }
 
 uint32_t Configurator::getChipsPerStripeY()
 {
+  PercivalDebug dbg(debug_, "Configurator::getChipsPerStripeY");
   // Return the number of chips per stripe in the y direction
   return chipsPerStripeY_;
 }
 
 void Configurator::setStripesPerImageX(uint32_t spix)
 {
+  PercivalDebug dbg(debug_, "Configurator::setStripesPerImageX");
   // Set the number of stipes per image in the x direction
   stripesPerImageX_ = spix;
   imageWidth_ = pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_;
@@ -249,12 +295,14 @@ void Configurator::setStripesPerImageX(uint32_t spix)
 
 uint32_t Configurator::getStripesPerImageX()
 {
+  PercivalDebug dbg(debug_, "Configurator::getStripesPerImageX");
   // Return the number of stripes per image in the x direction
   return stripesPerImageX_;
 }
 
 void Configurator::setStripesPerImageY(uint32_t spiy)
 {
+  PercivalDebug dbg(debug_, "Configurator::setStripesPerImageY");
   // Set the number of stripes per image in the y direction
   stripesPerImageY_ = spiy;
   imageHeight_ = pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_;
@@ -262,28 +310,52 @@ void Configurator::setStripesPerImageY(uint32_t spiy)
 
 uint32_t Configurator::getStripesPerImageY()
 {
+  PercivalDebug dbg(debug_, "Configurator::getStripesPerImageY");
   // Return the number of stripes per image in the y direction
   return stripesPerImageY_;
 }
 
 void Configurator::setScrambleType(ScrambleType scramble)
 {
+  PercivalDebug dbg(debug_, "Configurator::setScrambleType");
   // Set the scramble type for the image
   scramble_ = scramble;
 }
 
 ScrambleType Configurator::getScrambleType()
 {
+  PercivalDebug dbg(debug_, "Configurator::getScrambleType");
   // Return the scramble type
   return scramble_;
 }
 
-void Configurator::openHDF5File(const std::string& filename)
+void Configurator::setNumberOfADCs(uint32_t noOfADCs)
 {
-  static const char *functionName = "Configurator::openHDF5File";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::setNumberOfADCs");
+  noOfADCs_ = noOfADCs;
+}
+
+uint32_t Configurator::getNumberOfADCs()
+{
+  PercivalDebug dbg(debug_, "Configurator::getNumberOfADCs");
+  return noOfADCs_;
+}
+
+void Configurator::setGainThreshold(uint32_t number, uint32_t threshold)
+{
+  PercivalDebug dbg(debug_, "Configurator::setGainThreshold");
+  gainThresholds_[number] = threshold;
+}
+
+uint32_t Configurator::getGainThreshold(uint32_t number)
+{
+  PercivalDebug dbg(debug_, "Configurator::getGainThreshold");
+  return gainThresholds_[number];
+}
+
+int Configurator::openHDF5File(const std::string& filename)
+{
+  PercivalDebug dbg(debug_, "Configurator::openHDF5File");
 
   herr_t status;
   // First close the file if it is already open
@@ -294,17 +366,17 @@ void Configurator::openHDF5File(const std::string& filename)
   // Now open the file by filename
   file_id_ = H5Fopen(filename.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
   if (file_id_ < 0){
-    std::cout << "ERROR Configurator::openHDF5File - Unable to open file [" << filename << "]" << std::endl;
+    dbg.log(0, "Unable to open file", filename);
+    errorMessage_ = "Unable to open HDF5 file";
     file_id_ = 0;
+    return -1;
   }
+  return 0;
 }
 
 void Configurator::createHDF5File(const std::string& filename)
 {
-  static const char *functionName = "Configurator::createHDF5File";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::createHDF5File");
 
   herr_t status;
   // First close the file if it is already open
@@ -315,17 +387,14 @@ void Configurator::createHDF5File(const std::string& filename)
   // Now create (or open and truncate) the file by filename
   file_id_ = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
   if (file_id_ < 0){
-    std::cout << "ERROR Configurator::createHDF5File - Unable to create file [" << filename << "]" << std::endl;
+    dbg.log(0, "Unable to create file", filename);
     file_id_ = 0;
   }
 }
 
-void Configurator::closeHDF5File()
+int Configurator::closeHDF5File()
 {
-  static const char *functionName = "Configurator::closeHDF5File";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::closeHDF5File");
 
   herr_t status;
   // Close the file if one is open
@@ -333,35 +402,45 @@ void Configurator::closeHDF5File()
     status = H5Fclose(file_id_);
     file_id_ = 0;
   }
+  return 0;
 }
 
-void Configurator::readConfiguration(const std::string& filename)
+int Configurator::readConfiguration(const std::string& filename)
 {
-  static const char *functionName = "Configurator::readConfiguration";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::readConfiguration");
+  int status = 0;
+  dbg.log(2, "Filename", filename);
 
   // Create a new HDF5 configuration file using the default properties
-  openHDF5File(filename);
+  status = openHDF5File(filename);
+  if (status){
+    return status;
+  }
 
   // Read in the meta data
-  readMetaData();
+  status = readMetaData();
+  if (status){
+    return status;
+  }
 
   // Read in the scrambled image
-  readScrambledImage();
+  status = readScrambledImage();
+  if (status){
+    return status;
+  }
 
   // Close the configuration file
-  closeHDF5File();
-  
+  status = closeHDF5File();
+  if (status){
+    return status;
+  }
+
+  return 0;
 }
 
 void Configurator::generateConfiguration(const std::string& filename)
 {
-  static const char *functionName = "Configurator::generateConfiguration";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::generateConfiguration");
 
   // Create a new HDF5 configuration file using the default properties
   createHDF5File(filename);
@@ -380,10 +459,7 @@ void Configurator::generateConfiguration(const std::string& filename)
 
 void Configurator::generateRawImage()
 {
-  static const char *functionName = "Configurator::generateRawImage";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::generateRawImage");
 
   // Create the hdf5 file
   hid_t    dataset_id = 0, dataspace_id;
@@ -515,15 +591,110 @@ void Configurator::generateRawImage()
 
 void Configurator::generateScrambledImage()
 {
-  static const char *functionName = "Configurator::generateScrambledImage";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::generateScrambledImage");
 
   // Create the hdf5 file
   hid_t    dataset_id = 0, dataspace_id;
   hsize_t  dims[3];
+  hid_t    dataset_descramble_id = 0, dataspace_descramble_id;
+  hsize_t  descramble_dims[1];
+  // Gain Thresholds
+  hid_t    dataset_gain_thresholds_id = 0, dataspace_gain_thresholds_id;
+  hsize_t  gain_thresholds_dims[1];
+  // ADC indexes
+  hid_t    dataset_ADC_index_id = 0, dataspace_ADC_index_id;
+  hsize_t  ADC_index_dims[1];
+  // ADC low gain
+  hid_t    dataset_ADC_low_gain_id = 0, dataspace_ADC_low_gain_id;
+  hsize_t  ADC_low_gain_dims[1];
+  // ADC high gain
+  hid_t    dataset_ADC_high_gain_id = 0, dataspace_ADC_high_gain_id;
+  hsize_t  ADC_high_gain_dims[1];
+  // ADC offset
+  hid_t    dataset_ADC_offset_id = 0, dataspace_ADC_offset_id;
+  hsize_t  ADC_offset_dims[1];
+  // stage gains
+  hid_t    dataset_stage_gains_id = 0, dataspace_stage_gains_id;
+  hsize_t  stage_gains_dims[2];
+  // stage offsets
+  hid_t    dataset_stage_offsets_id = 0, dataspace_stage_offsets_id;
+  hsize_t  stage_offsets_dims[2];
+  // Status
   herr_t   status;
+
+  // First allocate and intialize gain arrays
+  ADC_index_ = (uint32_t *)malloc(imageWidth_ * imageHeight_ * sizeof(uint32_t));
+  for (uint32_t index = 0; index < (imageWidth_*imageHeight_); index++){
+    ADC_index_[index] = index % noOfADCs_;
+  }
+  ADC_low_gain_  = (float *)malloc(noOfADCs_ * sizeof(float));
+  ADC_high_gain_ = (float *)malloc(noOfADCs_ * sizeof(float));
+  ADC_offset_    = (float *)malloc(noOfADCs_ * sizeof(float));
+  for (uint32_t index = 0; index < noOfADCs_; index++){
+    ADC_low_gain_[index]  = 1.0;
+    ADC_high_gain_[index] = 1.0;
+    ADC_offset_[index]    = 0.0;
+  }
+  stage_gains_ = (float *)malloc(4 * imageWidth_ * imageHeight_ * sizeof(float));
+  stage_offsets_ = (float *)malloc(4 * imageWidth_ * imageHeight_ * sizeof(float));
+  for (uint32_t index = 0; index < (imageWidth_*imageHeight_); index++){
+    for (uint32_t threshold = 0; threshold < 4; threshold++){
+      stage_gains_[(threshold * imageWidth_ * imageHeight_) + index] = 1.0;
+      stage_offsets_[(threshold * imageWidth_ * imageHeight_) + index] = 0.0;
+    }
+  }
+  // Create the data space, dataset and write out the thresholds 
+  gain_thresholds_dims[0] = 4;
+  dataspace_gain_thresholds_id = H5Screate_simple(1, gain_thresholds_dims, NULL);
+  dataset_gain_thresholds_id = H5Dcreate2(file_id_, "/gain_thresholds", H5T_STD_U32LE, dataspace_gain_thresholds_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_gain_thresholds_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, gainThresholds_);
+  status = H5Dclose(dataset_gain_thresholds_id);
+  status = H5Sclose(dataspace_gain_thresholds_id);
+  // Create the data space, dataset and write out the ADC indexes
+  ADC_index_dims[0] = imageWidth_ * imageHeight_;
+  dataspace_ADC_index_id = H5Screate_simple(1, ADC_index_dims, NULL);
+  dataset_ADC_index_id = H5Dcreate2(file_id_, "/ADC_index", H5T_STD_U32LE, dataspace_ADC_index_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_ADC_index_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_index_);
+  status = H5Dclose(dataset_ADC_index_id);
+  status = H5Sclose(dataspace_ADC_index_id);
+  // Create the data space, dataset and write out the ADC low gain
+  ADC_low_gain_dims[0] = noOfADCs_;
+  dataspace_ADC_low_gain_id = H5Screate_simple(1, ADC_low_gain_dims, NULL);
+  dataset_ADC_low_gain_id = H5Dcreate2(file_id_, "/ADC_low_gain", H5T_IEEE_F32LE, dataspace_ADC_low_gain_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_ADC_low_gain_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_low_gain_);
+  status = H5Dclose(dataset_ADC_low_gain_id);
+  status = H5Sclose(dataspace_ADC_low_gain_id);
+  // Create the data space, dataset and write out the ADC high gain
+  ADC_high_gain_dims[0] = noOfADCs_;
+  dataspace_ADC_high_gain_id = H5Screate_simple(1, ADC_high_gain_dims, NULL);
+  dataset_ADC_high_gain_id = H5Dcreate2(file_id_, "/ADC_high_gain", H5T_IEEE_F32LE, dataspace_ADC_high_gain_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_ADC_high_gain_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_high_gain_);
+  status = H5Dclose(dataset_ADC_high_gain_id);
+  status = H5Sclose(dataspace_ADC_high_gain_id);
+  // Create the data space, dataset and write out the ADC offset
+  ADC_offset_dims[0] = noOfADCs_;
+  dataspace_ADC_offset_id = H5Screate_simple(1, ADC_offset_dims, NULL);
+  dataset_ADC_offset_id = H5Dcreate2(file_id_, "/ADC_offset", H5T_IEEE_F32LE, dataspace_ADC_offset_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_ADC_offset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_offset_);
+  status = H5Dclose(dataset_ADC_offset_id);
+  status = H5Sclose(dataspace_ADC_offset_id);
+  // Create the data space, dataset and write out the stage gains
+  stage_gains_dims[0] = 4;
+  stage_gains_dims[1] = imageWidth_ * imageHeight_;
+  dataspace_stage_gains_id = H5Screate_simple(2, stage_gains_dims, NULL);
+  dataset_stage_gains_id = H5Dcreate2(file_id_, "/stage_gains", H5T_IEEE_F32LE, dataspace_stage_gains_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_stage_gains_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, stage_gains_);
+  status = H5Dclose(dataset_stage_gains_id);
+  status = H5Sclose(dataspace_stage_gains_id);
+  // Create the data space, dataset and write out the stage offsets
+  stage_offsets_dims[0] = 4;
+  stage_offsets_dims[1] = imageWidth_ * imageHeight_;
+  dataspace_stage_offsets_id = H5Screate_simple(2, stage_offsets_dims, NULL);
+  dataset_stage_offsets_id = H5Dcreate2(file_id_, "/stage_offsets", H5T_IEEE_F32LE, dataspace_stage_offsets_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_stage_offsets_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, stage_offsets_);
+  status = H5Dclose(dataset_stage_offsets_id);
+  status = H5Sclose(dataspace_stage_offsets_id);
+
 
   // Create the data space for the dataset.
   dims[0] = noOfImages_;
@@ -540,6 +711,16 @@ void Configurator::generateScrambledImage()
     dataset_id = H5Dcreate2(file_id_, "/scrambled_image", H5T_STD_U8LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   }
 
+  // Create the data space for the de-scrambling array
+  descramble_dims[0] = imageHeight_ * imageWidth_;
+  dataspace_descramble_id = H5Screate_simple(1, descramble_dims, NULL);
+
+  // Create the dataset.
+  dataset_descramble_id = H5Dcreate2(file_id_, "/descramble_array", H5T_STD_U32LE, dataspace_descramble_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+  // Allocate the memory required for the descrambling array
+  descrambleArray_ = (uint32_t *)malloc(imageWidth_ * imageHeight_ * sizeof(uint32_t));
+
   // Allocate the memory required for the scrambled image
   scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   scrambledDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
@@ -551,9 +732,9 @@ void Configurator::generateScrambledImage()
       for (uint32_t stripe = 0; stripe < stripesPerImageX_; stripe++){
         // Scramble each stripe of data.
         if (stripe % 2 == 1){
-          scrambleOddStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe));
+          scrambleOddStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe), descrambleArray_+(stripe*pixelsPerStripe));
         } else {
-          scrambleEvenStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe));
+          scrambleEvenStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe), descrambleArray_+(stripe*pixelsPerStripe));
         }
       }
     } else if (scramble_ == percival){
@@ -563,10 +744,21 @@ void Configurator::generateScrambledImage()
           for (uint32_t chip = 0; chip < chipsPerStripeX_; chip++){
             int pixelSourceAddress = (chip * pixelsPerChipX_) + pixel + (indexY * pixelsPerChipX_ * chipsPerStripeX_) + (imageNo * imageWidth_ * imageHeight_);
             int pixelDestAddress = chip + (pixel * chipsPerStripeX_) + (indexY * pixelsPerChipX_ * chipsPerStripeX_) + (imageNo * imageWidth_ * imageHeight_);
+            // Store the descramble array (only for image 0, all images are scrambled the same way)
+            if (imageNo == 0){
+              descrambleArray_[pixelDestAddress] = pixelSourceAddress;
+            }
             if (dataType_ == UnsignedInt8){
               scrambledDataUInt8_[pixelDestAddress] = rawDataUInt8_[pixelSourceAddress];
             } else if (dataType_ == UnsignedInt16){
-              scrambledDataUInt16_[pixelDestAddress] = rawDataUInt16_[pixelSourceAddress];
+              scrambledDataUInt16_[pixelDestAddress] = (uint16_t)applyGains(pixelSourceAddress - (imageNo * imageWidth_ * imageHeight_),
+                                                                            rawDataUInt16_[pixelSourceAddress],
+                                                                            ADC_index_,
+                                                                            ADC_high_gain_,
+                                                                            ADC_low_gain_,
+                                                                            ADC_offset_,
+                                                                            stage_gains_,
+                                                                            stage_offsets_);
             } else if (dataType_ == UnsignedInt32){
               scrambledDataUInt32_[pixelDestAddress] = rawDataUInt32_[pixelSourceAddress];
             }
@@ -591,15 +783,47 @@ void Configurator::generateScrambledImage()
   // Terminate access to the data space.
   status = H5Sclose(dataspace_id);
 
+  // Write out the descramble array
+  status = H5Dwrite(dataset_descramble_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, descrambleArray_);
+
+  // End access to the descramble array and release resources used by it.
+  status = H5Dclose(dataset_descramble_id);
+
+  // Terminate access to the descramble array data space.
+  status = H5Sclose(dataspace_descramble_id);
+
 }
 
-void Configurator::readScrambledImage()
+uint32_t Configurator::applyGains(uint32_t index,         // Unscrambled index of point
+                                  uint32_t in_data,       // Input data
+                                  uint32_t * ADC_index,   // Index of ADC to use for each input data point
+                                  float * ADC_low_gain,   // Array of low gain ADC gains, one per ADC
+                                  float * ADC_high_gain,  // Array of high gain ADC gains, one per ADC
+                                  float * ADC_offset,     // Combined offset for both ADC's
+                                  float * stage_gains,    // Gain to apply for each of the output stages
+                                  float * stage_offsets)  // Offsets to apply for each of the output stages (in scrambled order)
 {
-  static const char *functionName = "Configurator::readScrambledImage";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+    uint32_t gain, ADC_low, ADC_high, ADC, imageSize;
+    float value;
+    
+    imageSize = imageWidth_ * imageHeight_;
+    value = in_data;
+    ADC   = ADC_index[index];
+        
+    if ( value < gainThresholds_[0] ) gain = 0;
+    else if ( value < gainThresholds_[1] ) gain = 1;
+    else if ( value < gainThresholds_[2] ) gain = 2;
+    else gain = 3;
+    value = ( value - stage_offsets[gain*imageSize+index])/stage_gains[gain*imageSize+index] - ADC_offset[ADC];
+    ADC_low  = (((uint32_t) (value/ADC_low_gain[ADC])) & 0xFF ) << 2;
+    ADC_high = (((uint32_t) (( value - ( ADC_low >> 2 ) * ADC_low_gain[ADC] ) / ADC_high_gain[ADC] )) & 0x1F00 ) << 2;
+        
+    return gain + ADC_low + ADC_high;
+}
 
+int Configurator::readScrambledImage()
+{
+  PercivalDebug dbg(debug_, "Configurator::readScrambledImage");
   // Create the hdf5 file
   hid_t    dataset_id, dataspace_id;
   hsize_t  dims[3];
@@ -618,23 +842,20 @@ void Configurator::readScrambledImage()
   imageHeight_ = dims[1];
   imageWidth_ =  dims[2];
 
-std::cout << "Allocation: " << imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t) << std::endl;
+  dbg.log(2, "Allocation", (uint32_t)(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t)));
 
   // Allocate the memory required for the scrambled image
   scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   scrambledDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
   scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
-std::cout << "Reading in datatype: " << dataType_ << std::endl;
+  dbg.log(2, "Datatype", (uint32_t)dataType_);
   // Read the dataset
   if (dataType_ == UnsignedInt32){
     status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt32_);
-std::cout << "Here 1" << std::endl;
   } else if (dataType_ == UnsignedInt16){
     status = H5Dread(dataset_id, H5T_STD_U16LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt16_);
-std::cout << "Here 2" << std::endl;
   } else if (dataType_ == UnsignedInt8){
     status = H5Dread(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt8_);
-std::cout << "Here 3" << std::endl;
   }
 
   // End access to the dataset and release resources used by it.
@@ -643,14 +864,117 @@ std::cout << "Here 3" << std::endl;
   // Terminate access to the data space.
   status = H5Sclose(dataspace_id);
 
+  // Repeat the reading of a data set for the descramble array and for all other gain arrays
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/descramble_array", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  dbg.log(2, "Allocation for descramble array", (uint32_t)(imageHeight_ * imageWidth_ * sizeof(uint32_t)));
+  // Allocate the memory required for the scrambled image
+  descrambleArray_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * sizeof(uint32_t));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, descrambleArray_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/gain_thresholds", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, gainThresholds_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/ADC_index", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the scrambled image
+  ADC_index_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * sizeof(uint32_t));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_index_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/ADC_low_gain", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the scrambled image
+  ADC_low_gain_ = (float *)malloc(noOfADCs_ * sizeof(float));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_low_gain_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/ADC_high_gain", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the scrambled image
+  ADC_high_gain_ = (float *)malloc(noOfADCs_ * sizeof(float));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_high_gain_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/ADC_offset", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the scrambled image
+  ADC_offset_ = (float *)malloc(noOfADCs_ * sizeof(float));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, ADC_offset_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/stage_gains", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the scrambled image
+  stage_gains_ = (float *)malloc(4 * imageWidth_ * imageHeight_ * sizeof(float));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, stage_gains_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/stage_offsets", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the scrambled image
+  stage_offsets_ = (float *)malloc(4 * imageWidth_ * imageHeight_ * sizeof(float));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, stage_offsets_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
+
+  return 0;
 }
 
 void Configurator::generateMetaData()
 {
-  static const char *functionName = "Configurator::generateMetaData";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::generateMetaData");
 
   // Create the hdf5 file
   hid_t    dataset_id, dataspace_id, attribute_id;
@@ -745,6 +1069,13 @@ void Configurator::generateMetaData()
   // Close the attribute.
   status = H5Aclose(attribute_id);
 
+  // Create a dataset attribute.
+  attribute_id = H5Acreate2 (dataset_id, "NUMBER_OF_ADCS", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT);
+  // Write the attribute data.
+  status = H5Awrite(attribute_id, H5T_STD_U32LE, &noOfADCs_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
+
   // Close the dataspace.
   status = H5Sclose(dataspace_id);
 
@@ -752,12 +1083,9 @@ void Configurator::generateMetaData()
   status = H5Dclose(dataset_id);
 }
 
-void Configurator::readMetaData()
+int Configurator::readMetaData()
 {
-  static const char *functionName = "Configurator::readMetaData";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::readMetaData");
 
   // Open up the hdf5 file
   hid_t    dataset_id, attribute_id;
@@ -836,17 +1164,22 @@ void Configurator::readMetaData()
   status = H5Aread(attribute_id, H5T_STD_U32LE, &stripesPerImageY_);
   // Close the attribute.
   status = H5Aclose(attribute_id);
+  // Open the attribute.
+  attribute_id = H5Aopen(dataset_id, "NUMBER_OF_ADCS", H5P_DEFAULT);
+  // Read the attribute data.
+  status = H5Aread(attribute_id, H5T_STD_U32LE, &noOfADCs_);
+  // Close the attribute.
+  status = H5Aclose(attribute_id);
 
   // Close to the dataset.
   status = H5Dclose(dataset_id);
+
+  return 0;
 }
 
-void Configurator::scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8)
+void Configurator::scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray)
 {
-  static const char *functionName = "Configurator::scrambleOddStripe";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::scrambleOddStripe");
 
   int gapStrip = 1;
   //int in = 0;
@@ -881,6 +1214,10 @@ pixelAddr = 0;
               out32++;
               out16++;
               out8++;
+              if (imageNo == 0){
+                *descrambleArray = pixelAddr;
+                descrambleArray++;
+              }
               //out[pixelAddr] = *in;
               //in += 1;
             } else {
@@ -899,12 +1236,9 @@ pixelAddr = 0;
   }
 }
 
-void Configurator::scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8)
+void Configurator::scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray)
 {
-  static const char *functionName = "Configurator::scrambleEvenStripe";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::scrambleEvenStripe");
 
   int gapStrip = 1;
   //int in = 0;
@@ -938,6 +1272,10 @@ pixelAddr = 0;
               out32++;
               out16++;
               out8++;
+              if (imageNo == 0){
+                *descrambleArray = pixelAddr;
+                descrambleArray++;
+              }
               //out[pixelAddr] = *in;
               //in += 1;
             } else {
@@ -957,10 +1295,7 @@ pixelAddr = 0;
 
 void Configurator::allocateDataArrays()
 {
-  static const char *functionName = "Configurator::allocateDataArrays";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::allocateDataArrays");
 
   if (arraysAllocated_){
     // If we simply allocate the arrays here we will have a memory leak
@@ -982,10 +1317,7 @@ void Configurator::allocateDataArrays()
 
 void Configurator::freeDataArrays()
 {
-  static const char *functionName = "Configurator::freeDataArrays";
-  if (debug_ > 2){
-    std::cout << "DEBUG " << functionName << std::endl;
-  }
+  PercivalDebug dbg(debug_, "Configurator::freeDataArrays");
 
   if (arraysAllocated_){
     // Free both image arrays
@@ -998,12 +1330,13 @@ void Configurator::freeDataArrays()
     arraysAllocated_ = false;
   } else {
     // Attempting to free data that is not allocated
-    std::cout << "ERROR " << functionName << " - Called on arrays that are not allocated" << std::endl;
+    dbg.log(0, "ERROR - Arrays are not allocated");
   }
 }
 
-void Configurator::copyScrambledSectionUInt32(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer)
+void Configurator::copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer)
 {
+  PercivalDebug dbg(debug_, "Configurator::copyScrambledSectionUInt32");
   uint32_t yIndex;
   uint32_t width;
   width = botRightX - topLeftX + 1;
@@ -1012,13 +1345,14 @@ void Configurator::copyScrambledSectionUInt32(uint32_t topLeftX, uint32_t topLef
   uint32_t *ptr2 = scrambledDataUInt32_;
   for (yIndex = topLeftY; yIndex <= botRightY; yIndex++){
     ptr1 = buffer + ((yIndex-topLeftY) * width);
-    ptr2 = scrambledDataUInt32_ + (yIndex * imageWidth_) + topLeftX;
+    ptr2 = scrambledDataUInt32_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
     memcpy(ptr1, ptr2, (width * sizeof(uint32_t)));
   }
 }
 
-void Configurator::copyScrambledSectionUInt16(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer)
+void Configurator::copyScrambledSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer)
 {
+  PercivalDebug dbg(debug_, "Configurator::copyScrambledSectionUInt16");
   uint32_t yIndex;
   uint32_t width;
   width = botRightX - topLeftX + 1;
@@ -1027,13 +1361,14 @@ void Configurator::copyScrambledSectionUInt16(uint32_t topLeftX, uint32_t topLef
   uint16_t *ptr2 = scrambledDataUInt16_;
   for (yIndex = topLeftY; yIndex <= botRightY; yIndex++){
     ptr1 = buffer + ((yIndex-topLeftY) * width);
-    ptr2 = scrambledDataUInt16_ + (yIndex * imageWidth_) + topLeftX;
+    ptr2 = scrambledDataUInt16_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
     memcpy(ptr1, ptr2, (width * sizeof(uint16_t)));
   }
 }
 
-void Configurator::copyScrambledSectionUInt8(uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer)
+void Configurator::copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer)
 {
+  PercivalDebug dbg(debug_, "Configurator::copyScrambledSectionUInt8");
   uint32_t yIndex;
   uint32_t width;
   width = botRightX - topLeftX + 1;
@@ -1042,8 +1377,65 @@ void Configurator::copyScrambledSectionUInt8(uint32_t topLeftX, uint32_t topLeft
   uint8_t *ptr2 = scrambledDataUInt8_;
   for (yIndex = topLeftY; yIndex <= botRightY; yIndex++){
     ptr1 = buffer + ((yIndex-topLeftY) * width);
-    ptr2 = scrambledDataUInt8_ + (yIndex * imageWidth_) + topLeftX;
+    ptr2 = scrambledDataUInt8_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
     memcpy(ptr1, ptr2, (width * sizeof(uint8_t)));
   }
 }
+
+void Configurator::copyDescrambleArray(uint32_t *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyDescrambleArray");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, descrambleArray_, (imageWidth_ * imageHeight_ * sizeof(uint32_t)));
+}
+
+void Configurator::copyGainThresholds(uint32_t *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyGainThresholds");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, gainThresholds_, (4 * sizeof(uint32_t)));
+}
+
+void Configurator::copyADCIndex(uint32_t *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyADCIndex");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, ADC_index_, (imageWidth_ * imageHeight_ * sizeof(uint32_t)));
+}
+
+void Configurator::copyADCLowGain(float *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyADCLowGain");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, ADC_low_gain_, (noOfADCs_ * sizeof(float)));
+}
+
+void Configurator::copyADCHighGain(float *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyADCHighGain");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, ADC_high_gain_, (noOfADCs_ * sizeof(float)));
+}
+
+void Configurator::copyADCOffsets(float *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyADCOffsets");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, ADC_offset_, (noOfADCs_ * sizeof(float)));
+}
+
+void Configurator::copyStageGains(float *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyStageGains");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, stage_gains_, (4 * imageWidth_ * imageHeight_ * sizeof(float)));
+}
+
+void Configurator::copyStageOffsets(float *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyStageOffsets");
+  // Assumes the buffer provided has already been allocated
+  memcpy(buffer, stage_offsets_, (4 * imageWidth_ * imageHeight_ * sizeof(float)));
+}
+
 

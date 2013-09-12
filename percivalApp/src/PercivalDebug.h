@@ -38,11 +38,14 @@ class PercivalDebug
 
     void log(uint32_t level, const std::string& str, boost::thread::id val);
 
+    void log(uint32_t level, const std::string& str, bool val);
+
   private:
 
-    uint32_t    level_;        // Debug level
-    std::string functionName_; // Name of calling function
-    long        startTime_;    // Time debug object created
+    uint32_t            level_;        // Debug level
+    std::string         functionName_; // Name of calling function
+    long                startTime_;    // Time debug object created
+    static boost::mutex *access_;       // Mutex to ensure lines printed correctly
 };
 
 #endif  /* PERCIVALDEBUG_H_ */

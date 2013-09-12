@@ -25,8 +25,11 @@
 #define PercConfigFileReadString     "PERC_FILE_READ"             //     (asynInt32,    r/w)   Read in the config file
 #define PercFileReadStatusString     "PERC_READ_STATUS"           //     (asynInt32,    r/w)   File read status
 #define PercFileReadMessageString    "PERC_READ_MESSAGE"          //     (asynOctet,    r/w)   File read message
+#define PercFileErrorStatusString    "PERC_FILE_ERROR_STATUS"     //     (asynOctet,    r/w)   File read error status
 
 #define PercDebugLevelString         "PERC_DEBUG_LEVEL"           //     (asynInt32,    r/w)   Debug level for low level non-EPICS code
+
+#define PercDescrambleString         "PERC_DESCRAMBLE"            //     (asynInt32,    r/w)   Are we going to descramble or keep raw frames
 
 #define PercEnableChannel1String     "PERC_ENABLE_CHANNEL_1"      //     (asynInt32,    r/w)   Channel 1 enable/disable
 #define PercEnableChannel2String     "PERC_ENABLE_CHANNEL_2"      //     (asynInt32,    r/w)   Channel 2 enable/disable
@@ -68,6 +71,19 @@
 #define PercSubFramesChannel3String  "PERC_SUB_FRAMES_CHANNEL_3"  //     (asynInt32,    r/w)   Channel 3 how many subframes to split into
 #define PercSubFramesChannel4String  "PERC_SUB_FRAMES_CHANNEL_4"  //     (asynInt32,    r/w)   Channel 4 how many subframes to split into
 
+#define PercReceiveChannel1String    "PERC_RECEIVE_CHANNEL_1"     //     (asynInt32,    r/o)   Are we receiving on channel 1
+#define PercReceiveChannel2String    "PERC_RECEIVE_CHANNEL_2"     //     (asynInt32,    r/o)   Are we receiving on channel 2
+#define PercReceiveChannel3String    "PERC_RECEIVE_CHANNEL_3"     //     (asynInt32,    r/o)   Are we receiving on channel 3
+#define PercReceiveChannel4String    "PERC_RECEIVE_CHANNEL_4"     //     (asynInt32,    r/o)   Are we receiving on channel 4
+#define PercErrorChannel1String      "PERC_ERROR_CHANNEL_1"       //     (asynInt32,    r/o)   Is there an error on channel 1
+#define PercErrorChannel2String      "PERC_ERROR_CHANNEL_2"       //     (asynInt32,    r/o)   Is there an error on channel 2
+#define PercErrorChannel3String      "PERC_ERROR_CHANNEL_3"       //     (asynInt32,    r/o)   Is there an error on channel 3
+#define PercErrorChannel4String      "PERC_ERROR_CHANNEL_4"       //     (asynInt32,    r/o)   Is there an error on channel 4
+#define PercStatusChannel1String     "PERC_STATUS_CHANNEL_1"      //     (asynOctet,    r/o)   Current status on channel 1
+#define PercStatusChannel2String     "PERC_STATUS_CHANNEL_2"      //     (asynOctet,    r/o)   Current status on channel 2
+#define PercStatusChannel3String     "PERC_STATUS_CHANNEL_3"      //     (asynOctet,    r/o)   Current status on channel 3
+#define PercStatusChannel4String     "PERC_STATUS_CHANNEL_4"      //     (asynOctet,    r/o)   Current status on channel 4
+
 #define PercAddrChannel1String       "PERC_ADDR_CHANNEL_1"        //     (asynOctet,    r/w)   Channel 1 NIC address string
 #define PercAddrChannel2String       "PERC_ADDR_CHANNEL_2"        //     (asynOctet,    r/w)   Channel 2 NIC address string
 #define PercAddrChannel3String       "PERC_ADDR_CHANNEL_3"        //     (asynOctet,    r/w)   Channel 3 NIC address string
@@ -101,7 +117,7 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     virtual int createFileName(int maxChars, char *fullFileName);
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
 
-    virtual void imageReceived(PercivalBuffer *buffer);
+    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
     virtual PercivalBuffer *allocateBuffer();
 
   protected:
@@ -113,7 +129,9 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercConfigFileRead;
     int PercFileReadStatus;
     int PercFileReadMessage;
+    int PercFileErrorStatus;
     int PercDebugLevel;
+    int PercDescramble;
 
     // Parameters for each of the subframes
     int PercEnableChannel1;
@@ -152,6 +170,19 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercSubFramesChannel3;
     int PercSubFramesChannel4;
 
+    int PercReceiveChannel1;
+    int PercReceiveChannel2;
+    int PercReceiveChannel3;
+    int PercReceiveChannel4;
+    int PercErrorChannel1;
+    int PercErrorChannel2;
+    int PercErrorChannel3;
+    int PercErrorChannel4;
+    int PercStatusChannel1;
+    int PercStatusChannel2;
+    int PercStatusChannel3;
+    int PercStatusChannel4;
+
     int PercAddrChannel1;
     int PercAddrChannel2;
     int PercAddrChannel3;
@@ -171,6 +202,17 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     PercivalBufferPool *buffers_;   // Pool of percival buffers
     Configurator       *configPtr_; // Configurator ptr for reading configuration file
     NDArray *pImage_;
+
+    // Descramble Array
+    uint32_t *descrambleArray_;
+    // Data structures for gain information
+    uint32_t noOfADCs_;
+    uint32_t *ADC_index_;         // Index of ADC to use for each input data point
+    float    *ADC_low_gain_;      // Array of low gain ADC gains, one per ADC
+    float    *ADC_high_gain_;     // Array of high gain ADC gains, one per ADC
+    float    *ADC_offset_;        // Combined offset for both ADC's
+    float    *stage_gains_;       // Gain to apply for each of the output stages
+    float    *stage_offsets_;     // Offsets to apply for each of the output stages (in scrambled order)
 
     // Image declerations
     size_t        dims_[2];

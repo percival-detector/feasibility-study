@@ -126,31 +126,69 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
   } else if (function == GDPostCommand){
     // Are we starting posting
     if (value == 1){
-      // Here we are starting the posting
-      int channelEnabled = 0;
-      // For each channel check the enabled state. If enabled then set the
-      // channel specific posting "ON" and send the event
-      getIntegerParam(GDEnableChannel1, &channelEnabled);
-      if (channelEnabled){
-        setIntegerParam(GDPostChannel1, 1);
-        epicsEventSignal(this->startEventId_[0]);
+      int error = 0;
+      // First we must check for errors
+      for (int channel = 0; channel < 4; channel++){
+        int tlx, tly, brx, bry, subFrames, enabled;
+        // Reset errors
+        setIntegerParam(GDErrorChannel1+channel, 0);
+        setStringParam(GDErrorMsgChannel1+channel, "");
+        // Check to see if the subframe is enabled
+        getIntegerParam(GDEnableChannel1+channel, &enabled);
+        if (!error){
+          if (enabled){
+            // Subframe is enabled, read out parameters
+            getIntegerParam(GDSubFramesChannel1+channel, &subFrames);
+            getIntegerParam(GDTopLeftXChannel1+channel, &tlx);
+            getIntegerParam(GDTopLeftYChannel1+channel, &tly);
+            getIntegerParam(GDBotRightXChannel1+channel, &brx);
+            getIntegerParam(GDBotRightYChannel1+channel, &bry);
+            // Perfom a few checks
+            if (tlx >= brx){
+              error = 1;
+              setStringParam(GDErrorMsgChannel1+channel, "Width must be > 0");
+            }
+            if (tly >= bry){
+              error = 1;
+              setStringParam(GDErrorMsgChannel1+channel, "Height must be > 0");
+            }
+            if (subFrames <= 0){
+              error = 1;
+              setStringParam(GDErrorMsgChannel1+channel, "Subframes must be > 0");
+            }
+            if (error){
+              setIntegerParam(GDErrorChannel1+channel, 1);
+            }
+          }
+        }
       }
-      getIntegerParam(GDEnableChannel2, &channelEnabled);
-      if (channelEnabled){
-        setIntegerParam(GDPostChannel2, 1);
-        epicsEventSignal(this->startEventId_[1]);
+      // Only proceed if there are no errors
+      if (!error){
+        // Here we are starting the posting
+        int channelEnabled = 0;
+        // For each channel check the enabled state. If enabled then set the
+        // channel specific posting "ON" and send the event
+        getIntegerParam(GDEnableChannel1, &channelEnabled);
+        if (channelEnabled){
+          setIntegerParam(GDPostChannel1, 1);
+          epicsEventSignal(this->startEventId_[0]);
+        }
+        getIntegerParam(GDEnableChannel2, &channelEnabled);
+        if (channelEnabled){
+          setIntegerParam(GDPostChannel2, 1);
+          epicsEventSignal(this->startEventId_[1]);
+        }
+        getIntegerParam(GDEnableChannel3, &channelEnabled);
+        if (channelEnabled){
+          setIntegerParam(GDPostChannel3, 1);
+          epicsEventSignal(this->startEventId_[2]);
+        }
+        getIntegerParam(GDEnableChannel4, &channelEnabled);
+        if (channelEnabled){
+          setIntegerParam(GDPostChannel4, 1);
+          epicsEventSignal(this->startEventId_[3]);
+        }
       }
-      getIntegerParam(GDEnableChannel3, &channelEnabled);
-      if (channelEnabled){
-        setIntegerParam(GDPostChannel3, 1);
-        epicsEventSignal(this->startEventId_[2]);
-      }
-      getIntegerParam(GDEnableChannel4, &channelEnabled);
-      if (channelEnabled){
-        setIntegerParam(GDPostChannel4, 1);
-        epicsEventSignal(this->startEventId_[3]);
-      }
-
     } else {
       // Here we are stopping the posting
       int channelRunning = 0;
@@ -353,7 +391,10 @@ void asynGeneratorDriver::posting_task(int taskNumber)
   int status;
   int debugLevel;
   uint32_t prevDebug = 0;
+  uint32_t images = 0;
   int imageDataType = 0;
+  int numImages;
+  int imageMode;
   int postAttribute;         // Address of attribute used for starting/stopping posting
   int posting;               // Current posting value
   int counterAttribute;      // Address of attribute used for the current count of posted data
@@ -387,7 +428,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
   int sIWidth = 0;
   int sIHeight = 0;
-  void *buffer = 0;
+  void **buffer = 0;
 
   double postTime = 0.0;     // Time in seconds of each frame post
   double frequency;          // Frames per second
@@ -442,6 +483,9 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
       // If the buffer is not zero then free the memory
       if (buffer){
+        for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+          free(buffer[imageIndex]);
+        }
         free(buffer);
         buffer = 0;
       }
@@ -456,6 +500,8 @@ void asynGeneratorDriver::posting_task(int taskNumber)
       this->lock();
       // Reset the counter to zero
       setIntegerParam(counterAttribute, 0);
+      // Read the image mode
+      getIntegerParam(GDImageMode, &imageMode);
       // Read the posting frequency
       getDoubleParam(GDPostFrequency, &frequency);
       // Read the local NIC address
@@ -491,15 +537,19 @@ void asynGeneratorDriver::posting_task(int taskNumber)
       sIHeight = subBry - subTly + 1;
       // Allocate the storage for the image and 
       // load the sub image into the buffer
-      if (imageDataType == UInt8){
-        buffer = malloc(sIWidth * sIHeight * sizeof(uint8_t));
-        configPtr->copyScrambledSectionUInt8(subTlx, subTly, subBrx, subBry, (uint8_t *)buffer);
-      } else if (imageDataType == UInt16){
-        buffer = malloc(sIWidth * sIHeight * sizeof(uint16_t));
-        configPtr->copyScrambledSectionUInt16(subTlx, subTly, subBrx, subBry, (uint16_t *)buffer);
-      } else if (imageDataType == UInt32){
-        buffer = malloc(sIWidth * sIHeight * sizeof(uint32_t));
-        configPtr->copyScrambledSectionUInt32(subTlx, subTly, subBrx, subBry, (uint32_t *)buffer);
+      images = configPtr->getNoOfImages();
+      buffer = (void **)malloc(images * sizeof(void *));
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        if (imageDataType == UInt8){
+          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint8_t));
+          configPtr->copyScrambledSectionUInt8(imageIndex, subTlx, subTly, subBrx, subBry, (uint8_t *)buffer[imageIndex]);
+        } else if (imageDataType == UInt16){
+          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+          configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer[imageIndex]);
+        } else if (imageDataType == UInt32){
+          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint32_t));
+          configPtr->copyScrambledSectionUInt32(imageIndex, subTlx, subTly, subBrx, subBry, (uint32_t *)buffer[imageIndex]);
+        }
       }
 
       // Setup the debug level before doing any socket work
@@ -527,28 +577,45 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
     // Post
 //std::cout << "TASK " << taskNumber << " - Posting now..." << std::endl;
-
-    counter++;
-
-    // Send the sub image, along with the number of sub frames and packet size
-    senderPtr->sendImage(((uint32_t)pow(2.0, (double)imageDataType)), buffer, (sIWidth*sIHeight), subFrames, packetSize, ((uint32_t)(postTime * 1000000.0)));
-
-    // Call the callbacks to update any changes
     this->lock();
-    // Check for a change in debug level
-    getIntegerParam(GDDebugLevel, &debugLevel);
-    if ((uint32_t)debugLevel != prevDebug){
-      senderPtr->setDebug(debugLevel);
-      prevDebug = debugLevel;
-    }
-    setIntegerParam(counterAttribute, counter);
-    callParamCallbacks();
     getIntegerParam(postAttribute, &posting);
     this->unlock();
     if (posting){
-      epicsTimeGetCurrent(&timeNow);
-      double wait = counter*postTime - epicsTimeDiffInSeconds(&timeNow, &startTime);
-      status = epicsEventWaitWithTimeout(this->stopEventId_[taskNumber], wait);
+      counter++;
+
+      // Send the sub image, along with the number of sub frames and packet size
+      senderPtr->sendImage(((uint32_t)pow(2.0, (double)imageDataType)), buffer[counter%images], (sIWidth*sIHeight), subFrames, packetSize, ((uint32_t)(postTime * 1000000.0)), counter);
+
+      // Call the callbacks to update any changes
+      this->lock();
+      // Check for a change in debug level
+      getIntegerParam(GDDebugLevel, &debugLevel);
+      if ((uint32_t)debugLevel != prevDebug){
+        senderPtr->setDebug(debugLevel);
+        prevDebug = debugLevel;
+      }
+      setIntegerParam(counterAttribute, counter);
+      callParamCallbacks();
+      //getIntegerParam(postAttribute, &posting);
+
+      // Read in the number of Images and counter
+      getIntegerParam(GDNumImages, &numImages);
+      // See if acquisition is complete
+      if (((imageMode == 0) && (counter == 1)) ||
+          ((imageMode == 1) && (counter >= numImages))) {
+        setIntegerParam(postAttribute, 0);
+        setIntegerParam(GDPostCommand, 0);
+        posting = 0;
+        callParamCallbacks();
+      }
+
+
+      this->unlock();
+      if (posting){
+        epicsTimeGetCurrent(&timeNow);
+        double wait = counter*postTime - epicsTimeDiffInSeconds(&timeNow, &startTime);
+        status = epicsEventWaitWithTimeout(this->stopEventId_[taskNumber], wait);
+      }
     }
   }
 }
@@ -616,6 +683,10 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   createParam(ImageScrambleTypeString,    asynParamInt32,           &ImageScrambleType);
 
   createParam(GDDebugLevelString,         asynParamInt32,           &GDDebugLevel);
+
+  createParam(GDNumImagesString,          asynParamInt32,           &GDNumImages);
+  createParam(GDNumImagesCounterString,   asynParamInt32,           &GDNumImagesCounter);
+  createParam(GDImageModeString,          asynParamInt32,           &GDImageMode);
 
   // Parameters for thread control
   createParam(GDPostCommandString,        asynParamInt32,           &GDPostCommand);
@@ -758,6 +829,10 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   setIntegerParam(DStripesPerImageY,    configPtr->getStripesPerImageY());
 
   setIntegerParam(GDDebugLevel,         0);
+
+  setIntegerParam(GDNumImages,          100);
+  setIntegerParam(GDNumImagesCounter,   0);
+  setIntegerParam(GDImageMode,          2);
 
   setIntegerParam(GDPostCommand,        0);
   setIntegerParam(GDPostChannel1,       0);

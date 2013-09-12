@@ -13,8 +13,10 @@ PercivalServer::PercivalServer()
 	: debug_(0),
     errorMessage_(""),
     acquiring_(false),
+    descramble_(false),
     serverMask_(0),
     serverReady_(0),
+    frameNumber_(0),
     callback_(0)
 {
 }
@@ -41,6 +43,13 @@ std::string PercivalServer::errorMessage()
   PercivalDebug dbg(debug_, "PercivalServer::errorMessage");
   dbg.log(1, "Message", errorMessage_);
   return errorMessage_;
+}
+
+void PercivalServer::setDescramble(bool descramble)
+{
+  PercivalDebug dbg(debug_, "PercivalServer::errorMessage");
+  dbg.log(1, "Descramble", descramble);
+  descramble_ = descramble;
 }
 
 int PercivalServer::setupFullFrame(uint32_t width,              // Width of full frame in pixels
@@ -107,9 +116,29 @@ int PercivalServer::releaseSubFrame(int frameID)
   return 0;
 }
 
+int PercivalServer::releaseAllSubFrames()
+{
+  PercivalDebug dbg(debug_, "PercivalServer::releaseAllSubFrames");
+  if (serverMask_ & 1){
+    releaseSubFrame(0);
+  }
+  if (serverMask_ & 2){
+    releaseSubFrame(1);
+  }
+  if (serverMask_ & 4){
+    releaseSubFrame(2);
+  }
+  if (serverMask_ & 8){
+    releaseSubFrame(3);
+  }
+  return 0;
+}
+
 int PercivalServer::startAcquisition()
 {
   PercivalDebug dbg(debug_, "PercivalServer::startAcquisition");
+  // Reset the server ready flag
+  serverReady_ = 0;
   std::map<int, PercivalSubFrame *>::const_iterator iterator;
   for(iterator = subFrameMap_.begin(); iterator != subFrameMap_.end(); iterator++){
     iterator->second->startAcquisition();
@@ -120,6 +149,10 @@ int PercivalServer::startAcquisition()
 int PercivalServer::stopAcquisition()
 {
   PercivalDebug dbg(debug_, "PercivalServer::stopAcquisition");
+  std::map<int, PercivalSubFrame *>::const_iterator iterator;
+  for(iterator = subFrameMap_.begin(); iterator != subFrameMap_.end(); iterator++){
+    iterator->second->stopAcquisition();
+  }
   return 0;
 }
 
@@ -130,28 +163,54 @@ int PercivalServer::registerCallback(IPercivalCallback *callback)
   return 0;
 }
 
-int PercivalServer::processSubFrame(uint32_t frameID, PercivalBuffer *buffer)
+int PercivalServer::processSubFrame(uint32_t frameID, PercivalBuffer *buffer, uint32_t frameNumber)
 {
   PercivalDebug dbg(debug_, "PercivalServer::processSubFrame");
   dbg.log(1, "Frame ID", frameID);
+  dbg.log(1, "Frame Number", frameNumber);
   dbg.log(1, "Buffer Address", (int64_t)buffer);
   // LOCK
   {
     boost::lock_guard<boost::mutex> lock(access_);
+    dbg.log(2, "Process start: serverReady", serverReady_);
     // Check mask
     if (serverReady_ == 0){
       // If first entry on mask call for allocation
       if (callback_){
         fullFrame_ = callback_->allocateBuffer();
       }
+      // Now set the frame number up to record the current frame
+      frameNumber_ = frameNumber;
     } else if (serverReady_ & (1 << frameID)){
       // If this frame already in mask then serious error
-      dbg.log(0, "Two subframes with same ID, subframes out of order");
+      dbg.log(0, "Two subframes arrived from the same channel ID, subframes out of order");
+      dbg.log(0, "serverReady_", serverReady_);
+      dbg.log(0, "frameID", frameID);
+      // What to do here...
+      // First, reset the server ready flag to try and recover
+      serverReady_ = 0;
+      // Now return an error
+      //return -1;
+    } else if (frameNumber > frameNumber_){
+      // Here we have a situation where a new frame number is greater than the current frame
+      // This is bad, reset the serverReady_ flag in the hope to recover images
+      dbg.log(0, "Incoming frame greater than current frame");
+      dbg.log(0, "Current frame number", frameNumber_);
+      dbg.log(0, "New frame number", frameNumber);
+      serverReady_ = 0;
+      frameNumber_ = frameNumber;
+    } else if (frameNumber < frameNumber_){
+      // Here we have a situation where a new frame number is less than the current frame
+      // Ignore this frame and simply return but log it for now
+      dbg.log(0, "Incoming frame less than current frame");
+      dbg.log(0, "Current frame number", frameNumber_);
+      dbg.log(0, "New frame number", frameNumber);
+      return 0;
     }
   // UNLOCK
-  }
+//  }
   // Process data (DANGER CALL, PROCESSING ON SAME BUFFER CONCURRENTLY)
-  dbg.log(1, "Processing data...");
+  dbg.log(2, "Processing data...");
   PercivalSubFrame *sfPtr = subFrameMap_[frameID];
   unscramble(sfPtr->getNumberOfPixels(),
              (uint16_t *)buffer->raw(),
@@ -162,15 +221,17 @@ int PercivalServer::processSubFrame(uint32_t frameID, PercivalBuffer *buffer)
              sfPtr->getTopLeftY());
 
   // LOCK
-  {
-    boost::lock_guard<boost::mutex> lock(access_);
+//  {
+//    boost::lock_guard<boost::mutex> lock(access_);
     // Update mask
     serverReady_ = serverReady_ + (1 << frameID);
+    dbg.log(2, "Process end: serverReady", serverReady_);
+    
     // If last call (mask full) then notify and zero mask
     if (serverReady_ == serverMask_){
       dbg.log(2, "Notify frame complete");
       if (callback_){
-        callback_->imageReceived(fullFrame_);
+        callback_->imageReceived(fullFrame_, frameNumber_);
       }
       serverReady_ = 0;
     }
@@ -188,12 +249,15 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
                                 uint32_t y1)
 {
   PercivalDebug dbg(debug_, "PercivalServer::unscramble");
-  int index; // Index of point in subframe
-  int xp;    // X prime, x coordinate within subframe
-  int yp;    // Y prime, y coordinate within subframe
-  int ip;    // Index prime, index of point within full frame
-  //unsigned int gain, ADC_low, ADC_high, ADC;
-  //float ADC_output;
+  int index;  // Index of point in subframe
+  int xp;     // X prime, x coordinate within subframe
+  int yp;     // Y prime, y coordinate within subframe
+  int ip;     // Index prime, index of point within full frame
+  uint32_t gain;
+  uint32_t ADC_low;
+  uint32_t ADC_high;
+  uint32_t ADC;
+  float ADC_output;
 
   for (index = 0; index < numPts; index++ ){
     yp = index / (x2 - x1 + 1);
@@ -202,24 +266,30 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
 
 //std::cout << "Calculated x [" << xp << "]  y [" << yp << "]  index [" << ip << "]" << std::endl;
 
-    out_data[ip] = in_data[index];
+    // Check if we are descrambling or simply reconstructing
+    if (!descramble_){
+      // OK, here we are just reconstructing the original raw frame
+      out_data[ip] = in_data[index];
+    } else {
+      // Here we are going to descramble
 
-/*
-    gain     = in_data[ip] & 0x3;
-    ADC_low  = ( in_data[ip] >> 2 ) & 0xFF;
-    ADC_high = ( in_data[ip] >> 10 ) & 0x1F;
-    ADC      = ADCIndex_[ip];
-        
-    ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
-    out_data[dataIndex_[ip]] = ADC_output * stageGains_[gain][ip] + stageOffsets_[gain][ip];
-        
-    if (gain == 0) {
-      // Subtract DCS Reset signal if in diode sampling mode 
-      ADC_low  = ( reset_data[ip] >> 2 ) & 0xFF;
-      ADC_high = ( reset_data[ip] >> 10 ) & 0x1F;
+      gain     = in_data[index] & 0x3;
+      ADC_low  = ( in_data[index] >> 2 ) & 0xFF;
+      ADC_high = ( in_data[index] >> 2 ) & 0x1F00;
+      ADC      = ADCIndex_[dataIndex_[ip]];
+      
       ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
-      out_data[dataIndex_[ip]] -= ADC_output * stageGains_[0][ip] + stageOffsets_[0][ip];
-    }*/
+      out_data[dataIndex_[ip]] = ADC_output * stageGains_[gain*pixelSize_+dataIndex_[ip]] + stageOffsets_[gain*pixelSize_+dataIndex_[ip]];
+
+//      if (gain == 0) {
+//        // Subtract DCS Reset signal if in diode sampling mode 
+//        ADC_low  = ( reset_data[ip] >> 2 ) & 0xFF;
+//        ADC_high = ( reset_data[ip] >> 10 ) & 0x1F;
+//        ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
+//        out_data[dataIndex_[ip]] -= ADC_output * stageGains_[0][ip] + stageOffsets_[0][ip];
+//      }
+
+    }
   }
 }
 

@@ -49,6 +49,7 @@ int DataSender::setupSocket(const std::string& localHost,
   dbg.log(1, "Local Port", (uint32_t)localPort);
   dbg.log(1, "Remote Host", remoteHost);
   dbg.log(1, "Remote Port", (uint32_t)remotePort);
+  mCurrentFrameNumber = 0;
   try
   {
     boost::asio::ip::udp::resolver resolver(ioService_);
@@ -117,7 +118,7 @@ int DataSender::shutdownSocket()
   return 0;
 }
 
-int DataSender::sendImage(uint32_t dataSize, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time)
+int DataSender::sendImage(uint32_t dataSize, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time, uint32_t frameNumber)
 {
   PercivalDebug dbg(debug_, "DataSender::sendImage");
   uint32_t subFrameSize = size / subFrames;
@@ -132,7 +133,9 @@ int DataSender::sendImage(uint32_t dataSize, void *buffer, uint32_t size, uint32
   dbg.log(1, "subFrameSize", subFrameSize);
   dbg.log(1, "packetSize", packetSize);
   dbg.log(1, "packetBytes", packetBytes);
+  dbg.log(1, "frameNumber", frameNumber);
 
+  mCurrentFrameNumber = frameNumber;
   boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
   long startTime = now.time_of_day().total_microseconds();
   long sleepTime = 0;
@@ -174,9 +177,11 @@ void DataSender::send(uint32_t frameNumber, uint32_t packetNumber, bool sof, boo
 {
   PercivalDebug dbg(debug_, "DataSender::send");
   // Create the packet header
-  mPacketHeader.frameNumber = frameNumber;
+  mPacketHeader.frameNumber = mCurrentFrameNumber;
+  mPacketHeader.subFrameNumber = frameNumber;
   mPacketHeader.packetNumberFlags = (packetNumber & kPacketNumberMask);
-  dbg.log(2, "FrameNumber", frameNumber);
+  dbg.log(2, "FrameNumber", mCurrentFrameNumber);
+  dbg.log(2, "SubFrameNumber", frameNumber);
   dbg.log(2, "PacketNumber", packetNumber);
   dbg.log(2, "PayloadSize", payloadSize);
   if (sof){

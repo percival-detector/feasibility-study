@@ -98,11 +98,18 @@ void PercivalSubFrame::startAcquisition()
   server_->startAcquisition(byteSize_, subFrames_);
 }
 
-void PercivalSubFrame::imageReceived(PercivalBuffer *buffer)
+void PercivalSubFrame::stopAcquisition()
+{
+  PercivalDebug dbg(debug_, "PercivalSubFrame::stopAcquisition");
+  server_->stopAcquisition();
+  server_->shutdownSocket();
+}
+
+void PercivalSubFrame::imageReceived(PercivalBuffer *buffer, uint32_t frameNumber)
 {
   PercivalDebug dbg(debug_, "PercivalSubFrame::imageReceived");
   dbg.log(1, "Thread ID", boost::this_thread::get_id());
-  owner_->processSubFrame(frameID_, buffer);
+  owner_->processSubFrame(frameID_, buffer, frameNumber);
   buffers_->free(buffer);
 }
 

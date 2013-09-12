@@ -65,6 +65,13 @@ typedef enum {
 #define DStripesPerImageXString  "D_STRIPES_PER_IMAGE_X"       /**< (asynInt32,    r/w) Number of stripes in an image in the x direction */
 #define DStripesPerImageYString  "D_STRIPES_PER_IMAGE_Y"       /**< (asynInt32,    r/w) Number of stripes in an image in the y direction */
 
+// The following parameters setup the physical layout of the detector
+#define DNumberOfADCsString      "D_NUMBER_OF_ADCS"            /**< (asynInt32,    r/w) Number of ADCs required */
+#define DGainThreshold1String    "D_GAIN_THRESHOLD_1"          /**< (asynInt32,    r/w) Gain threshold 1 */
+#define DGainThreshold2String    "D_GAIN_THRESHOLD_2"          /**< (asynInt32,    r/w) Gain threshold 2 */
+#define DGainThreshold3String    "D_GAIN_THRESHOLD_3"          /**< (asynInt32,    r/w) Gain threshold 3 */
+#define DGainThreshold4String    "D_GAIN_THRESHOLD_4"          /**< (asynInt32,    r/w) Gain threshold 4 */
+
 #define ImageScrambleTypeString  "IMAGE_SCRAMBLE_TYPE"         /**< (asynInt32,    r/w) Type of image scramble to execute (excalibur, percival) */
 
 class epicsShareFunc asynConfiguratorDriver : public asynPortDriver
@@ -126,6 +133,11 @@ class epicsShareFunc asynConfiguratorDriver : public asynPortDriver
     int DChipsPerStripeY;
     int DStripesPerImageX;
     int DStripesPerImageY;
+    int DNumberOfADCs;
+    int DGainThreshold1;
+    int DGainThreshold2;
+    int DGainThreshold3;
+    int DGainThreshold4;
     int ImageScrambleType;
     #define LAST_CONFIGURATOR_PARAM ImageScrambleType
 

@@ -20,6 +20,20 @@ boost_thread_DIR = $(BOOST)/lib
 # ----------------------------------------
 # Build a basic test application
 #-----------------------------------------
+PROD_IOC += testConfig
+testConfig_SRCS += testConfigurator.cpp
+testConfig_SRCS += Configurator.cpp
+testConfig_SRCS += PercivalDebug.cpp
+testConfig_LIBS += boost_system
+testConfig_LIBS += boost_thread
+testConfig_LIBS += hdf5
+hdf5_DIR         = $(HDF5)/lib
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
+
+# ----------------------------------------
+# Build a basic test application
+#-----------------------------------------
 PROD_IOC += testPercServer
 testPercServer_SRCS += testPercivalServer.cpp
 testPercServer_SRCS += PercivalServer.cpp

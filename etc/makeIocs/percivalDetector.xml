@@ -1,10 +1,11 @@
 <?xml version="1.0" ?>
 <components arch="linux-x86">
 	<percival.ADPercivalDriver ADDR="0" P="PERCIVAL:" PORT="perc.cam" R="cam:" TIMEOUT="1"/>
-	<ffmpegServer.ffmpegStream ADDR="0" HTTP_PORT="8081" MAXH="256" MAXW="256" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERCIVAL:" PORT="perc.mpg" R="mpg:" TIMEOUT="1"/>
+	<areaDetector.NDProcess ADDR="0" Enabled="1" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERCIVAL:" PORT="perc.proc" R="proc:" TIMEOUT="1"/>
+	<ffmpegServer.ffmpegStream ADDR="0" HTTP_PORT="8081" MAXH="256" MAXW="256" NDARRAY_ADDR="0" NDARRAY_PORT="perc.proc" P="PERCIVAL:" PORT="perc.mpg" R="mpg:" TIMEOUT="1"/>
 	<areaDetector.NDFileHDF5 ADDR="0" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERCIVAL:" PORT="perc.hdf" QUEUE="10000" R="hdf:" TIMEOUT="1"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:mpg:EnableCallbacks &quot;Enable&quot;" post_init="True"/>
-	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:mpg:MinCallbackTime &quot;0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:proc:MinCallbackTime &quot;0.1&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftXChannel1 &quot;0&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercTopLeftYChannel1 &quot;0&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERCIVAL:cam:PercBotRightXChannel1 &quot;127&quot;" post_init="True"/>

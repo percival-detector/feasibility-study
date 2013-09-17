@@ -18,7 +18,7 @@
 
 record(longout, "$(P)$(R)DebugLevel")
 {
-   field(PINI, "NO")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_DEBUG_LEVEL")
    field(VAL,  "0")
@@ -28,6 +28,52 @@ record(longin, "$(P)$(R)DebugLevel_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_DEBUG_LEVEL")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record sets the watchdog timeout                          #
+###################################################################
+
+record(longout, "$(P)$(R)Watchdog")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_WATCHDOG_TIMEOUT")
+   field(VAL,  "2000")
+}
+
+record(longin, "$(P)$(R)Watchdog_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_WATCHDOG_TIMEOUT")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  Single channel mode or multi channel mode                      #
+###################################################################
+
+record(mbbo, "$(P)$(R)ChannelMode")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_CHANNEL_MODE")
+   field(ZRST, "Multi-channel")
+   field(ZRVL, "0")
+   field(ONST, "Single-channel")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)ChannelMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_CHANNEL_MODE")
+   field(ZRST, "Multi-channel")
+   field(ZRVL, "0")
+   field(ONST, "Single-channel")
+   field(ONVL, "1")
    field(SCAN, "I/O Intr")
 }
 

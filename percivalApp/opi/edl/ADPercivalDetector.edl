@@ -48,7 +48,7 @@ release 0
 x 0
 y 485
 w 390
-h 325
+h 335
 lineColor index 14
 fill
 fillColor index 3
@@ -59,7 +59,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 475
 w 121
@@ -105,8 +105,8 @@ major 10
 minor 0
 release 0
 x 155
-y 495
-w 60
+y 515
+w 50
 h 20
 controlPv "$(P)$(R)DebugLevel_RBV"
 fgColor index 25
@@ -122,9 +122,9 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 90
-y 495
-w 60
+x 100
+y 515
+w 50
 h 20
 controlPv "$(P)$(R)DebugLevel"
 fgColor index 25
@@ -139,9 +139,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
-y 500
+y 520
 w 75
 h 14
 font "arial-bold-r-12.0"
@@ -159,9 +159,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
-y 525
+y 540
 w 370
 h 15
 font "arial-bold-r-12.0"
@@ -177,10 +177,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 5
-y 540
+y 555
 w 175
 h 20
 controlPv "$(P)$(R)PercFilePath_RBV"
@@ -200,10 +200,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 5
-y 560
+y 575
 w 200
 h 20
 controlPv "$(P)$(R)PercFilePath"
@@ -227,10 +227,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 215
-y 540
+y 555
 w 170
 h 20
 controlPv "$(P)$(R)PercFileName_RBV"
@@ -250,10 +250,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 215
-y 560
+y 575
 w 170
 h 20
 controlPv "$(P)$(R)PercFileName"
@@ -277,10 +277,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 5
-y 600
+y 615
 w 370
 h 18
 controlPv "$(P)$(R)PercFullFileName_RBV"
@@ -303,7 +303,7 @@ major 4
 minor 0
 release 0
 x 185
-y 540
+y 555
 w 18
 h 18
 controlPv "$(P)$(R)PercFilePathExists_RBV"
@@ -318,10 +318,10 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 180
-y 645
+y 655
 w 160
 h 20
 controlPv "$(P)$(R)PercFileReadMessage_RBV"
@@ -345,7 +345,7 @@ major 4
 minor 0
 release 0
 x 350
-y 645
+y 655
 w 18
 h 18
 controlPv "$(P)$(R)PercFileErrorStatus_RBV"
@@ -361,9 +361,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 180
-y 625
+y 640
 w 40
 h 15
 font "arial-bold-r-12.0"
@@ -382,7 +382,7 @@ major 4
 minor 0
 release 0
 x 125
-y 645
+y 655
 w 18
 h 18
 controlPv "$(P)$(R)PercFileReadStatus_RBV"
@@ -397,12 +397,12 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 5
-y 625
+y 640
 w 90
-h 40
+h 35
 fgColor index 25
 onColor index 4
 offColor index 3
@@ -422,9 +422,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 100
-y 625
+y 640
 w 70
 h 15
 font "arial-bold-r-12.0"
@@ -442,9 +442,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
-y 585
+y 600
 w 370
 h 15
 font "arial-bold-r-12.0"
@@ -461,9 +461,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
-y 695
+y 705
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -482,7 +482,7 @@ major 4
 minor 0
 release 0
 x 80
-y 690
+y 700
 w 90
 h 25
 fgColor index 25
@@ -500,126 +500,9 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 10
-y 725
-w 60
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Channel 2"
-}
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
+release 1
 x 80
-y 720
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Channel2Enable"
-indicatorPv "$(P)$(R)Channel2Enable_RBV"
-font "arial-bold-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
-x 10
-y 755
-w 60
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Channel 3"
-}
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 80
-y 750
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Channel3Enable"
-indicatorPv "$(P)$(R)Channel3Enable_RBV"
-font "arial-bold-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
-x 10
-y 785
-w 60
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Channel 4"
-}
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 80
-y 780
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Channel4Enable"
-indicatorPv "$(P)$(R)Channel4Enable_RBV"
-font "arial-bold-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
-x 80
-y 670
+y 680
 w 95
 h 20
 font "arial-bold-r-12.0"
@@ -638,64 +521,10 @@ major 4
 minor 0
 release 0
 x 190
-y 695
+y 705
 w 18
 h 18
 controlPv "$(P)$(R)PercReceiveChannel1_RBV"
-lineColor index 14
-onColor index 15
-offColor index 19
-lineWidth 2
-numBits 1
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 190
-y 725
-w 18
-h 18
-controlPv "$(P)$(R)PercReceiveChannel2_RBV"
-lineColor index 14
-onColor index 15
-offColor index 19
-lineWidth 2
-numBits 1
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 190
-y 755
-w 18
-h 18
-controlPv "$(P)$(R)PercReceiveChannel3_RBV"
-lineColor index 14
-onColor index 15
-offColor index 19
-lineWidth 2
-numBits 1
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 190
-y 785
-w 18
-h 18
-controlPv "$(P)$(R)PercReceiveChannel4_RBV"
 lineColor index 14
 onColor index 15
 offColor index 19
@@ -707,10 +536,10 @@ endObjectProperties
 object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 2
+minor 4
 release 0
 x 265
-y 690
+y 700
 w 50
 h 25
 fgColor index 14
@@ -729,14 +558,312 @@ symbols {
 }
 endObjectProperties
 
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 705
+w 18
+h 18
+controlPv "$(P)$(R)PercErrorChannel1_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 265
+y 520
+w 115
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Descramble"
+indicatorPv "$(P)$(R)Descramble_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 155
+y 495
+w 50
+h 20
+controlPv "$(P)$(R)Watchdog_RBV"
+fgColor index 25
+fgAlarm
+bgColor index 9
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 100
+y 495
+w 50
+h 20
+controlPv "$(P)$(R)Watchdog"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 500
+w 91
+h 14
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Watchdog (ms)"
+}
+autoSize
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 265
+y 490
+w 115
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)ChannelMode"
+indicatorPv "$(P)$(R)ChannelMode_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 730
+w 305
+h 85
+
+beginGroup
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 735
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 2"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 730
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel2Enable"
+indicatorPv "$(P)$(R)Channel2Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 765
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 3"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 760
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel3Enable"
+indicatorPv "$(P)$(R)Channel3Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 795
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 4"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 790
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel4Enable"
+indicatorPv "$(P)$(R)Channel4Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 735
+w 18
+h 18
+controlPv "$(P)$(R)PercReceiveChannel2_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 765
+w 18
+h 18
+controlPv "$(P)$(R)PercReceiveChannel3_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 795
+w 18
+h 18
+controlPv "$(P)$(R)PercReceiveChannel4_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
 # (Related Display)
 object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 2
+minor 4
 release 0
 x 265
-y 720
+y 730
 w 50
 h 25
 fgColor index 14
@@ -759,10 +886,10 @@ endObjectProperties
 object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 2
+minor 4
 release 0
 x 265
-y 750
+y 760
 w 50
 h 25
 fgColor index 14
@@ -785,10 +912,10 @@ endObjectProperties
 object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 2
+minor 4
 release 0
 x 265
-y 780
+y 790
 w 50
 h 25
 fgColor index 14
@@ -814,25 +941,7 @@ major 4
 minor 0
 release 0
 x 230
-y 695
-w 18
-h 18
-controlPv "$(P)$(R)PercErrorChannel1_RBV"
-lineColor index 14
-onColor index 20
-offColor index 24
-lineWidth 2
-numBits 1
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 230
-y 725
+y 735
 w 18
 h 18
 controlPv "$(P)$(R)PercErrorChannel2_RBV"
@@ -850,7 +959,7 @@ major 4
 minor 0
 release 0
 x 230
-y 755
+y 765
 w 18
 h 18
 controlPv "$(P)$(R)PercErrorChannel3_RBV"
@@ -868,7 +977,7 @@ major 4
 minor 0
 release 0
 x 230
-y 785
+y 795
 w 18
 h 18
 controlPv "$(P)$(R)PercErrorChannel4_RBV"
@@ -879,23 +988,10 @@ lineWidth 2
 numBits 1
 endObjectProperties
 
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 260
-y 495
-w 115
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Descramble"
-indicatorPv "$(P)$(R)Descramble_RBV"
-font "arial-bold-r-12.0"
+endGroup
+
+visPv "$(P)$(R)ChannelMode_RBV"
+visMin "0"
+visMax "1"
 endObjectProperties
 

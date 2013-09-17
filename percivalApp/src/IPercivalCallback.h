@@ -26,6 +26,8 @@ class IPercivalCallback
     
     virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber) = 0;
 
+    virtual void timeout() = 0;
+
     virtual PercivalBuffer *allocateBuffer() = 0;
 };
 

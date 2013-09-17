@@ -35,6 +35,8 @@ class PercivalServer
 
     void setDebug(uint32_t level);
 
+    void setWatchdogTimeout(uint32_t time);
+
     std::string errorMessage();
 
     void setDescramble(bool descramble);
@@ -71,6 +73,16 @@ class PercivalServer
 
     int processSubFrame(uint32_t frameID, PercivalBuffer *buffer, uint32_t frameNumber);
 
+    int timeout(uint32_t frameID);
+
+    void unscramble(int      numPts,       // Number of points to process
+                    uint8_t *in_data,     // Input data
+                    uint8_t *reset_data,  // Reset data
+                    uint8_t *out_data,    // Output data
+                    uint32_t x1,
+                    uint32_t x2,
+                    uint32_t y1);
+
     void unscramble(int      numPts,       // Number of points to process
                     uint16_t *in_data,     // Input data
                     uint16_t *reset_data,  // Reset data
@@ -79,9 +91,18 @@ class PercivalServer
                     uint32_t x2,
                     uint32_t y1);
 
+    void unscramble(int      numPts,       // Number of points to process
+                    uint32_t *in_data,     // Input data
+                    uint32_t *reset_data,  // Reset data
+                    uint32_t *out_data,    // Output data
+                    uint32_t x1,
+                    uint32_t x2,
+                    uint32_t y1);
+
   private:
 
     uint32_t     debug_;             // Debug level
+    uint32_t     watchdogTimeout_;   // Watchdog timeout (ms)
     std::string  errorMessage_;      // Error message string
     bool         acquiring_;         // Are we acquiring
     boost::mutex access_;            // Mutex for mask locking

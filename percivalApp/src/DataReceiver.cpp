@@ -13,6 +13,7 @@ DataReceiver::DataReceiver()
 	: callback_(0),
     headerPosition_(headerAtStart),
     debug_(0),
+    watchdogTimeout_(2000),
     errorMessage_(""),
     running_(false),
     frameHeaderLength_(sizeof(PacketHeader))
@@ -29,6 +30,13 @@ void DataReceiver::setDebug(uint32_t level)
   PercivalDebug dbg(debug_, "DataReceiver::setDebug");
   dbg.log(1, "Debug level", level);
   debug_ = level;
+}
+
+void DataReceiver::setWatchdogTimeout(uint32_t time)
+{
+  PercivalDebug dbg(debug_, "DataReceiver::setWatchdogTimeout");
+  dbg.log(1, "Watchdog timeout", time);
+  watchdogTimeout_ = time;
 }
 
 std::string DataReceiver::errorMessage()
@@ -59,6 +67,15 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
     } catch (boost::exception& e){
       errorMessage_ = "Unable to create the socket";
       dbg.log(0, "Unable to create the socket");
+      dbg.log(0, e);
+      return -1;
+    }
+    try
+    {
+      watchdogTimer_ = new boost::asio::deadline_timer(ioService_);
+    } catch (boost::exception& e){
+      errorMessage_ = "Unable to create the watchdog timer";
+      dbg.log(0, "Unable to create the watchdog timer");
       dbg.log(0, e);
       return -1;
     }
@@ -179,10 +196,9 @@ int DataReceiver::startAcquisition(uint32_t frameBytes, uint32_t subFrames)
                                    );
 
     // Setup watchdog handler deadline actor to handle receive timeouts
-//    mRecvWatchdogCounter = 0;
-//    mWatchdogTimer.expires_from_now(boost::posix_time::milliseconds(kWatchdogHandlerIntervalMs));
-//    watchdogHandler();
-
+    recvWatchdogCounter_ = 0;
+    watchdogTimer_->expires_from_now(boost::posix_time::milliseconds(watchdogTimeout_));
+    watchdogHandler();
 
 
     // Launch a thread to start the io_service for receiving data, running the watchdog etc
@@ -266,7 +282,7 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
       // Check packet number is incrementing as expected within subframe
       if ((packetHeader_.packetNumberFlags & kPacketNumberMask) != subFramePacketsReceived_){
         dbg.log(0, "Incorrect packet number sequence", (packetHeader_.packetNumberFlags & kPacketNumberMask), "Expected", subFramePacketsReceived_);
-        //errorSignal = FemDataReceiverSignal::femAcquisitionCorruptImage;
+        errorSignal = 1;
       }
 
       // Check for EOF marker in packet header, if so, test sanity of frame counters, handle
@@ -309,6 +325,12 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
         // Increment number of subframes received
         subFramesReceived_++;
 
+        // Check the sub-frame number matches the number of sub-frames received
+        if (subFramesReceived_ != packetHeader_.subFrameNumber){
+          dbg.log(0, "Sub frame number mismatch");
+          errorSignal = 1;
+        }
+
         // If the number of subframes received matches the number expected for the
         // frame, check that we have received the correct amount of data
         if (subFramesReceived_ == subFrames_){
@@ -338,20 +360,19 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
     // Signal current buffer as received if completed, and request a new one unless
     // we are on the last frame, in which case signal acquisition complete
     if (framePayloadBytesReceived_ >= frameBytes_){
-      if (callback_){
-        // HERE MAKE THE CALLBACK FOR THIS FRAME IN A SEPERATE THREAD
-//        callback_->imageReceived(currentBuffer_);
 
-        // Launch a thread to start the io_service for receiving data, running the watchdog etc
-        workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&IPercivalCallback::imageReceived, callback_, currentBuffer_, currentFrameNumber_)));
-         
+      // Only callback if there is no error
+      if (!errorSignal){
+        if (callback_){
+          // HERE MAKE THE CALLBACK FOR THIS FRAME IN A SEPERATE THREAD
+          // Launch a thread to start the io_service for receiving data, running the watchdog etc
+          workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&IPercivalCallback::imageReceived, callback_, currentBuffer_, currentFrameNumber_)));
 
+          // Allocate new buffer
+          currentBuffer_ = callback_->allocateBuffer();
+        }
       }
 
-      // Allocate new buffer
-      if (callback_){
-        currentBuffer_ = callback_->allocateBuffer();
-      }
 
       // Reset frame counters
       framePayloadBytesReceived_ = 0;
@@ -408,5 +429,39 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
 
 }
 
+void DataReceiver::watchdogHandler(void)
+{
+  PercivalDebug dbg(debug_, "DataReceiver::watchdogHandler");
+  if (watchdogTimer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()){
+    // Check if receive watchdog counter has been not been cleared
+    if (recvWatchdogCounter_ > 0){
+      // In here we have watchdogged, signal to the callback we have timed out and reset data variables
+      dbg.log(1, "Watchdog time out");
+
+      // Reset all counters, we are going to try and recover
+      framePayloadBytesReceived_ = 0;
+      frameTotalBytesReceived_   = 0;
+      subFramePacketsReceived_   = 0;
+      subFramesReceived_         = 0;
+      subFrameBytesReceived_     = 0;
+
+      // Now signal to the callback that we have timed out
+      if (callback_){
+        callback_->timeout();
+      }
+    }
+
+    // Increment watchdog counter - this will be reset to zero by the
+    // receive handler every time a receive occurs
+    recvWatchdogCounter_++;
+
+    // Reset deadline timer
+    watchdogTimer_->expires_from_now(boost::posix_time::milliseconds(watchdogTimeout_));
+  }
+
+  if (acquiring_){
+    watchdogTimer_->async_wait(boost::bind(&DataReceiver::watchdogHandler, this));
+  }
+}
 
 

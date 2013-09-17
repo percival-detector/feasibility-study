@@ -28,7 +28,9 @@
 #define PercFileErrorStatusString    "PERC_FILE_ERROR_STATUS"     //     (asynOctet,    r/w)   File read error status
 
 #define PercDebugLevelString         "PERC_DEBUG_LEVEL"           //     (asynInt32,    r/w)   Debug level for low level non-EPICS code
+#define PercWatchdogTimeoutString    "PERC_WATCHDOG_TIMEOUT"      //     (asynInt32,    r/w)   Watchdog timeout in ms
 
+#define PercChannelModeString        "PERC_CHANNEL_MODE"          //     (asynInt32,    r/w)   Are we running multi-channel or single channel mode
 #define PercDescrambleString         "PERC_DESCRAMBLE"            //     (asynInt32,    r/w)   Are we going to descramble or keep raw frames
 
 #define PercEnableChannel1String     "PERC_ENABLE_CHANNEL_1"      //     (asynInt32,    r/w)   Channel 1 enable/disable
@@ -110,6 +112,7 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 //    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
 //    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
+    virtual void setupImage();
     virtual void report(FILE *fp, int details);
 
     // These are the methods that are new to this class
@@ -118,6 +121,7 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
 
     virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
+    virtual void timeout();
     virtual PercivalBuffer *allocateBuffer();
 
   protected:
@@ -131,6 +135,8 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercFileReadMessage;
     int PercFileErrorStatus;
     int PercDebugLevel;
+    int PercWatchdogTimeout;
+    int PercChannelMode;
     int PercDescramble;
 
     // Parameters for each of the subframes
@@ -213,6 +219,10 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     float    *ADC_offset_;        // Combined offset for both ADC's
     float    *stage_gains_;       // Gain to apply for each of the output stages
     float    *stage_offsets_;     // Offsets to apply for each of the output stages (in scrambled order)
+
+    // Variables to store the image width when placed into single channel mode
+    uint32_t      realWidth_;
+    uint32_t      realHeight_;
 
     // Image declerations
     size_t        dims_[2];

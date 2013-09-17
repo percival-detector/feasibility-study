@@ -19,6 +19,9 @@
 
 #include <time.h>
 
+#include "PercivalDataType.h"
+
+/*
 typedef struct bufferInfo_t
 {
 	uint8_t*     addr;
@@ -43,7 +46,7 @@ typedef enum
 } DataSenderHeaderPosition;
 
 typedef uint32_t FrameNumber;
-
+*/
 /*
 typedef boost::function<BufferInfo(void)> allocateCallback_t;
 typedef boost::function<void(int)> freeCallback_t;
@@ -69,7 +72,7 @@ namespace FemDataSenderSignal {
 }
 */
 
-const unsigned int kWatchdogHandlerIntervalMs = 1000;
+//const unsigned int kWatchdogHandlerIntervalMs = 1000;
 
 class DataSender
 {
@@ -151,7 +154,7 @@ class DataSender
 
 	PacketHeader                    mPacketHeader;
 
-	BufferInfo                      mCurrentBuffer;
+	//BufferInfo                      mCurrentBuffer;
 
 	FrameNumber                     mCurrentFrameNumber;
 	//FrameNumber                       mLatchedFrameNumber;

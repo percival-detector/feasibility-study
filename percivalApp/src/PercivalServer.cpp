@@ -11,6 +11,7 @@
 
 PercivalServer::PercivalServer()
 	: debug_(0),
+    watchdogTimeout_(2000),
     errorMessage_(""),
     acquiring_(false),
     descramble_(false),
@@ -36,6 +37,13 @@ void PercivalServer::setDebug(uint32_t level)
   for(iterator = subFrameMap_.begin(); iterator != subFrameMap_.end(); iterator++){
     iterator->second->setDebug(level);
   }
+}
+
+void PercivalServer::setWatchdogTimeout(uint32_t time)
+{
+  PercivalDebug dbg(debug_, "PercivalServer::setWatchdogTimeout");
+  dbg.log(1, "Watchdog timeout", time);
+  watchdogTimeout_ = time;
 }
 
 std::string PercivalServer::errorMessage()
@@ -100,6 +108,7 @@ int PercivalServer::setupSubFrame(uint32_t frameID,
                                                bottomRightY,
                                                subFrames);
   subFrameMap_[frameID]->setDebug(debug_);
+  subFrameMap_[frameID]->setWatchdogTimeout(watchdogTimeout_);
   serverMask_ = serverMask_ + (1 << frameID);
   dbg.log(1, "Server Mask", serverMask_);
   return 0;
@@ -212,14 +221,31 @@ int PercivalServer::processSubFrame(uint32_t frameID, PercivalBuffer *buffer, ui
   // Process data (DANGER CALL, PROCESSING ON SAME BUFFER CONCURRENTLY)
   dbg.log(2, "Processing data...");
   PercivalSubFrame *sfPtr = subFrameMap_[frameID];
-  unscramble(sfPtr->getNumberOfPixels(),
-             (uint16_t *)buffer->raw(),
-             NULL,
-             (uint16_t *)fullFrame_->raw(),
-             sfPtr->getTopLeftX(),
-             sfPtr->getBottomRightX(),
-             sfPtr->getTopLeftY());
-
+  if (type_ == UnsignedInt8){
+    unscramble(sfPtr->getNumberOfPixels(),
+               (uint8_t *)buffer->raw(),
+               NULL,
+               (uint8_t *)fullFrame_->raw(),
+               sfPtr->getTopLeftX(),
+               sfPtr->getBottomRightX(),
+               sfPtr->getTopLeftY());
+  } else if (type_ == UnsignedInt16){
+    unscramble(sfPtr->getNumberOfPixels(),
+               (uint16_t *)buffer->raw(),
+               NULL,
+               (uint16_t *)fullFrame_->raw(),
+               sfPtr->getTopLeftX(),
+               sfPtr->getBottomRightX(),
+               sfPtr->getTopLeftY());
+  } else if (type_ == UnsignedInt32){
+    unscramble(sfPtr->getNumberOfPixels(),
+               (uint32_t *)buffer->raw(),
+               NULL,
+               (uint32_t *)fullFrame_->raw(),
+               sfPtr->getTopLeftX(),
+               sfPtr->getBottomRightX(),
+               sfPtr->getTopLeftY());
+  }
   // LOCK
 //  {
 //    boost::lock_guard<boost::mutex> lock(access_);
@@ -238,6 +264,56 @@ int PercivalServer::processSubFrame(uint32_t frameID, PercivalBuffer *buffer, ui
   // UNLOCK
   }
   return 0;
+}
+
+int PercivalServer::timeout(uint32_t frameID)
+{
+  PercivalDebug dbg(debug_, "PercivalServer::timeout");
+  // If we get into here we have lost communications for some period of time
+  // Its possible the sender has been stopped, or cables unplugged
+  // The best thing to do here currently is to reset frame counters and just
+  // keep waiting....
+
+  // LOCK
+  {
+    boost::lock_guard<boost::mutex> lock(access_);
+    serverReady_ = 0;
+    frameNumber_ = 0;
+    if (callback_){
+      callback_->timeout();
+    }
+  }
+  return 0;
+}
+
+void PercivalServer::unscramble(int      numPts,      // Number of points to process
+                                uint8_t *in_data,     // Input data
+                                uint8_t *reset_data,  // Reset data
+                                uint8_t *out_data,    // Output data
+                                uint32_t x1,
+                                uint32_t x2,
+                                uint32_t y1)
+{
+  PercivalDebug dbg(debug_, "PercivalServer::unscramble");
+  int index;  // Index of point in subframe
+  int xp;     // X prime, x coordinate within subframe
+  int yp;     // Y prime, y coordinate within subframe
+  int ip;     // Index prime, index of point within full frame
+
+  for (index = 0; index < numPts; index++ ){
+    yp = index / (x2 - x1 + 1);
+    xp = index - (yp * (x2 - x1 + 1));
+    ip = (width_ * (yp + y1)) + x1 + xp;
+
+    // Check if we are descrambling or simply reconstructing
+    if (!descramble_){
+      // OK, here we are just reconstructing the original raw frame
+      out_data[ip] = in_data[index];
+    } else {
+      // Here we are going to descramble
+      out_data[dataIndex_[ip]] = in_data[index];
+    }
+  }
 }
 
 void PercivalServer::unscramble(int      numPts,       // Number of points to process
@@ -289,6 +365,36 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
 //        out_data[dataIndex_[ip]] -= ADC_output * stageGains_[0][ip] + stageOffsets_[0][ip];
 //      }
 
+    }
+  }
+}
+
+void PercivalServer::unscramble(int      numPts,      // Number of points to process
+                                uint32_t *in_data,     // Input data
+                                uint32_t *reset_data,  // Reset data
+                                uint32_t *out_data,    // Output data
+                                uint32_t x1,
+                                uint32_t x2,
+                                uint32_t y1)
+{
+  PercivalDebug dbg(debug_, "PercivalServer::unscramble");
+  int index;  // Index of point in subframe
+  int xp;     // X prime, x coordinate within subframe
+  int yp;     // Y prime, y coordinate within subframe
+  int ip;     // Index prime, index of point within full frame
+
+  for (index = 0; index < numPts; index++ ){
+    yp = index / (x2 - x1 + 1);
+    xp = index - (yp * (x2 - x1 + 1));
+    ip = (width_ * (yp + y1)) + x1 + xp;
+
+    // Check if we are descrambling or simply reconstructing
+    if (!descramble_){
+      // OK, here we are just reconstructing the original raw frame
+      out_data[ip] = in_data[index];
+    } else {
+      // Here we are going to descramble
+      out_data[dataIndex_[ip]] = in_data[index];
     }
   }
 }

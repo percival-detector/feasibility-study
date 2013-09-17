@@ -21,7 +21,8 @@ PercivalSubFrame::PercivalSubFrame(PercivalServer *owner,
                                    uint32_t bottomRightX,
                                    uint32_t bottomRightY,
                                    uint32_t subFrames)
-	: debug_(0)
+	: debug_(0),
+    watchdogTimeout_(2000)
 {
   owner_ = owner;
   frameID_ = frameID;
@@ -60,6 +61,15 @@ void PercivalSubFrame::setDebug(uint32_t level)
   debug_ = level;
   // Set the debug level
   server_->setDebug(level);
+}
+
+void PercivalSubFrame::setWatchdogTimeout(uint32_t time)
+{
+  PercivalDebug dbg(debug_, "PercivalSubFrame::setWatchdogTimeout");
+  dbg.log(1, "Watchdog timeout", time);
+  watchdogTimeout_ = time;
+  // Set the watchdog timeout
+  server_->setWatchdogTimeout(time);
 }
 
 uint32_t PercivalSubFrame::getNumberOfPixels()
@@ -112,6 +122,14 @@ void PercivalSubFrame::imageReceived(PercivalBuffer *buffer, uint32_t frameNumbe
   owner_->processSubFrame(frameID_, buffer, frameNumber);
   buffers_->free(buffer);
 }
+
+void PercivalSubFrame::timeout()
+{
+  PercivalDebug dbg(debug_, "PercivalSubFrame::timeout");
+  dbg.log(1, "Thread ID", boost::this_thread::get_id());
+  owner_->timeout(frameID_);
+}
+
 
 PercivalBuffer *PercivalSubFrame::allocateBuffer()
 {

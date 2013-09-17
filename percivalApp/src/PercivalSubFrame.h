@@ -38,6 +38,8 @@ class PercivalSubFrame : public IPercivalCallback
 
     void setDebug(uint32_t level);
 
+    void setWatchdogTimeout(uint32_t time);
+
     uint32_t getNumberOfPixels();
 
     uint32_t getTopLeftX();
@@ -54,25 +56,28 @@ class PercivalSubFrame : public IPercivalCallback
 
     virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
 
+    virtual void timeout();
+
     virtual PercivalBuffer *allocateBuffer();
 
 
   private:
 
-    uint32_t       debug_;        // Debug level
-    uint32_t       frameID_;      // Numerical unique ID for this sub-frame
-    std::string    host_;         // NIC to bind UDP socket to
-    unsigned short port_;         // Port number for UDP socket to listen on
-    DataType       type_;         // Data type of this sub-frame
-    uint32_t       topLeftX_;     // Sub frame top left X
-    uint32_t       topLeftY_;     // Sub frame top left Y
-    uint32_t       bottomRightX_; // Sub frame bottom right X
-    uint32_t       bottomRightY_; // Sub frame bottom right Y
-    uint32_t       subFrames_;    // Number of sub-frames
-    uint32_t       width_;        // Width of this sub-frame
-    uint32_t       height_;       // Height of this sub-frame
-    uint32_t       pixelSize_;    // Number of pixels in this sub-frame
-    uint32_t       byteSize_;     // Number of bytes in this sub-frame
+    uint32_t       debug_;            // Debug level
+    uint32_t       watchdogTimeout_;  // Watchdog timeout (ms)
+    uint32_t       frameID_;          // Numerical unique ID for this sub-frame
+    std::string    host_;             // NIC to bind UDP socket to
+    unsigned short port_;             // Port number for UDP socket to listen on
+    DataType       type_;             // Data type of this sub-frame
+    uint32_t       topLeftX_;         // Sub frame top left X
+    uint32_t       topLeftY_;         // Sub frame top left Y
+    uint32_t       bottomRightX_;     // Sub frame bottom right X
+    uint32_t       bottomRightY_;     // Sub frame bottom right Y
+    uint32_t       subFrames_;        // Number of sub-frames
+    uint32_t       width_;            // Width of this sub-frame
+    uint32_t       height_;           // Height of this sub-frame
+    uint32_t       pixelSize_;        // Number of pixels in this sub-frame
+    uint32_t       byteSize_;         // Number of bytes in this sub-frame
     
     PercivalServer     *owner_;
     PercivalBufferPool *buffers_;

@@ -63,7 +63,9 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercFileErrorStatusString,    asynParamInt32,     &PercFileErrorStatus);
 
   createParam(PercDebugLevelString,         asynParamInt32,     &PercDebugLevel);
+  createParam(PercWatchdogTimeoutString,    asynParamInt32,     &PercWatchdogTimeout);
 
+  createParam(PercChannelModeString,        asynParamInt32,     &PercChannelMode);
   createParam(PercDescrambleString,         asynParamInt32,     &PercDescramble);
 
   createParam(PercEnableChannel1String,     asynParamInt32,     &PercEnableChannel1);
@@ -144,7 +146,9 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercFileErrorStatus, 0);
 
   status |= setIntegerParam(PercDebugLevel,      0);
+  status |= setIntegerParam(PercWatchdogTimeout, 2000);
 
+  status |= setIntegerParam(PercChannelMode,     0);
   status |= setIntegerParam(PercDescramble,      0);
 
   status |= setIntegerParam(PercEnableChannel1,     0);
@@ -210,28 +214,12 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
 
   // Initialise the buffer pool pointer to 0
   buffers_ = 0;
-  //buffers_ = new PercivalBufferPool(2048 * 1024 * sizeof(short));
-
-//  rawImage_ = (unsigned short *)calloc(3680 * 3680, sizeof(short));
 
   // Create the configuration class
   configPtr_ = new Configurator();
 
   // Create the Percival server class
   sPtr_ = new PercivalServer();
-
-  // Temporarily setup fake full frame
-  // Setup for excalibur, 2048 * 256 * 4 stripes, no scramble, gain,
-  // or any other factors
-  //sPtr_->setupFullFrame(256, 256, UnsignedInt16, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
-  // Setup four sub frames, hardwire for excalibur 2048 * 256
-  // Ports 9876, 9877, 9878, 9879
-  //sPtr_->setupSubFrame(0, "127.0.0.1", 9876, 0, 0,   255, 255,  2);
-  //sPtr_->setupSubFrame(0, "127.0.0.1", 9876, 0, 0,   2047, 255,  2);
-  //sPtr_->setupSubFrame(1, "127.0.0.1", 9877, 0, 256, 2047, 511,  2);
-  //sPtr_->setupSubFrame(2, "127.0.0.1", 9878, 0, 512, 2047, 767,  2);
-  //sPtr_->setupSubFrame(3, "127.0.0.1", 9879, 0, 768, 2047, 1023, 2);
 
   // Register callback as this class
   sPtr_->registerCallback(this);
@@ -251,93 +239,8 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
 		return;
 	}
 
-	// Create the thread that is notified about completed images
-	/*status = (epicsThreadCreate("acq_task",
-            epicsThreadPriorityMedium,
-            epicsThreadGetStackSize(epicsThreadStackMedium),
-            (EPICSTHREADFUNC)acq_task_c,
-            this) == NULL);
-  if (status){
-    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s:%s epicsThreadCreate failure for image task\n",
-              driverName, functionName);
-    return;
-  }*/
-
 }
 
-/*
-void ADPercivalDriver::acquisitionTask()
-{
-  static const char *functionName = "ADPercivalDriver::acquisitionTask";
-  int status = asynSuccess;
-  int imageCounter;
-  int numImages, numImagesCounter;
-  int imageMode;
-  int arrayCallbacks;
-
-    // Loop forever
-    while (1) {
-
-
-  // Allocate an NDArray
-  if (pImage_){
-    pImage_->release();
-  }
-  // Allocate the buffer using the read image.
-  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt16, buffer->size(), buffer->raw());
-  if (!pImage_){
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s:%s: error allocating raw buffer\n",
-              driverName, functionName);
-  } else {
-    pImage_->getInfo(&arrayInfo_);
-
-    status = asynSuccess;
-    status |= setIntegerParam(NDArraySize,  arrayInfo_.totalBytes);
-    status |= setIntegerParam(NDArraySizeX, pImage_->dims[0].size);
-    status |= setIntegerParam(NDArraySizeY, pImage_->dims[1].size);
-    if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                          "%s:%s: error setting parameters\n",
-                          driverName, functionName);
-
-    // Get the current parameters
-    getIntegerParam(NDArrayCounter, &imageCounter);
-    getIntegerParam(ADNumImages, &numImages);
-    getIntegerParam(ADNumImagesCounter, &numImagesCounter);
-    getIntegerParam(ADImageMode, &imageMode);
-    getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-    imageCounter++;
-    numImagesCounter++;
-
-    // Put the frame number and time stamp into the buffer
-    pImage_->uniqueId = imageCounter;
-    //pImage_->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
-  
-    // Set parameters based on collected image data
-    setIntegerParam(NDArrayCounter, imageCounter);
-    setIntegerParam(ADNumImagesCounter, numImagesCounter);
-
-    // Get any attributes that have been defined for this driver
-    this->getAttributes(pImage_->pAttributeList);
-
-    if (arrayCallbacks) {
-      // Call the NDArray callback
-      // Must release the lock here, or we can get into a deadlock, because we can
-      // block on the plugin lock, and the plugin can be calling us
- //     this->unlock();
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-                "%s:%s: calling imageData callback\n", driverName, functionName);
-      doCallbacksGenericPointer(pImage_, NDArrayData, 0);
- //     this->lock();
-    }
-  }
-
-  // Release the Percival buffer back into the pool
-  buffers_->free(buffer);
-
-}
-*/
 void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumber)
 {
   static const char *functionName = "ADPercivalDriver::imageReceived";
@@ -346,6 +249,7 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumbe
   int numImages, numImagesCounter;
   int imageMode;
   int arrayCallbacks;
+  epicsTimeStamp imageTime;
 
   this->lock();
 
@@ -354,7 +258,13 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumbe
     pImage_->release();
   }
   // Allocate the buffer using the read image.
-  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt16, buffer->size(), buffer->raw());
+  if (configPtr_->getDataType() == UnsignedInt8){
+    pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt8, buffer->size(), buffer->raw());
+  }else if (configPtr_->getDataType() == UnsignedInt16){
+    pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt16, buffer->size(), buffer->raw());
+  } else if (configPtr_->getDataType() == UnsignedInt32){
+    pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt32, buffer->size(), buffer->raw());
+  }
   if (!pImage_){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s:%s: error allocating raw buffer\n",
@@ -381,7 +291,9 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumbe
 
     // Put the frame number and time stamp into the buffer
     pImage_->uniqueId = imageCounter;
-    //pImage_->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+    // Get the current time
+    epicsTimeGetCurrent(&imageTime);
+    pImage_->timeStamp = imageTime.secPastEpoch + imageTime.nsec / 1.e9;
   
     // Set parameters based on collected image data
     setIntegerParam(NDArrayCounter, imageCounter);
@@ -431,6 +343,15 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumbe
   }
 
   this->unlock();
+}
+
+void ADPercivalDriver::timeout()
+{
+  // Here we do not need to do anything, it has already been handled at the server level
+  const char *functionName = "allocateBuffer";
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+            "%s:%s: timer watchdog, handled within server\n", 
+            driverName, functionName);
 }
 
 PercivalBuffer *ADPercivalDriver::allocateBuffer()
@@ -501,6 +422,9 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     getIntegerParam(ADStatus, &adstatus);
     int error = 0;
     if (value && (adstatus == ADStatusIdle)){
+      int channelMode;
+      getIntegerParam(PercChannelMode, &channelMode);
+      setupImage();
       // First we must check for errors
       for (int channel = 0; channel < 4; channel++){
         int tlx, tly, brx, bry, port, subFrames, enabled;
@@ -510,6 +434,10 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         setStringParam(PercStatusChannel1+channel, "");
         // Check to see if the subframe is enabled
         getIntegerParam(PercEnableChannel1+channel, &enabled);
+        // If single channel and not channel 0 then disable
+        if (channelMode == 1 && channel != 0){
+          enabled = 0;
+        }
         if (!error){
           if (enabled){
             // Subframe is enabled, read out parameters
@@ -546,6 +474,10 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
           char address[256];
           // Check to see if the subframe is enabled
           getIntegerParam(PercEnableChannel1+channel, &enabled);
+          // If single channel and not channel 0 then disable
+          if (channelMode == 1 && channel != 0){
+            enabled = 0;
+          }
           if (enabled){
             // Subframe is enabled, read out parameters
             getStringParam(PercAddrChannel1+channel, sizeof(address), address);
@@ -667,12 +599,18 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
       configPtr_->copyStageOffsets(stage_offsets_);
 
       // Setup server for full frame as defined by configuration file
-      sPtr_->setupFullFrame(dims_[0], dims_[1], UnsignedInt16, descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+      sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
     }
   } else if (param == PercDebugLevel){
     setIntegerParam(PercDebugLevel, value);
     // Set the debug level within the classes
     sPtr_->setDebug(value);
+  } else if (param == PercWatchdogTimeout){
+    setIntegerParam(PercWatchdogTimeout, value);
+    // Set the debug level within the classes
+    sPtr_->setWatchdogTimeout(value);
+  } else if (param == PercChannelMode){
+    setIntegerParam(PercChannelMode, value);
   } else if (param == PercDescramble){
     setIntegerParam(PercDescramble, value);
     // Set the descramble flag in the server
@@ -720,36 +658,60 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
   return (asynStatus)status;
 }
 
-/*asynStatus ADPercivalDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
+void ADPercivalDriver::setupImage()
 {
-  int param = pasynUser->reason;
-  asynStatus status = asynSuccess;
+  // Check the current channel mode.  If multi-channel mode setup as defined by config file
+  int channelMode;
+  getIntegerParam(PercChannelMode, &channelMode);
+  // Check the channel mode, if multi set a full frame
+  if (channelMode == 0){
+    // Setup image dimensions
+    dims_[0] = configPtr_->getImageWidth();
+    dims_[1] = configPtr_->getImageHeight();
 
-  // Just read the status of the NDArrayPool
-  if (param == NDPoolMaxBuffers) {
-    setIntegerParam(param, this->pNDArrayPool->maxBuffers());
+    setIntegerParam(ADSizeX,            dims_[0]);
+    setIntegerParam(ADSizeY,            dims_[1]);
+    setIntegerParam(NDArraySizeX,       dims_[0]);
+    setIntegerParam(NDArraySizeY,       dims_[1]);
+
+    // Create the Percival buffer pool from the size of image loaded from the configuration file
+    if (buffers_){
+      delete(buffers_);
+    }
+    buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+    setIntegerParam(NDArraySize, dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+
+    // Setup server for full frame as defined by configuration file
+    sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+  } else {
+    // Setup server with single channel size
+    int tlx, tly, brx, bry, width, height;
+    getIntegerParam(PercTopLeftXChannel1, &tlx);
+    getIntegerParam(PercTopLeftYChannel1, &tly);
+    getIntegerParam(PercBotRightXChannel1, &brx);
+    getIntegerParam(PercBotRightYChannel1, &bry);
+    width  = brx - tlx + 1;
+    height = bry - tly + 1;
+    dims_[0] = width;
+    dims_[1] = height;
+
+    setIntegerParam(ADSizeX,      width);
+    setIntegerParam(ADSizeY,      height);
+    setIntegerParam(NDArraySizeX, width);
+    setIntegerParam(NDArraySizeY, height);
+
+    // Create the Percival buffer pool from the size of image loaded from the configuration file
+    if (buffers_){
+      delete(buffers_);
+    }
+    buffers_ = new PercivalBufferPool(width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+    setIntegerParam(NDArraySize, width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+    callParamCallbacks();
+
+    // Setup server for partial frame as defined by channel 1
+    sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
   }
-
-  // Call base class
-  status = asynPortDriver::readInt32(pasynUser, value);
-  return status;
 }
-
-#define MEGABYTE_DBL 1048576.
-asynStatus ADPercivalDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
-{
-  int param = pasynUser->reason;
-  asynStatus status = asynSuccess;
-
-  // Just read the status of the NDArrayPool
-  if (param == NDPoolMaxMemory) {
-    setDoubleParam(param, this->pNDArrayPool->maxMemory() / MEGABYTE_DBL);
-  }
-
-  // Call base class
-  status = asynPortDriver::readFloat64(pasynUser, value);
-  return status;
-}*/
 
 /** Report status of the driver.
   * This method calls the report function in the asynPortDriver base class.
@@ -872,7 +834,7 @@ extern "C" int ADPercivalDriverConfigure(const char *portName)
                          0,
                          1,
                          0,
-                         104857600);
+                         524288000);
     return(asynSuccess);
 }
 

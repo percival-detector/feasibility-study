@@ -101,7 +101,7 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
   } else if (function == DBlocksPerStripeY){
     configPtr->setBlocksPerStripeY(value);
     setIntegerParam(ImageSizeY, configPtr->getImageHeight());
-    setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeY());
+    setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
   } else if (function == DStripesPerImageY){
     configPtr->setStripesPerImageY(value);
     setIntegerParam(ImageSizeY, configPtr->getImageHeight());

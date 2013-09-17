@@ -739,28 +739,31 @@ void Configurator::generateScrambledImage()
       }
     } else if (scramble_ == percival){
       // We don't have a method for this yet
-      for (uint32_t indexY = 0; indexY < (pixelsPerChipY_ * chipsPerStripeY_); indexY++){
+      for (uint32_t indexY = 0; indexY < (pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_); indexY++){
         for (uint32_t pixel = 0; pixel < pixelsPerChipX_; pixel++){
-          for (uint32_t chip = 0; chip < chipsPerStripeX_; chip++){
-            int pixelSourceAddress = (chip * pixelsPerChipX_) + pixel + (indexY * pixelsPerChipX_ * chipsPerStripeX_) + (imageNo * imageWidth_ * imageHeight_);
-            int pixelDestAddress = chip + (pixel * chipsPerStripeX_) + (indexY * pixelsPerChipX_ * chipsPerStripeX_) + (imageNo * imageWidth_ * imageHeight_);
-            // Store the descramble array (only for image 0, all images are scrambled the same way)
-            if (imageNo == 0){
-              descrambleArray_[pixelDestAddress] = pixelSourceAddress;
-            }
-            if (dataType_ == UnsignedInt8){
-              scrambledDataUInt8_[pixelDestAddress] = rawDataUInt8_[pixelSourceAddress];
-            } else if (dataType_ == UnsignedInt16){
-              scrambledDataUInt16_[pixelDestAddress] = (uint16_t)applyGains(pixelSourceAddress - (imageNo * imageWidth_ * imageHeight_),
-                                                                            rawDataUInt16_[pixelSourceAddress],
-                                                                            ADC_index_,
-                                                                            ADC_high_gain_,
-                                                                            ADC_low_gain_,
-                                                                            ADC_offset_,
-                                                                            stage_gains_,
-                                                                            stage_offsets_);
-            } else if (dataType_ == UnsignedInt32){
-              scrambledDataUInt32_[pixelDestAddress] = rawDataUInt32_[pixelSourceAddress];
+//          for (uint32_t chip = 0; chip < (chipsPerStripeX_ * stripesPerImageX_); chip++){
+          for (uint32_t chip = 0; chip < (chipsPerStripeX_); chip++){
+            for (uint32_t stripe = 0; stripe < stripesPerImageX_; stripe++){
+              int pixelSourceAddress = (chip * pixelsPerChipX_) + pixel + (stripe * pixelsPerChipX_ * chipsPerStripeX_) + (indexY * pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_) + (imageNo * imageWidth_ * imageHeight_);
+              int pixelDestAddress = chip + (pixel * chipsPerStripeX_) + (stripe * pixelsPerChipX_ * chipsPerStripeX_) + (indexY * pixelsPerChipX_ * chipsPerStripeX_ * stripesPerImageX_) + (imageNo * imageWidth_ * imageHeight_);
+              // Store the descramble array (only for image 0, all images are scrambled the same way)
+              if (imageNo == 0){
+                descrambleArray_[pixelDestAddress] = pixelSourceAddress;
+              }
+              if (dataType_ == UnsignedInt8){
+                scrambledDataUInt8_[pixelDestAddress] = rawDataUInt8_[pixelSourceAddress];
+              } else if (dataType_ == UnsignedInt16){
+                scrambledDataUInt16_[pixelDestAddress] = (uint16_t)applyGains(pixelSourceAddress - (imageNo * imageWidth_ * imageHeight_),
+                                                                              rawDataUInt16_[pixelSourceAddress],
+                                                                              ADC_index_,
+                                                                              ADC_high_gain_,
+                                                                              ADC_low_gain_,
+                                                                              ADC_offset_,
+                                                                              stage_gains_,
+                                                                              stage_offsets_);
+              } else if (dataType_ == UnsignedInt32){
+                scrambledDataUInt32_[pixelDestAddress] = rawDataUInt32_[pixelSourceAddress];
+              }
             }
           }
         }

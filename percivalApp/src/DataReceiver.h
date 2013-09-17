@@ -21,6 +21,9 @@
 
 #include <time.h>
 
+#include "PercivalDataType.h"
+
+/*
 typedef struct bufferInfo_t
 {
 	uint8_t*     addr;
@@ -45,8 +48,9 @@ typedef enum
 } DataSenderHeaderPosition;
 
 typedef uint32_t FrameNumber;
+*/
 
-const unsigned int kWatchdogHandlerIntervalMs = 1000;
+//const unsigned int kWatchdogHandlerIntervalMs = 1000;
 
 class DataReceiver
 {
@@ -56,6 +60,8 @@ class DataReceiver
     virtual ~DataReceiver();
 
     void setDebug(uint32_t level);
+
+    void setWatchdogTimeout(uint32_t time);
 
     std::string errorMessage();
 
@@ -77,6 +83,7 @@ class DataReceiver
     IPercivalCallback                 *callback_;                 // Callback interface
     DataSenderHeaderPosition          headerPosition_;            // Header data position (start or end of packet)
     uint32_t                          debug_;                     // Debug level
+    uint32_t                          watchdogTimeout_;           // Watchdog timeout (ms)
     std::string                       errorMessage_;              // Error message string
     bool                              running_;                   // Are we running (socket setup OK)
     bool                              acquiring_;                 // Are we listening for packets
@@ -85,7 +92,7 @@ class DataReceiver
     boost::asio::io_service   	      ioService_;                 // Boost service object
     boost::asio::ip::udp::endpoint	  remoteEndpoint_;
     boost::asio::ip::udp::socket      *recvSocket_;
-//    boost::asio::deadline_timer       watchdogTimer_;
+    boost::asio::deadline_timer       *watchdogTimer_;
 	  uint32_t                          recvWatchdogCounter_;
     boost::shared_ptr<boost::thread>  receiverThread_;
     boost::shared_ptr<boost::thread>  workerThread_;

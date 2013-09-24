@@ -65,6 +65,22 @@ void PercivalDebug::log(uint32_t level, const std::string& str, uint32_t val)
   }
 }
 
+void PercivalDebug::log(uint32_t level, const std::string& str, uint16_t val)
+{
+  if (level_ >= level){
+    boost::lock_guard<boost::mutex> lock(*PercivalDebug::access_);
+    std::cout << "[DEBUG] " << functionName_ << " - " << str << " [" << val << "]" << std::endl;
+  }
+}
+
+void PercivalDebug::log(uint32_t level, const std::string& str, uint8_t val)
+{
+  if (level_ >= level){
+    boost::lock_guard<boost::mutex> lock(*PercivalDebug::access_);
+    std::cout << "[DEBUG] " << functionName_ << " - " << str << " [" << val << "]" << std::endl;
+  }
+}
+
 void PercivalDebug::log(uint32_t level, const std::string& str, int64_t val)
 {
   if (level_ >= level){

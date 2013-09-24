@@ -33,68 +33,77 @@
 #define PercChannelModeString        "PERC_CHANNEL_MODE"          //     (asynInt32,    r/w)   Are we running multi-channel or single channel mode
 #define PercDescrambleString         "PERC_DESCRAMBLE"            //     (asynInt32,    r/w)   Are we going to descramble or keep raw frames
 
-#define PercEnableChannel1String     "PERC_ENABLE_CHANNEL_1"      //     (asynInt32,    r/w)   Channel 1 enable/disable
-#define PercEnableChannel2String     "PERC_ENABLE_CHANNEL_2"      //     (asynInt32,    r/w)   Channel 2 enable/disable
-#define PercEnableChannel3String     "PERC_ENABLE_CHANNEL_3"      //     (asynInt32,    r/w)   Channel 3 enable/disable
-#define PercEnableChannel4String     "PERC_ENABLE_CHANNEL_4"      //     (asynInt32,    r/w)   Channel 4 enable/disable
+#define PercTopLeftXSF1String   "PERC_TOP_LEFT_X_SF_1"  //     (asynInt32,    r/w)   Sub-Frame 1 top left X pixel
+#define PercTopLeftXSF2String   "PERC_TOP_LEFT_X_SF_2"  //     (asynInt32,    r/w)   Sub-Frame 2 top left X pixel
+#define PercTopLeftXSF3String   "PERC_TOP_LEFT_X_SF_3"  //     (asynInt32,    r/w)   Sub-Frame 3 top left X pixel
+#define PercTopLeftXSF4String   "PERC_TOP_LEFT_X_SF_4"  //     (asynInt32,    r/w)   Sub-Frame 4 top left X pixel
+#define PercTopLeftXSF5String   "PERC_TOP_LEFT_X_SF_5"  //     (asynInt32,    r/w)   Sub-Frame 5 top left X pixel
+#define PercTopLeftXSF6String   "PERC_TOP_LEFT_X_SF_6"  //     (asynInt32,    r/w)   Sub-Frame 6 top left X pixel
+#define PercTopLeftXSF7String   "PERC_TOP_LEFT_X_SF_7"  //     (asynInt32,    r/w)   Sub-Frame 7 top left X pixel
+#define PercTopLeftXSF8String   "PERC_TOP_LEFT_X_SF_8"  //     (asynInt32,    r/w)   Sub-Frame 8 top left X pixel
 
-#define PercTopLeftXChannel1String   "PERC_TOP_LEFT_X_CHANNEL_1"  //     (asynInt32,    r/w)   Channel 1 top left X pixel
-#define PercTopLeftXChannel2String   "PERC_TOP_LEFT_X_CHANNEL_2"  //     (asynInt32,    r/w)   Channel 2 top left X pixel
-#define PercTopLeftXChannel3String   "PERC_TOP_LEFT_X_CHANNEL_3"  //     (asynInt32,    r/w)   Channel 3 top left X pixel
-#define PercTopLeftXChannel4String   "PERC_TOP_LEFT_X_CHANNEL_4"  //     (asynInt32,    r/w)   Channel 4 top left X pixel
+#define PercTopLeftYSF1String   "PERC_TOP_LEFT_Y_SF_1"  //     (asynInt32,    r/w)   Sub-Frame 1 top left Y pixel
+#define PercTopLeftYSF2String   "PERC_TOP_LEFT_Y_SF_2"  //     (asynInt32,    r/w)   Sub-Frame 2 top left Y pixel
+#define PercTopLeftYSF3String   "PERC_TOP_LEFT_Y_SF_3"  //     (asynInt32,    r/w)   Sub-Frame 3 top left Y pixel
+#define PercTopLeftYSF4String   "PERC_TOP_LEFT_Y_SF_4"  //     (asynInt32,    r/w)   Sub-Frame 4 top left Y pixel
+#define PercTopLeftYSF5String   "PERC_TOP_LEFT_Y_SF_5"  //     (asynInt32,    r/w)   Sub-Frame 5 top left Y pixel
+#define PercTopLeftYSF6String   "PERC_TOP_LEFT_Y_SF_6"  //     (asynInt32,    r/w)   Sub-Frame 6 top left Y pixel
+#define PercTopLeftYSF7String   "PERC_TOP_LEFT_Y_SF_7"  //     (asynInt32,    r/w)   Sub-Frame 7 top left Y pixel
+#define PercTopLeftYSF8String   "PERC_TOP_LEFT_Y_SF_8"  //     (asynInt32,    r/w)   Sub-Frame 8 top left Y pixel
 
-#define PercTopLeftYChannel1String   "PERC_TOP_LEFT_Y_CHANNEL_1"  //     (asynInt32,    r/w)   Channel 1 top left Y pixel
-#define PercTopLeftYChannel2String   "PERC_TOP_LEFT_Y_CHANNEL_2"  //     (asynInt32,    r/w)   Channel 2 top left Y pixel
-#define PercTopLeftYChannel3String   "PERC_TOP_LEFT_Y_CHANNEL_3"  //     (asynInt32,    r/w)   Channel 3 top left Y pixel
-#define PercTopLeftYChannel4String   "PERC_TOP_LEFT_Y_CHANNEL_4"  //     (asynInt32,    r/w)   Channel 4 top left Y pixel
+#define PercBotRightXSF1String  "PERC_BOT_RIGHT_X_SF_1" //     (asynInt32,    r/w)   Sub-Frame 1 bottom right X pixel
+#define PercBotRightXSF2String  "PERC_BOT_RIGHT_X_SF_2" //     (asynInt32,    r/w)   Sub-Frame 2 bottom right X pixel
+#define PercBotRightXSF3String  "PERC_BOT_RIGHT_X_SF_3" //     (asynInt32,    r/w)   Sub-Frame 3 bottom right X pixel
+#define PercBotRightXSF4String  "PERC_BOT_RIGHT_X_SF_4" //     (asynInt32,    r/w)   Sub-Frame 4 bottom right X pixel
+#define PercBotRightXSF5String  "PERC_BOT_RIGHT_X_SF_5" //     (asynInt32,    r/w)   Sub-Frame 5 bottom right X pixel
+#define PercBotRightXSF6String  "PERC_BOT_RIGHT_X_SF_6" //     (asynInt32,    r/w)   Sub-Frame 6 bottom right X pixel
+#define PercBotRightXSF7String  "PERC_BOT_RIGHT_X_SF_7" //     (asynInt32,    r/w)   Sub-Frame 7 bottom right X pixel
+#define PercBotRightXSF8String  "PERC_BOT_RIGHT_X_SF_8" //     (asynInt32,    r/w)   Sub-Frame 8 bottom right X pixel
 
-#define PercBotRightXChannel1String  "PERC_BOT_RIGHT_X_CHANNEL_1" //     (asynInt32,    r/w)   Channel 1 bottom right X pixel
-#define PercBotRightXChannel2String  "PERC_BOT_RIGHT_X_CHANNEL_2" //     (asynInt32,    r/w)   Channel 2 bottom right X pixel
-#define PercBotRightXChannel3String  "PERC_BOT_RIGHT_X_CHANNEL_3" //     (asynInt32,    r/w)   Channel 3 bottom right X pixel
-#define PercBotRightXChannel4String  "PERC_BOT_RIGHT_X_CHANNEL_4" //     (asynInt32,    r/w)   Channel 4 bottom right X pixel
+#define PercBotRightYSF1String  "PERC_BOT_RIGHT_Y_SF_1" //     (asynInt32,    r/w)   Sub-Frame 1 bottom right Y pixel
+#define PercBotRightYSF2String  "PERC_BOT_RIGHT_Y_SF_2" //     (asynInt32,    r/w)   Sub-Frame 2 bottom right Y pixel
+#define PercBotRightYSF3String  "PERC_BOT_RIGHT_Y_SF_3" //     (asynInt32,    r/w)   Sub-Frame 3 bottom right Y pixel
+#define PercBotRightYSF4String  "PERC_BOT_RIGHT_Y_SF_4" //     (asynInt32,    r/w)   Sub-Frame 4 bottom right Y pixel
+#define PercBotRightYSF5String  "PERC_BOT_RIGHT_Y_SF_5" //     (asynInt32,    r/w)   Sub-Frame 5 bottom right Y pixel
+#define PercBotRightYSF6String  "PERC_BOT_RIGHT_Y_SF_6" //     (asynInt32,    r/w)   Sub-Frame 6 bottom right Y pixel
+#define PercBotRightYSF7String  "PERC_BOT_RIGHT_Y_SF_7" //     (asynInt32,    r/w)   Sub-Frame 7 bottom right Y pixel
+#define PercBotRightYSF8String  "PERC_BOT_RIGHT_Y_SF_8" //     (asynInt32,    r/w)   Sub-Frame 8 bottom right Y pixel
 
-#define PercBotRightYChannel1String  "PERC_BOT_RIGHT_Y_CHANNEL_1" //     (asynInt32,    r/w)   Channel 1 bottom right Y pixel
-#define PercBotRightYChannel2String  "PERC_BOT_RIGHT_Y_CHANNEL_2" //     (asynInt32,    r/w)   Channel 2 bottom right Y pixel
-#define PercBotRightYChannel3String  "PERC_BOT_RIGHT_Y_CHANNEL_3" //     (asynInt32,    r/w)   Channel 3 bottom right Y pixel
-#define PercBotRightYChannel4String  "PERC_BOT_RIGHT_Y_CHANNEL_4" //     (asynInt32,    r/w)   Channel 4 bottom right Y pixel
+#define PercWidthSF1String      "PERC_WIDTH_SF_1"       //     (asynInt32,    r/o)   Sub-Frame 1 frame width (pixels)
+#define PercWidthSF2String      "PERC_WIDTH_SF_2"       //     (asynInt32,    r/o)   Sub-Frame 2 frame width (pixels)
+#define PercWidthSF3String      "PERC_WIDTH_SF_3"       //     (asynInt32,    r/o)   Sub-Frame 3 frame width (pixels)
+#define PercWidthSF4String      "PERC_WIDTH_SF_4"       //     (asynInt32,    r/o)   Sub-Frame 4 frame width (pixels)
+#define PercWidthSF5String      "PERC_WIDTH_SF_5"       //     (asynInt32,    r/o)   Sub-Frame 5 frame width (pixels)
+#define PercWidthSF6String      "PERC_WIDTH_SF_6"       //     (asynInt32,    r/o)   Sub-Frame 6 frame width (pixels)
+#define PercWidthSF7String      "PERC_WIDTH_SF_7"       //     (asynInt32,    r/o)   Sub-Frame 7 frame width (pixels)
+#define PercWidthSF8String      "PERC_WIDTH_SF_8"       //     (asynInt32,    r/o)   Sub-Frame 8 frame width (pixels)
 
-#define PercWidthChannel1String      "PERC_WIDTH_CHANNEL_1"       //     (asynInt32,    r/o)   Channel 1 frame width (pixels)
-#define PercWidthChannel2String      "PERC_WIDTH_CHANNEL_2"       //     (asynInt32,    r/o)   Channel 2 frame width (pixels)
-#define PercWidthChannel3String      "PERC_WIDTH_CHANNEL_3"       //     (asynInt32,    r/o)   Channel 3 frame width (pixels)
-#define PercWidthChannel4String      "PERC_WIDTH_CHANNEL_4"       //     (asynInt32,    r/o)   Channel 4 frame width (pixels)
+#define PercHeightSF1String     "PERC_HEIGHT_SF_1"      //     (asynInt32,    r/o)   Sub-Frame 1 frame height (pixels)
+#define PercHeightSF2String     "PERC_HEIGHT_SF_2"      //     (asynInt32,    r/o)   Sub-Frame 2 frame height (pixels)
+#define PercHeightSF3String     "PERC_HEIGHT_SF_3"      //     (asynInt32,    r/o)   Sub-Frame 3 frame height (pixels)
+#define PercHeightSF4String     "PERC_HEIGHT_SF_4"      //     (asynInt32,    r/o)   Sub-Frame 4 frame height (pixels)
+#define PercHeightSF5String     "PERC_HEIGHT_SF_5"      //     (asynInt32,    r/o)   Sub-Frame 5 frame height (pixels)
+#define PercHeightSF6String     "PERC_HEIGHT_SF_6"      //     (asynInt32,    r/o)   Sub-Frame 6 frame height (pixels)
+#define PercHeightSF7String     "PERC_HEIGHT_SF_7"      //     (asynInt32,    r/o)   Sub-Frame 7 frame height (pixels)
+#define PercHeightSF8String     "PERC_HEIGHT_SF_8"      //     (asynInt32,    r/o)   Sub-Frame 8 frame height (pixels)
 
-#define PercHeightChannel1String     "PERC_HEIGHT_CHANNEL_1"      //     (asynInt32,    r/o)   Channel 1 frame height (pixels)
-#define PercHeightChannel2String     "PERC_HEIGHT_CHANNEL_2"      //     (asynInt32,    r/o)   Channel 2 frame height (pixels)
-#define PercHeightChannel3String     "PERC_HEIGHT_CHANNEL_3"      //     (asynInt32,    r/o)   Channel 3 frame height (pixels)
-#define PercHeightChannel4String     "PERC_HEIGHT_CHANNEL_4"      //     (asynInt32,    r/o)   Channel 4 frame height (pixels)
+#define PercSubFrame1IDString   "PERC_SUB_FRAME_ID_1"   //     (asynInt32,    r/w)   Sub-Frame 1 ID (1 - 8)
+#define PercSubFrame2IDString   "PERC_SUB_FRAME_ID_2"   //     (asynInt32,    r/w)   Sub-Frame 2 ID (1 - 8)
+#define PercSubFrame3IDString   "PERC_SUB_FRAME_ID_3"   //     (asynInt32,    r/w)   Sub-Frame 3 ID (1 - 8)
+#define PercSubFrame4IDString   "PERC_SUB_FRAME_ID_4"   //     (asynInt32,    r/w)   Sub-Frame 4 ID (1 - 8)
+#define PercSubFrame5IDString   "PERC_SUB_FRAME_ID_5"   //     (asynInt32,    r/w)   Sub-Frame 5 ID (1 - 8)
+#define PercSubFrame6IDString   "PERC_SUB_FRAME_ID_6"   //     (asynInt32,    r/w)   Sub-Frame 6 ID (1 - 8)
+#define PercSubFrame7IDString   "PERC_SUB_FRAME_ID_7"   //     (asynInt32,    r/w)   Sub-Frame 7 ID (1 - 8)
+#define PercSubFrame8IDString   "PERC_SUB_FRAME_ID_8"   //     (asynInt32,    r/w)   Sub-Frame 8 ID (1 - 8)
 
-#define PercSubFramesChannel1String  "PERC_SUB_FRAMES_CHANNEL_1"  //     (asynInt32,    r/w)   Channel 1 how many subframes to split into
-#define PercSubFramesChannel2String  "PERC_SUB_FRAMES_CHANNEL_2"  //     (asynInt32,    r/w)   Channel 2 how many subframes to split into
-#define PercSubFramesChannel3String  "PERC_SUB_FRAMES_CHANNEL_3"  //     (asynInt32,    r/w)   Channel 3 how many subframes to split into
-#define PercSubFramesChannel4String  "PERC_SUB_FRAMES_CHANNEL_4"  //     (asynInt32,    r/w)   Channel 4 how many subframes to split into
+#define PercReceiveString       "PERC_RECEIVE"          //     (asynInt32,    r/o)   Are we receiving
+#define PercErrorString         "PERC_ERROR"            //     (asynInt32,    r/o)   Is there an error
+#define PercStatusString        "PERC_STATUS"           //     (asynOctet,    r/o)   Current status
 
-#define PercReceiveChannel1String    "PERC_RECEIVE_CHANNEL_1"     //     (asynInt32,    r/o)   Are we receiving on channel 1
-#define PercReceiveChannel2String    "PERC_RECEIVE_CHANNEL_2"     //     (asynInt32,    r/o)   Are we receiving on channel 2
-#define PercReceiveChannel3String    "PERC_RECEIVE_CHANNEL_3"     //     (asynInt32,    r/o)   Are we receiving on channel 3
-#define PercReceiveChannel4String    "PERC_RECEIVE_CHANNEL_4"     //     (asynInt32,    r/o)   Are we receiving on channel 4
-#define PercErrorChannel1String      "PERC_ERROR_CHANNEL_1"       //     (asynInt32,    r/o)   Is there an error on channel 1
-#define PercErrorChannel2String      "PERC_ERROR_CHANNEL_2"       //     (asynInt32,    r/o)   Is there an error on channel 2
-#define PercErrorChannel3String      "PERC_ERROR_CHANNEL_3"       //     (asynInt32,    r/o)   Is there an error on channel 3
-#define PercErrorChannel4String      "PERC_ERROR_CHANNEL_4"       //     (asynInt32,    r/o)   Is there an error on channel 4
-#define PercStatusChannel1String     "PERC_STATUS_CHANNEL_1"      //     (asynOctet,    r/o)   Current status on channel 1
-#define PercStatusChannel2String     "PERC_STATUS_CHANNEL_2"      //     (asynOctet,    r/o)   Current status on channel 2
-#define PercStatusChannel3String     "PERC_STATUS_CHANNEL_3"      //     (asynOctet,    r/o)   Current status on channel 3
-#define PercStatusChannel4String     "PERC_STATUS_CHANNEL_4"      //     (asynOctet,    r/o)   Current status on channel 4
-
-#define PercAddrChannel1String       "PERC_ADDR_CHANNEL_1"        //     (asynOctet,    r/w)   Channel 1 NIC address string
-#define PercAddrChannel2String       "PERC_ADDR_CHANNEL_2"        //     (asynOctet,    r/w)   Channel 2 NIC address string
-#define PercAddrChannel3String       "PERC_ADDR_CHANNEL_3"        //     (asynOctet,    r/w)   Channel 3 NIC address string
-#define PercAddrChannel4String       "PERC_ADDR_CHANNEL_4"        //     (asynOctet,    r/w)   Channel 4 NIC address string
-
-#define PercPortChannel1String       "PERC_PORT_CHANNEL_1"        //     (asynInt32,    r/w)   Channel 1 NIC port string
-#define PercPortChannel2String       "PERC_PORT_CHANNEL_2"        //     (asynInt32,    r/w)   Channel 2 NIC port string
-#define PercPortChannel3String       "PERC_PORT_CHANNEL_3"        //     (asynInt32,    r/w)   Channel 3 NIC port string
-#define PercPortChannel4String       "PERC_PORT_CHANNEL_4"        //     (asynInt32,    r/w)   Channel 4 NIC port string
+#define PercAddrString          "PERC_ADDR"             //     (asynOctet,    r/w)   NIC address string
+#define PercPortString          "PERC_PORT"             //     (asynInt32,    r/w)   NIC port string
+#define PercPacketBytesString   "PERC_PACKET_BYTES"     //     (asynInt32,    r/w)   Number of payload bytes per UDP packet
+#define PercSubFrameString      "PERC_SUB_FRAME"        //     (asynInt32,    r/w)   Spatial mode, sub-frame ID for this detector (0-7)
 
 class ADPercivalDriver: public ADDriver, public IPercivalCallback
 {
@@ -120,9 +129,11 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     virtual int createFileName(int maxChars, char *fullFileName);
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
 
-    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
+    virtual void imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
+//    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
     virtual void timeout();
     virtual PercivalBuffer *allocateBuffer();
+    virtual void releaseBuffer(PercivalBuffer *buffer);
 
   protected:
     int PercFilePath;
@@ -140,64 +151,79 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercDescramble;
 
     // Parameters for each of the subframes
-    int PercEnableChannel1;
-    int PercEnableChannel2;
-    int PercEnableChannel3;
-    int PercEnableChannel4;
+    //int PercEnableChannel1;
+    //int PercEnableChannel2;
+    //int PercEnableChannel3;
+    //int PercEnableChannel4;
 
-    int PercTopLeftXChannel1;
-    int PercTopLeftXChannel2;
-    int PercTopLeftXChannel3;
-    int PercTopLeftXChannel4;
-    int PercTopLeftYChannel1;
-    int PercTopLeftYChannel2;
-    int PercTopLeftYChannel3;
-    int PercTopLeftYChannel4;
-    int PercBotRightXChannel1;
-    int PercBotRightXChannel2;
-    int PercBotRightXChannel3;
-    int PercBotRightXChannel4;
-    int PercBotRightYChannel1;
-    int PercBotRightYChannel2;
-    int PercBotRightYChannel3;
-    int PercBotRightYChannel4;
+    int PercTopLeftXSF1;
+    int PercTopLeftXSF2;
+    int PercTopLeftXSF3;
+    int PercTopLeftXSF4;
+    int PercTopLeftXSF5;
+    int PercTopLeftXSF6;
+    int PercTopLeftXSF7;
+    int PercTopLeftXSF8;
+    int PercTopLeftYSF1;
+    int PercTopLeftYSF2;
+    int PercTopLeftYSF3;
+    int PercTopLeftYSF4;
+    int PercTopLeftYSF5;
+    int PercTopLeftYSF6;
+    int PercTopLeftYSF7;
+    int PercTopLeftYSF8;
+    int PercBotRightXSF1;
+    int PercBotRightXSF2;
+    int PercBotRightXSF3;
+    int PercBotRightXSF4;
+    int PercBotRightXSF5;
+    int PercBotRightXSF6;
+    int PercBotRightXSF7;
+    int PercBotRightXSF8;
+    int PercBotRightYSF1;
+    int PercBotRightYSF2;
+    int PercBotRightYSF3;
+    int PercBotRightYSF4;
+    int PercBotRightYSF5;
+    int PercBotRightYSF6;
+    int PercBotRightYSF7;
+    int PercBotRightYSF8;
 
-    int PercWidthChannel1;
-    int PercWidthChannel2;
-    int PercWidthChannel3;
-    int PercWidthChannel4;
-    int PercHeightChannel1;
-    int PercHeightChannel2;
-    int PercHeightChannel3;
-    int PercHeightChannel4;
+    int PercWidthSF1;
+    int PercWidthSF2;
+    int PercWidthSF3;
+    int PercWidthSF4;
+    int PercWidthSF5;
+    int PercWidthSF6;
+    int PercWidthSF7;
+    int PercWidthSF8;
+    int PercHeightSF1;
+    int PercHeightSF2;
+    int PercHeightSF3;
+    int PercHeightSF4;
+    int PercHeightSF5;
+    int PercHeightSF6;
+    int PercHeightSF7;
+    int PercHeightSF8;
 
-    int PercSubFramesChannel1;
-    int PercSubFramesChannel2;
-    int PercSubFramesChannel3;
-    int PercSubFramesChannel4;
+    int PercSubFrame1ID;
+    int PercSubFrame2ID;
+    int PercSubFrame3ID;
+    int PercSubFrame4ID;
+    int PercSubFrame5ID;
+    int PercSubFrame6ID;
+    int PercSubFrame7ID;
+    int PercSubFrame8ID;
 
-    int PercReceiveChannel1;
-    int PercReceiveChannel2;
-    int PercReceiveChannel3;
-    int PercReceiveChannel4;
-    int PercErrorChannel1;
-    int PercErrorChannel2;
-    int PercErrorChannel3;
-    int PercErrorChannel4;
-    int PercStatusChannel1;
-    int PercStatusChannel2;
-    int PercStatusChannel3;
-    int PercStatusChannel4;
+    int PercReceive;
+    int PercError;
+    int PercStatus;
 
-    int PercAddrChannel1;
-    int PercAddrChannel2;
-    int PercAddrChannel3;
-    int PercAddrChannel4;
-    int PercPortChannel1;
-    int PercPortChannel2;
-    int PercPortChannel3;
-    int PercPortChannel4;
-    #define LAST_PERCIVAL_PARAM PercPortChannel4
+    int PercAddr;
+    int PercPort;
+    int PercPacketBytes;
+    int PercSubFrame;
+    #define LAST_PERCIVAL_PARAM PercSubFrame
 
   private:
   
@@ -211,6 +237,8 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
 
     // Descramble Array
     uint32_t *descrambleArray_;
+    // Sub-Frame Descramble Array
+    uint32_t *sfDescrambleArray_;
     // Data structures for gain information
     uint32_t noOfADCs_;
     uint32_t *ADC_index_;         // Index of ADC to use for each input data point

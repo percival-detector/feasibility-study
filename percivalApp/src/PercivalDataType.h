@@ -22,14 +22,11 @@ typedef enum
 
 typedef struct packetHeader_t
 {
-	uint32_t frameNumber;
-	uint32_t subFrameNumber;
-	uint32_t packetNumberFlags;
+	uint8_t  packetType;
+	uint8_t  subFrameNumber;
+	uint16_t frameNumber;
+	uint16_t packetNumber;
 } PacketHeader;
-
-const uint32_t kStartOfFrameMarker = 1 << 31;
-const uint32_t kEndOfFrameMarker   = 1 << 30;
-const uint32_t kPacketNumberMask   = 0x3FFFFFFF;
 
 typedef enum
 {

@@ -68,59 +68,77 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercChannelModeString,        asynParamInt32,     &PercChannelMode);
   createParam(PercDescrambleString,         asynParamInt32,     &PercDescramble);
 
-  createParam(PercEnableChannel1String,     asynParamInt32,     &PercEnableChannel1);
-  createParam(PercEnableChannel2String,     asynParamInt32,     &PercEnableChannel2);
-  createParam(PercEnableChannel3String,     asynParamInt32,     &PercEnableChannel3);
-  createParam(PercEnableChannel4String,     asynParamInt32,     &PercEnableChannel4);
+  //createParam(PercEnableChannel1String,     asynParamInt32,     &PercEnableChannel1);
+  //createParam(PercEnableChannel2String,     asynParamInt32,     &PercEnableChannel2);
+  //createParam(PercEnableChannel3String,     asynParamInt32,     &PercEnableChannel3);
+  //createParam(PercEnableChannel4String,     asynParamInt32,     &PercEnableChannel4);
 
-  createParam(PercTopLeftXChannel1String,   asynParamInt32,     &PercTopLeftXChannel1);
-  createParam(PercTopLeftXChannel2String,   asynParamInt32,     &PercTopLeftXChannel2);
-  createParam(PercTopLeftXChannel3String,   asynParamInt32,     &PercTopLeftXChannel3);
-  createParam(PercTopLeftXChannel4String,   asynParamInt32,     &PercTopLeftXChannel4);
-  createParam(PercTopLeftYChannel1String,   asynParamInt32,     &PercTopLeftYChannel1);
-  createParam(PercTopLeftYChannel2String,   asynParamInt32,     &PercTopLeftYChannel2);
-  createParam(PercTopLeftYChannel3String,   asynParamInt32,     &PercTopLeftYChannel3);
-  createParam(PercTopLeftYChannel4String,   asynParamInt32,     &PercTopLeftYChannel4);
-  createParam(PercBotRightXChannel1String,  asynParamInt32,     &PercBotRightXChannel1);
-  createParam(PercBotRightXChannel2String,  asynParamInt32,     &PercBotRightXChannel2);
-  createParam(PercBotRightXChannel3String,  asynParamInt32,     &PercBotRightXChannel3);
-  createParam(PercBotRightXChannel4String,  asynParamInt32,     &PercBotRightXChannel4);
-  createParam(PercBotRightYChannel1String,  asynParamInt32,     &PercBotRightYChannel1);
-  createParam(PercBotRightYChannel2String,  asynParamInt32,     &PercBotRightYChannel2);
-  createParam(PercBotRightYChannel3String,  asynParamInt32,     &PercBotRightYChannel3);
-  createParam(PercBotRightYChannel4String,  asynParamInt32,     &PercBotRightYChannel4);
-  createParam(PercWidthChannel1String,      asynParamInt32,     &PercWidthChannel1);
-  createParam(PercWidthChannel2String,      asynParamInt32,     &PercWidthChannel2);
-  createParam(PercWidthChannel3String,      asynParamInt32,     &PercWidthChannel3);
-  createParam(PercWidthChannel4String,      asynParamInt32,     &PercWidthChannel4);
-  createParam(PercHeightChannel1String,     asynParamInt32,     &PercHeightChannel1);
-  createParam(PercHeightChannel2String,     asynParamInt32,     &PercHeightChannel2);
-  createParam(PercHeightChannel3String,     asynParamInt32,     &PercHeightChannel3);
-  createParam(PercHeightChannel4String,     asynParamInt32,     &PercHeightChannel4);
-  createParam(PercSubFramesChannel1String,  asynParamInt32,     &PercSubFramesChannel1);
-  createParam(PercSubFramesChannel2String,  asynParamInt32,     &PercSubFramesChannel2);
-  createParam(PercSubFramesChannel3String,  asynParamInt32,     &PercSubFramesChannel3);
-  createParam(PercSubFramesChannel4String,  asynParamInt32,     &PercSubFramesChannel4);
-  createParam(PercReceiveChannel1String,    asynParamInt32,     &PercReceiveChannel1);
-  createParam(PercReceiveChannel2String,    asynParamInt32,     &PercReceiveChannel2);
-  createParam(PercReceiveChannel3String,    asynParamInt32,     &PercReceiveChannel3);
-  createParam(PercReceiveChannel4String,    asynParamInt32,     &PercReceiveChannel4);
-  createParam(PercErrorChannel1String,      asynParamInt32,     &PercErrorChannel1);
-  createParam(PercErrorChannel2String,      asynParamInt32,     &PercErrorChannel2);
-  createParam(PercErrorChannel3String,      asynParamInt32,     &PercErrorChannel3);
-  createParam(PercErrorChannel4String,      asynParamInt32,     &PercErrorChannel4);
-  createParam(PercStatusChannel1String,     asynParamOctet,     &PercStatusChannel1);
-  createParam(PercStatusChannel2String,     asynParamOctet,     &PercStatusChannel2);
-  createParam(PercStatusChannel3String,     asynParamOctet,     &PercStatusChannel3);
-  createParam(PercStatusChannel4String,     asynParamOctet,     &PercStatusChannel4);
-  createParam(PercAddrChannel1String,       asynParamOctet,     &PercAddrChannel1);
-  createParam(PercAddrChannel2String,       asynParamOctet,     &PercAddrChannel2);
-  createParam(PercAddrChannel3String,       asynParamOctet,     &PercAddrChannel3);
-  createParam(PercAddrChannel4String,       asynParamOctet,     &PercAddrChannel4);
-  createParam(PercPortChannel1String,       asynParamInt32,     &PercPortChannel1);
-  createParam(PercPortChannel2String,       asynParamInt32,     &PercPortChannel2);
-  createParam(PercPortChannel3String,       asynParamInt32,     &PercPortChannel3);
-  createParam(PercPortChannel4String,       asynParamInt32,     &PercPortChannel4);
+  createParam(PercTopLeftXSF1String,   asynParamInt32,     &PercTopLeftXSF1);
+  createParam(PercTopLeftXSF2String,   asynParamInt32,     &PercTopLeftXSF2);
+  createParam(PercTopLeftXSF3String,   asynParamInt32,     &PercTopLeftXSF3);
+  createParam(PercTopLeftXSF4String,   asynParamInt32,     &PercTopLeftXSF4);
+  createParam(PercTopLeftXSF5String,   asynParamInt32,     &PercTopLeftXSF5);
+  createParam(PercTopLeftXSF6String,   asynParamInt32,     &PercTopLeftXSF6);
+  createParam(PercTopLeftXSF7String,   asynParamInt32,     &PercTopLeftXSF7);
+  createParam(PercTopLeftXSF8String,   asynParamInt32,     &PercTopLeftXSF8);
+  createParam(PercTopLeftYSF1String,   asynParamInt32,     &PercTopLeftYSF1);
+  createParam(PercTopLeftYSF2String,   asynParamInt32,     &PercTopLeftYSF2);
+  createParam(PercTopLeftYSF3String,   asynParamInt32,     &PercTopLeftYSF3);
+  createParam(PercTopLeftYSF4String,   asynParamInt32,     &PercTopLeftYSF4);
+  createParam(PercTopLeftYSF5String,   asynParamInt32,     &PercTopLeftYSF5);
+  createParam(PercTopLeftYSF6String,   asynParamInt32,     &PercTopLeftYSF6);
+  createParam(PercTopLeftYSF7String,   asynParamInt32,     &PercTopLeftYSF7);
+  createParam(PercTopLeftYSF8String,   asynParamInt32,     &PercTopLeftYSF8);
+  createParam(PercBotRightXSF1String,  asynParamInt32,     &PercBotRightXSF1);
+  createParam(PercBotRightXSF2String,  asynParamInt32,     &PercBotRightXSF2);
+  createParam(PercBotRightXSF3String,  asynParamInt32,     &PercBotRightXSF3);
+  createParam(PercBotRightXSF4String,  asynParamInt32,     &PercBotRightXSF4);
+  createParam(PercBotRightXSF5String,  asynParamInt32,     &PercBotRightXSF5);
+  createParam(PercBotRightXSF6String,  asynParamInt32,     &PercBotRightXSF6);
+  createParam(PercBotRightXSF7String,  asynParamInt32,     &PercBotRightXSF7);
+  createParam(PercBotRightXSF8String,  asynParamInt32,     &PercBotRightXSF8);
+  createParam(PercBotRightYSF1String,  asynParamInt32,     &PercBotRightYSF1);
+  createParam(PercBotRightYSF2String,  asynParamInt32,     &PercBotRightYSF2);
+  createParam(PercBotRightYSF3String,  asynParamInt32,     &PercBotRightYSF3);
+  createParam(PercBotRightYSF4String,  asynParamInt32,     &PercBotRightYSF4);
+  createParam(PercBotRightYSF5String,  asynParamInt32,     &PercBotRightYSF5);
+  createParam(PercBotRightYSF6String,  asynParamInt32,     &PercBotRightYSF6);
+  createParam(PercBotRightYSF7String,  asynParamInt32,     &PercBotRightYSF7);
+  createParam(PercBotRightYSF8String,  asynParamInt32,     &PercBotRightYSF8);
+
+  createParam(PercWidthSF1String,      asynParamInt32,     &PercWidthSF1);
+  createParam(PercWidthSF2String,      asynParamInt32,     &PercWidthSF2);
+  createParam(PercWidthSF3String,      asynParamInt32,     &PercWidthSF3);
+  createParam(PercWidthSF4String,      asynParamInt32,     &PercWidthSF4);
+  createParam(PercWidthSF5String,      asynParamInt32,     &PercWidthSF5);
+  createParam(PercWidthSF6String,      asynParamInt32,     &PercWidthSF6);
+  createParam(PercWidthSF7String,      asynParamInt32,     &PercWidthSF7);
+  createParam(PercWidthSF8String,      asynParamInt32,     &PercWidthSF8);
+  createParam(PercHeightSF1String,     asynParamInt32,     &PercHeightSF1);
+  createParam(PercHeightSF2String,     asynParamInt32,     &PercHeightSF2);
+  createParam(PercHeightSF3String,     asynParamInt32,     &PercHeightSF3);
+  createParam(PercHeightSF4String,     asynParamInt32,     &PercHeightSF4);
+  createParam(PercHeightSF5String,     asynParamInt32,     &PercHeightSF5);
+  createParam(PercHeightSF6String,     asynParamInt32,     &PercHeightSF6);
+  createParam(PercHeightSF7String,     asynParamInt32,     &PercHeightSF7);
+  createParam(PercHeightSF8String,     asynParamInt32,     &PercHeightSF8);
+
+  createParam(PercSubFrame1IDString,   asynParamInt32,     &PercSubFrame1ID);
+  createParam(PercSubFrame2IDString,   asynParamInt32,     &PercSubFrame2ID);
+  createParam(PercSubFrame3IDString,   asynParamInt32,     &PercSubFrame3ID);
+  createParam(PercSubFrame4IDString,   asynParamInt32,     &PercSubFrame4ID);
+  createParam(PercSubFrame5IDString,   asynParamInt32,     &PercSubFrame5ID);
+  createParam(PercSubFrame6IDString,   asynParamInt32,     &PercSubFrame6ID);
+  createParam(PercSubFrame7IDString,   asynParamInt32,     &PercSubFrame7ID);
+  createParam(PercSubFrame8IDString,   asynParamInt32,     &PercSubFrame8ID);
+
+  createParam(PercReceiveString,       asynParamInt32,     &PercReceive);
+  createParam(PercErrorString,         asynParamInt32,     &PercError);
+  createParam(PercStatusString,        asynParamOctet,     &PercStatus);
+  createParam(PercAddrString,          asynParamOctet,     &PercAddr);
+  createParam(PercPortString,          asynParamInt32,     &PercPort);
+  createParam(PercPacketBytesString,   asynParamInt32,     &PercPacketBytes);
+  createParam(PercSubFrameString,      asynParamInt32,     &PercSubFrame);
 
   // Set some default values for parameters
   status =  setStringParam (ADManufacturer,      "Percival");
@@ -151,66 +169,82 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercChannelMode,     0);
   status |= setIntegerParam(PercDescramble,      0);
 
-  status |= setIntegerParam(PercEnableChannel1,     0);
-  status |= setIntegerParam(PercEnableChannel2,     0);
-  status |= setIntegerParam(PercEnableChannel3,     0);
-  status |= setIntegerParam(PercEnableChannel4,     0);
+  //status |= setIntegerParam(PercEnableChannel1,     0);
+  //status |= setIntegerParam(PercEnableChannel2,     0);
+  //status |= setIntegerParam(PercEnableChannel3,     0);
+  //status |= setIntegerParam(PercEnableChannel4,     0);
 
-  status |= setIntegerParam(PercTopLeftXChannel1,   0);
-  status |= setIntegerParam(PercTopLeftXChannel2,   0);
-  status |= setIntegerParam(PercTopLeftXChannel3,   0);
-  status |= setIntegerParam(PercTopLeftXChannel4,   0);
-  status |= setIntegerParam(PercTopLeftYChannel1,   0);
-  status |= setIntegerParam(PercTopLeftYChannel2,   0);
-  status |= setIntegerParam(PercTopLeftYChannel3,   0);
-  status |= setIntegerParam(PercTopLeftYChannel4,   0);
-  status |= setIntegerParam(PercBotRightXChannel1,  0);
-  status |= setIntegerParam(PercBotRightXChannel2,  0);
-  status |= setIntegerParam(PercBotRightXChannel3,  0);
-  status |= setIntegerParam(PercBotRightXChannel4,  0);
-  status |= setIntegerParam(PercBotRightYChannel1,  0);
-  status |= setIntegerParam(PercBotRightYChannel2,  0);
-  status |= setIntegerParam(PercBotRightYChannel3,  0);
-  status |= setIntegerParam(PercBotRightYChannel4,  0);
+  status |= setIntegerParam(PercTopLeftXSF1,   0);
+  status |= setIntegerParam(PercTopLeftXSF2,   0);
+  status |= setIntegerParam(PercTopLeftXSF3,   0);
+  status |= setIntegerParam(PercTopLeftXSF4,   0);
+  status |= setIntegerParam(PercTopLeftXSF5,   0);
+  status |= setIntegerParam(PercTopLeftXSF6,   0);
+  status |= setIntegerParam(PercTopLeftXSF7,   0);
+  status |= setIntegerParam(PercTopLeftXSF8,   0);
+  status |= setIntegerParam(PercTopLeftYSF1,   0);
+  status |= setIntegerParam(PercTopLeftYSF2,   0);
+  status |= setIntegerParam(PercTopLeftYSF3,   0);
+  status |= setIntegerParam(PercTopLeftYSF4,   0);
+  status |= setIntegerParam(PercTopLeftYSF5,   0);
+  status |= setIntegerParam(PercTopLeftYSF6,   0);
+  status |= setIntegerParam(PercTopLeftYSF7,   0);
+  status |= setIntegerParam(PercTopLeftYSF8,   0);
+  status |= setIntegerParam(PercBotRightXSF1,  0);
+  status |= setIntegerParam(PercBotRightXSF2,  0);
+  status |= setIntegerParam(PercBotRightXSF3,  0);
+  status |= setIntegerParam(PercBotRightXSF4,  0);
+  status |= setIntegerParam(PercBotRightXSF5,  0);
+  status |= setIntegerParam(PercBotRightXSF6,  0);
+  status |= setIntegerParam(PercBotRightXSF7,  0);
+  status |= setIntegerParam(PercBotRightXSF8,  0);
+  status |= setIntegerParam(PercBotRightYSF1,  0);
+  status |= setIntegerParam(PercBotRightYSF2,  0);
+  status |= setIntegerParam(PercBotRightYSF3,  0);
+  status |= setIntegerParam(PercBotRightYSF4,  0);
+  status |= setIntegerParam(PercBotRightYSF5,  0);
+  status |= setIntegerParam(PercBotRightYSF6,  0);
+  status |= setIntegerParam(PercBotRightYSF7,  0);
+  status |= setIntegerParam(PercBotRightYSF8,  0);
 
-  status |= setIntegerParam(PercWidthChannel1,      0);
-  status |= setIntegerParam(PercWidthChannel2,      0);
-  status |= setIntegerParam(PercWidthChannel3,      0);
-  status |= setIntegerParam(PercWidthChannel4,      0);
-  status |= setIntegerParam(PercHeightChannel1,     0);
-  status |= setIntegerParam(PercHeightChannel2,     0);
-  status |= setIntegerParam(PercHeightChannel3,     0);
-  status |= setIntegerParam(PercHeightChannel4,     0);
+  status |= setIntegerParam(PercWidthSF1,      0);
+  status |= setIntegerParam(PercWidthSF2,      0);
+  status |= setIntegerParam(PercWidthSF3,      0);
+  status |= setIntegerParam(PercWidthSF4,      0);
+  status |= setIntegerParam(PercWidthSF5,      0);
+  status |= setIntegerParam(PercWidthSF6,      0);
+  status |= setIntegerParam(PercWidthSF7,      0);
+  status |= setIntegerParam(PercWidthSF8,      0);
+  status |= setIntegerParam(PercHeightSF1,     0);
+  status |= setIntegerParam(PercHeightSF2,     0);
+  status |= setIntegerParam(PercHeightSF3,     0);
+  status |= setIntegerParam(PercHeightSF4,     0);
+  status |= setIntegerParam(PercHeightSF5,     0);
+  status |= setIntegerParam(PercHeightSF6,     0);
+  status |= setIntegerParam(PercHeightSF7,     0);
+  status |= setIntegerParam(PercHeightSF8,     0);
 
-  status |= setIntegerParam(PercSubFramesChannel1,  0);
-  status |= setIntegerParam(PercSubFramesChannel2,  0);
-  status |= setIntegerParam(PercSubFramesChannel3,  0);
-  status |= setIntegerParam(PercSubFramesChannel4,  0);
+  status |= setIntegerParam(PercSubFrame1ID,   0);
+  status |= setIntegerParam(PercSubFrame2ID,   0);
+  status |= setIntegerParam(PercSubFrame3ID,   0);
+  status |= setIntegerParam(PercSubFrame4ID,   0);
+  status |= setIntegerParam(PercSubFrame5ID,   0);
+  status |= setIntegerParam(PercSubFrame6ID,   0);
+  status |= setIntegerParam(PercSubFrame7ID,   0);
+  status |= setIntegerParam(PercSubFrame8ID,   0);
 
-  status |= setIntegerParam(PercReceiveChannel1,    0);
-  status |= setIntegerParam(PercReceiveChannel2,    0);
-  status |= setIntegerParam(PercReceiveChannel3,    0);
-  status |= setIntegerParam(PercReceiveChannel4,    0);
-  status |= setIntegerParam(PercErrorChannel1,      0);
-  status |= setIntegerParam(PercErrorChannel2,      0);
-  status |= setIntegerParam(PercErrorChannel3,      0);
-  status |= setIntegerParam(PercErrorChannel4,      0);
-  status |= setStringParam (PercStatusChannel1,     "");
-  status |= setStringParam (PercStatusChannel2,     "");
-  status |= setStringParam (PercStatusChannel3,     "");
-  status |= setStringParam (PercStatusChannel4,     "");
+  status |= setIntegerParam(PercReceive,       0);
+  status |= setIntegerParam(PercError,         0);
+  status |= setStringParam (PercStatus,        "");
 
-  status |= setStringParam (PercAddrChannel1,       "");
-  status |= setStringParam (PercAddrChannel2,       "");
-  status |= setStringParam (PercAddrChannel3,       "");
-  status |= setStringParam (PercAddrChannel4,       "");
-  status |= setIntegerParam(PercPortChannel1,       0);
-  status |= setIntegerParam(PercPortChannel2,       0);
-  status |= setIntegerParam(PercPortChannel3,       0);
-  status |= setIntegerParam(PercPortChannel4,       0);
+  status |= setStringParam (PercAddr,          "");
+  status |= setIntegerParam(PercPort,          0);
+  status |= setIntegerParam(PercPacketBytes,   0);
+  status |= setIntegerParam(PercSubFrame,      0);
 
   callParamCallbacks();
 
+  descrambleArray_ = 0;
 
   // Initialise the buffer pool pointer to 0
   buffers_ = 0;
@@ -241,7 +275,7 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
 
 }
 
-void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumber)
+void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType)
 {
   static const char *functionName = "ADPercivalDriver::imageReceived";
   int status = asynSuccess;
@@ -330,10 +364,10 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t frameNumbe
     // Release all of the subframes
     sPtr_->releaseAllSubFrames();
     // Set the status
-    setIntegerParam(PercReceiveChannel1, 0);
-    setIntegerParam(PercReceiveChannel2, 0);
-    setIntegerParam(PercReceiveChannel3, 0);
-    setIntegerParam(PercReceiveChannel4, 0);
+    //setIntegerParam(PercReceiveChannel1, 0);
+    //setIntegerParam(PercReceiveChannel2, 0);
+    //setIntegerParam(PercReceiveChannel3, 0);
+    //setIntegerParam(PercReceiveChannel4, 0);
     setIntegerParam(ADStatus, ADStatusIdle);
     setStringParam(ADStatusMessage, "Acquisition completed");
     setIntegerParam(ADAcquire, 0);
@@ -362,6 +396,11 @@ PercivalBuffer *ADPercivalDriver::allocateBuffer()
               "%s:%s: allocated buffer address: %ld\n", 
               driverName, functionName, (long int)buffer);
   return buffer;
+}
+
+void ADPercivalDriver::releaseBuffer(PercivalBuffer *buffer)
+{
+  buffers_->free(buffer);
 }
 
 /** Called when asyn clients call pasynOctet->write().
@@ -418,52 +457,96 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
   status = setIntegerParam(param, value);
 
   if (param == ADAcquire){
+    int tlx, tly, brx, bry, subFrame;
+    int subFrameID;
+    char address[256];
+    int port;
+    int packetBytes;
+    int error = 0;
     epicsInt32 adstatus;
     getIntegerParam(ADStatus, &adstatus);
-    int error = 0;
+    //int error = 0;
     if (value && (adstatus == ADStatusIdle)){
-      int channelMode;
+
+      // Spatial mode only initially
+      setupImage();
+      
+      // Get the selected subframe
+      getIntegerParam(PercSubFrame, &subFrame);
+      
+      // Reset status message and error
+      setIntegerParam(PercError, 0);
+      setStringParam(PercStatus, "");
+
+      getIntegerParam(PercSubFrame1ID+subFrame, &subFrameID);
+      getIntegerParam(PercTopLeftXSF1+subFrame, &tlx);
+      getIntegerParam(PercTopLeftYSF1+subFrame, &tly);
+      getIntegerParam(PercBotRightXSF1+subFrame, &brx);
+      getIntegerParam(PercBotRightYSF1+subFrame, &bry);
+      // Perfom a few checks
+      if (tlx >= brx){
+        error = 1;
+        setStringParam(PercStatus, "Width must be > 0");
+      }
+      if (tly >= bry){
+        error = 1;
+        setStringParam(PercStatus, "Height must be > 0");
+      }
+      if (error){
+        setIntegerParam(PercError, 1);
+      }
+
+      if (!error){
+        // Setup the channel
+        getStringParam(PercAddr, sizeof(address), address);
+        getIntegerParam(PercPort, &port);
+        getIntegerParam(PercPacketBytes, &packetBytes);
+        sPtr_->setupChannel(address, port, packetBytes);
+
+        // Setup the subframe within the server
+        sPtr_->setupSubFrame(subFrameID, tlx, tly, brx, bry);
+        setIntegerParam(PercReceive, 1);
+
+        // Zero the image counter
+        setIntegerParam(ADNumImagesCounter, 0);
+        // Tell the server to start the acquisition
+        sPtr_->startAcquisition();
+        setIntegerParam(ADStatus, ADStatusAcquire);
+        setStringParam(ADStatusMessage, "Acquiring images");
+      }
+
+/*      int channelMode;
       getIntegerParam(PercChannelMode, &channelMode);
       setupImage();
+//        char address[256];
+//        // Reset status msg and error
+//        setIntegerParam(PercErrorChannel1+channel, 0);
+//        setStringParam(PercStatusChannel1+channel, "");
       // First we must check for errors
       for (int channel = 0; channel < 4; channel++){
-        int tlx, tly, brx, bry, port, subFrames, enabled;
-        char address[256];
-        // Reset status msg and error
-        setIntegerParam(PercErrorChannel1+channel, 0);
-        setStringParam(PercStatusChannel1+channel, "");
-        // Check to see if the subframe is enabled
-        getIntegerParam(PercEnableChannel1+channel, &enabled);
-        // If single channel and not channel 0 then disable
-        if (channelMode == 1 && channel != 0){
-          enabled = 0;
-        }
+        int tlx, tly, brx, bry, subFrame;
         if (!error){
-          if (enabled){
-            // Subframe is enabled, read out parameters
-            getStringParam(PercAddrChannel1+channel, sizeof(address), address);
-            getIntegerParam(PercPortChannel1+channel, &port);
-            getIntegerParam(PercSubFramesChannel1+channel, &subFrames);
-            getIntegerParam(PercTopLeftXChannel1+channel, &tlx);
-            getIntegerParam(PercTopLeftYChannel1+channel, &tly);
-            getIntegerParam(PercBotRightXChannel1+channel, &brx);
-            getIntegerParam(PercBotRightYChannel1+channel, &bry);
-            // Perfom a few checks
-            if (tlx >= brx){
-              error = 1;
-              setStringParam(PercStatusChannel1+channel, "Width must be > 0");
-            }
-            if (tly >= bry){
-              error = 1;
-              setStringParam(PercStatusChannel1+channel, "Height must be > 0");
-            }
-            if (subFrames <= 0){
-              error = 1;
-              setStringParam(PercStatusChannel1+channel, "Subframes must be > 0");
-            }
-            if (error){
-              setIntegerParam(PercErrorChannel1+channel, 1);
-            }
+          // Subframe is enabled, read out parameters
+          getIntegerParam(PercSubFrame1ID+channel, &subFrame);
+          getIntegerParam(PercTopLeftXSF1+channel, &tlx);
+          getIntegerParam(PercTopLeftYSF1+channel, &tly);
+          getIntegerParam(PercBotRightXSF1+channel, &brx);
+          getIntegerParam(PercBotRightYSF1+channel, &bry);
+          // Perfom a few checks
+          if (tlx >= brx){
+            error = 1;
+//            setStringParam(PercStatusChannel1+channel, "Width must be > 0");
+          }
+          if (tly >= bry){
+            error = 1;
+//            setStringParam(PercStatusChannel1+channel, "Height must be > 0");
+          }
+          if (subFrames <= 0){
+            error = 1;
+//            setStringParam(PercStatusChannel1+channel, "Subframes must be > 0");
+          }
+          if (error){
+//            setIntegerParam(PercErrorChannel1+channel, 1);
           }
         }
       }
@@ -504,7 +587,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         setIntegerParam(PercReceiveChannel3, 0);
         setIntegerParam(PercReceiveChannel4, 0);
         setStringParam(ADStatusMessage, "Error in one of the channels");
-      }
+      }*/
     }
     if (!value && (adstatus != ADStatusIdle)){
       // This is a command to stop acquisition
@@ -512,10 +595,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
       // Release all of the subframes
       sPtr_->releaseAllSubFrames();
       // Set the status
-      setIntegerParam(PercReceiveChannel1, 0);
-      setIntegerParam(PercReceiveChannel2, 0);
-      setIntegerParam(PercReceiveChannel3, 0);
-      setIntegerParam(PercReceiveChannel4, 0);
+      setIntegerParam(PercReceive, 0);
       setIntegerParam(ADStatus, ADStatusIdle);
       setStringParam(ADStatusMessage, "Acquisition completed");
     }
@@ -615,28 +695,24 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     setIntegerParam(PercDescramble, value);
     // Set the descramble flag in the server
     sPtr_->setDescramble(value);
-  } else if (param >= PercTopLeftXChannel1 && param <= PercBotRightYChannel4){
+  } else if (param >= PercTopLeftXSF1 && param <= PercBotRightYSF8){
     // First update the value
     setIntegerParam(param, value);
     // Now calculate the width and height of each channel
-    for (int channel = 0; channel < 4; channel++){
+    for (int channel = 0; channel < 8; channel++){
       int tlx, tly, brx, bry, width, height;
-      getIntegerParam(PercTopLeftXChannel1+channel, &tlx);
-      getIntegerParam(PercTopLeftYChannel1+channel, &tly);
-      getIntegerParam(PercBotRightXChannel1+channel, &brx);
-      getIntegerParam(PercBotRightYChannel1+channel, &bry);
+      getIntegerParam(PercTopLeftXSF1+channel, &tlx);
+      getIntegerParam(PercTopLeftYSF1+channel, &tly);
+      getIntegerParam(PercBotRightXSF1+channel, &brx);
+      getIntegerParam(PercBotRightYSF1+channel, &bry);
       width = brx - tlx + 1;
       if (width < 0) width = 0;
       height = bry - tly + 1;
       if (height < 0) height = 0;
-      setIntegerParam(PercWidthChannel1+channel, width);
-      setIntegerParam(PercHeightChannel1+channel, height);
+      setIntegerParam(PercWidthSF1+channel, width);
+      setIntegerParam(PercHeightSF1+channel, height);
     }
-  } else if (param >= PercEnableChannel1 && param <= PercEnableChannel4){
-    setIntegerParam(param, value);
-  } else if (param >= PercSubFramesChannel1 && param <= PercSubFramesChannel4){
-    setIntegerParam(param, value);
-  } else if (param >= PercPortChannel1 && param <= PercPortChannel4){
+  } else if (param == PercPort){
     setIntegerParam(param, value);
   } else {
     // If this parameter belongs to a base class call its method
@@ -660,7 +736,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
 void ADPercivalDriver::setupImage()
 {
-  // Check the current channel mode.  If multi-channel mode setup as defined by config file
+/*  // Check the current channel mode.  If multi-channel mode setup as defined by config file
   int channelMode;
   getIntegerParam(PercChannelMode, &channelMode);
   // Check the channel mode, if multi set a full frame
@@ -684,12 +760,16 @@ void ADPercivalDriver::setupImage()
     // Setup server for full frame as defined by configuration file
     sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
   } else {
+*/
     // Setup server with single channel size
-    int tlx, tly, brx, bry, width, height;
-    getIntegerParam(PercTopLeftXChannel1, &tlx);
-    getIntegerParam(PercTopLeftYChannel1, &tly);
-    getIntegerParam(PercBotRightXChannel1, &brx);
-    getIntegerParam(PercBotRightYChannel1, &bry);
+    int tlx, tly, brx, bry, width, height, subFrame;
+
+    // Get the selected subframe
+    getIntegerParam(PercSubFrame, &subFrame);
+    getIntegerParam(PercTopLeftXSF1 + subFrame, &tlx);
+    getIntegerParam(PercTopLeftYSF1 + subFrame, &tly);
+    getIntegerParam(PercBotRightXSF1 + subFrame, &brx);
+    getIntegerParam(PercBotRightYSF1 + subFrame, &bry);
     width  = brx - tlx + 1;
     height = bry - tly + 1;
     dims_[0] = width;
@@ -701,16 +781,46 @@ void ADPercivalDriver::setupImage()
     setIntegerParam(NDArraySizeY, height);
 
     // Create the Percival buffer pool from the size of image loaded from the configuration file
-    if (buffers_){
-      delete(buffers_);
-    }
+//    if (buffers_){
+//      delete(buffers_);
+//    }
     buffers_ = new PercivalBufferPool(width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
     setIntegerParam(NDArraySize, width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
     callParamCallbacks();
 
-    // Setup server for partial frame as defined by channel 1
-    sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+    if (sfDescrambleArray_){
+      free(sfDescrambleArray_);
+      sfDescrambleArray_ = 0;
+    }
+    // We need to pass in the correct descrambleArray for the subframe in this case
+    sfDescrambleArray_ = (uint32_t *)malloc(width * height * sizeof(uint32_t));
+    // Loop over rows, copying in 1 row of descramble data at a time
+    uint32_t *ptr1 = sfDescrambleArray_;
+    for (int rows = tly; rows < (bry+1); rows++){
+      uint32_t *ptr2 = descrambleArray_+(rows*configPtr_->getImageWidth())+tlx;
+      memcpy(ptr1, ptr2, width*sizeof(uint32_t));
+      ptr1 += width;
+    }
+    // Now each index in the descramble array is pointing to a point in the whole frame
+    // Realign each point to a point in the subframe
+    for (int x = 0; x < width; x++){
+      for (int y = 0; y < height; y++){
+        uint32_t raw_index = sfDescrambleArray_[(y*width)+x];
+        // Find the corresponding index within the subframe
+        uint32_t ffy = raw_index / configPtr_->getImageWidth();
+        uint32_t ffx = raw_index - (ffy * configPtr_->getImageWidth());
+        uint32_t sfy = ffy - tly;
+        uint32_t sfx = ffx - tlx;
+        sfDescrambleArray_[(y*width)+x] = (sfy*width)+sfx;
+      }
+    }
+    // Setup server for partial frame as defined by selected subframe
+//    sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+    sPtr_->setToSpatialMode(subFrame);
+    sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), sfDescrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+/*
   }
+*/
 }
 
 /** Report status of the driver.
@@ -834,7 +944,7 @@ extern "C" int ADPercivalDriverConfigure(const char *portName)
                          0,
                          1,
                          0,
-                         524288000);
+                         1024288000);
     return(asynSuccess);
 }
 

@@ -141,9 +141,9 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
   } else if (function == ImageMinValue){
     configPtr->setMinValue(value);
   } else if (function == ImageMaxValue){
-    if (value > 8191){
-      value = 8191;
-      setStringParam(FileWriteMessage, "Maximum allowed value is 8191");
+    if (value > 32767){
+      value = 32767;
+      setStringParam(FileWriteMessage, "Maximum allowed value is 32767");
     }
     configPtr->setMaxValue(value);
   }

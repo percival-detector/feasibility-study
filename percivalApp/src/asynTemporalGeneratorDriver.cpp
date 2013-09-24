@@ -10,7 +10,7 @@
 #include <iocsh.h>
 #include <epicsExport.h>
 
-#include "asynGeneratorDriver.h"
+#include "asynTemporalGeneratorDriver.h"
 
 static const char *driverName = "asynGeneratorDriver";
 
@@ -447,6 +447,285 @@ int asynGeneratorDriver::createFileName(int maxChars, char *filePath, char *file
   return(status);   
 }
 
+void asynGeneratorDriver::freeImageBuffers()
+{
+  uint32_t images = configPtr->getNoOfImages();
+
+  // If the buffer is not zero then free the memory
+  if (buffer1_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer1_[imageIndex]);
+    }
+    free(buffer1_);
+    buffer1_ = 0;
+  }
+  if (buffer2_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer2_[imageIndex]);
+    }
+    free(buffer2_);
+    buffer2_ = 0;
+  }
+  if (buffer3_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer3_[imageIndex]);
+    }
+    free(buffer3_);
+    buffer3_ = 0;
+  }
+  if (buffer4_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer4_[imageIndex]);
+    }
+    free(buffer4_);
+    buffer4_ = 0;
+  }
+  if (buffer5_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer5_[imageIndex]);
+    }
+    free(buffer5_);
+    buffer5_ = 0;
+  }
+  if (buffer6_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer6_[imageIndex]);
+    }
+    free(buffer6_);
+    buffer6_ = 0;
+  }
+  if (buffer7_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer7_[imageIndex]);
+    }
+    free(buffer7_);
+    buffer7_ = 0;
+  }
+  if (buffer8_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(buffer8_[imageIndex]);
+    }
+    free(buffer8_);
+    buffer8_ = 0;
+  }
+  if (reset1_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset1_[imageIndex]);
+    }
+    free(reset1_);
+    reset1_ = 0;
+  }
+  if (reset2_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset2_[imageIndex]);
+    }
+    free(reset2_);
+    reset2_ = 0;
+  }
+  if (reset3_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset3_[imageIndex]);
+    }
+    free(reset3_);
+    reset3_ = 0;
+  }
+  if (reset4_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset4_[imageIndex]);
+    }
+    free(reset4_);
+    reset4_ = 0;
+  }
+  if (reset5_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset5_[imageIndex]);
+    }
+    free(reset5_);
+    reset5_ = 0;
+  }
+  if (reset6_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset6_[imageIndex]);
+    }
+    free(reset6_);
+    reset6_ = 0;
+  }
+  if (reset7_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset7_[imageIndex]);
+    }
+    free(reset7_);
+    reset7_ = 0;
+  }
+  if (reset8_){
+    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+      free(reset8_[imageIndex]);
+    }
+    free(reset8_);
+    reset8_ = 0;
+  }
+}
+
+void asynGeneratorDriver::setupImageBuffers()
+{
+  int subTlx, subTly, subBrx, subBry, sIWidth, sIHeight;
+  uint32_t images = configPtr->getNoOfImages();
+
+  // Read the sub image for sub frame 1
+  getIntegerParam(GDTopLeftXChannel1, &subTlx);
+  getIntegerParam(GDTopLeftYChannel1, &subTly);
+  getIntegerParam(GDBotRightXChannel1, &subBrx);
+  getIntegerParam(GDBotRightYChannel1, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer1_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer1_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer1_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset1_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset1_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset1_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 2
+  getIntegerParam(GDTopLeftXChannel2, &subTlx);
+  getIntegerParam(GDTopLeftYChannel2, &subTly);
+  getIntegerParam(GDBotRightXChannel2, &subBrx);
+  getIntegerParam(GDBotRightYChannel2, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer2_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer2_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer2_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset2_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset2_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset2_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 3
+  getIntegerParam(GDTopLeftXChannel3, &subTlx);
+  getIntegerParam(GDTopLeftYChannel3, &subTly);
+  getIntegerParam(GDBotRightXChannel3, &subBrx);
+  getIntegerParam(GDBotRightYChannel3, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer3_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer3_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer3_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset3_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset3_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset3_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 4
+  getIntegerParam(GDTopLeftXChannel4, &subTlx);
+  getIntegerParam(GDTopLeftYChannel4, &subTly);
+  getIntegerParam(GDBotRightXChannel4, &subBrx);
+  getIntegerParam(GDBotRightYChannel4, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer4_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer4_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer4_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset4_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset4_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset4_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 5
+  getIntegerParam(GDTopLeftXChannel5, &subTlx);
+  getIntegerParam(GDTopLeftYChannel5, &subTly);
+  getIntegerParam(GDBotRightXChannel5, &subBrx);
+  getIntegerParam(GDBotRightYChannel5, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer5_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer5_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer5_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset5_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset5_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset5_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 6
+  getIntegerParam(GDTopLeftXChannel6, &subTlx);
+  getIntegerParam(GDTopLeftYChannel6, &subTly);
+  getIntegerParam(GDBotRightXChannel6, &subBrx);
+  getIntegerParam(GDBotRightYChannel6, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer6_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer6_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer6_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset6_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset6_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset6_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 7
+  getIntegerParam(GDTopLeftXChannel7, &subTlx);
+  getIntegerParam(GDTopLeftYChannel7, &subTly);
+  getIntegerParam(GDBotRightXChannel7, &subBrx);
+  getIntegerParam(GDBotRightYChannel7, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer7_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer7_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer7_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset7_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset7_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset7_[imageIndex]);
+  }
+
+  // Read the sub image for sub frame 8
+  getIntegerParam(GDTopLeftXChannel8, &subTlx);
+  getIntegerParam(GDTopLeftYChannel8, &subTly);
+  getIntegerParam(GDBotRightXChannel8, &subBrx);
+  getIntegerParam(GDBotRightYChannel8, &subBry);
+  sIWidth = subBrx - subTlx + 1;
+  sIHeight = subBry - subTly + 1;
+  buffer8_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    buffer8_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer8_[imageIndex]);
+  }
+  // Allocate the storage for the reset data and 
+  reset8_ = (void **)malloc(images * sizeof(void *));
+  for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+    reset8_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
+    configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)reset8_[imageIndex]);
+  }
+
+}
+
+
 void asynGeneratorDriver::posting_task(int taskNumber)
 {
   epicsTimeStamp startTime;
@@ -673,6 +952,9 @@ void asynGeneratorDriver::posting_task(int taskNumber)
         senderPtr->sendImage(buffer[counter%images], bufSize, subFrameNumber, packetSize, counter, 0);
         // Also send the reset data for the next frame, along with the number of sub frames and packet size
         senderPtr->sendImage(resetBuffer[counter%images], bufSize, subFrameNumber, packetSize, counter+1, 1);
+      } else {
+        // We are in temporal mode, post each subframe out on the same channel
+        
       }
 
       // Call the callbacks to update any changes
@@ -1153,6 +1435,23 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   this->stopEventId_[5] = epicsEventCreate(epicsEventEmpty);
   this->stopEventId_[6] = epicsEventCreate(epicsEventEmpty);
   this->stopEventId_[7] = epicsEventCreate(epicsEventEmpty);
+
+  buffer1_ = 0;
+  buffer2_ = 0;
+  buffer3_ = 0;
+  buffer4_ = 0;
+  buffer5_ = 0;
+  buffer6_ = 0;
+  buffer7_ = 0;
+  buffer8_ = 0;
+  reset1_ = 0;
+  reset2_ = 0;
+  reset3_ = 0;
+  reset4_ = 0;
+  reset5_ = 0;
+  reset6_ = 0;
+  reset7_ = 0;
+  reset8_ = 0;
 
   // Start each channel in a separate thread
 	status = (epicsThreadCreate("post_task_1",

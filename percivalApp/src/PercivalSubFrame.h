@@ -11,34 +11,21 @@
 #ifndef PERCIVALSUBFRAME_H_
 #define PERCIVALSUBFRAME_H_
 
-#include "PercivalDataType.h"
-#include "PercivalServer.h"
-#include "DataReceiver.h"
-#include "PercivalBuffer.h"
-#include "PercivalBufferPool.h"
+#include <boost/cstdint.hpp>
 
-class PercivalServer;
-
-class PercivalSubFrame : public IPercivalCallback
+class PercivalSubFrame
 {
   public:
 
-	  PercivalSubFrame(PercivalServer *owner,
-                     uint32_t frameID,
-                     const std::string& host,
-                     unsigned short port,
-                     DataType type,
+	  PercivalSubFrame(uint32_t subFrameID,
                      uint32_t topLeftX,
                      uint32_t topLeftY,
                      uint32_t bottomRightX,
-                     uint32_t bottomRightY,
-                     uint32_t subFrames);
+                     uint32_t bottomRightY);
 
     virtual ~PercivalSubFrame();
 
     void setDebug(uint32_t level);
-
-    void setWatchdogTimeout(uint32_t time);
 
     uint32_t getNumberOfPixels();
 
@@ -50,41 +37,18 @@ class PercivalSubFrame : public IPercivalCallback
 
     uint32_t getBottomRightY();
 
-    void startAcquisition();
-
-    void stopAcquisition();
-
-    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
-
-    virtual void timeout();
-
-    virtual PercivalBuffer *allocateBuffer();
-
-
   private:
 
     uint32_t       debug_;            // Debug level
-    uint32_t       watchdogTimeout_;  // Watchdog timeout (ms)
-    uint32_t       frameID_;          // Numerical unique ID for this sub-frame
-    std::string    host_;             // NIC to bind UDP socket to
-    unsigned short port_;             // Port number for UDP socket to listen on
-    DataType       type_;             // Data type of this sub-frame
+    uint32_t       subFrameID_;       // Numerical unique ID for this sub-frame
     uint32_t       topLeftX_;         // Sub frame top left X
     uint32_t       topLeftY_;         // Sub frame top left Y
     uint32_t       bottomRightX_;     // Sub frame bottom right X
     uint32_t       bottomRightY_;     // Sub frame bottom right Y
-    uint32_t       subFrames_;        // Number of sub-frames
     uint32_t       width_;            // Width of this sub-frame
     uint32_t       height_;           // Height of this sub-frame
     uint32_t       pixelSize_;        // Number of pixels in this sub-frame
-    uint32_t       byteSize_;         // Number of bytes in this sub-frame
     
-    PercivalServer     *owner_;
-    PercivalBufferPool *buffers_;
-    PercivalBuffer     *currentBuffer_;
-    DataReceiver       *server_;
-
-
 };
 
 #endif  /* PERCIVALSUBFRAME_H_ */

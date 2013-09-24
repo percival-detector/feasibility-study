@@ -25,6 +25,7 @@ class PercivalBufferPool
 
     PercivalBuffer *allocate();
     void free(PercivalBuffer *buffer);
+    int size();
 
   private:
 

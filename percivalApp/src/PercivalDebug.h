@@ -30,6 +30,10 @@ class PercivalDebug
 
     void log(uint32_t level, const std::string& str, uint32_t val);
 
+    void log(uint32_t level, const std::string& str, uint16_t val);
+
+    void log(uint32_t level, const std::string& str, uint8_t val);
+
     void log(uint32_t level, const std::string& str, int64_t val);
 
     void log(uint32_t level, const std::string& str1, uint32_t val1, const std::string& str2, uint32_t val2);

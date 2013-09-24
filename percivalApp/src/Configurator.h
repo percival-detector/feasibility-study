@@ -108,6 +108,7 @@ class Configurator
     void copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer);
     void copyScrambledSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer);
     void copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer);
+    void copyResetDataSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer);
     void copyDescrambleArray(uint32_t *buffer);
     void copyGainThresholds(uint32_t *buffer);
     void copyADCIndex(uint32_t *buffer);
@@ -169,6 +170,7 @@ class Configurator
     float    *ADC_offset_;        // Combined offset for both ADC's
     float    *stage_gains_;       // Gain to apply for each of the output stages
     float    *stage_offsets_;     // Offsets to apply for each of the output stages (in scrambled order)
+    uint16_t *resetDataUInt16_;   // Reset data
     //float    gain_thresholds_[4]; // Threshold at which output gain stage switches
 
 

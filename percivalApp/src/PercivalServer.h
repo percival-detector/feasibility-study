@@ -18,15 +18,32 @@
 #ifndef PERCIVALSERVER_H_
 #define PERCIVALSERVER_H_
 
+#include <boost/thread/thread.hpp>
+#include <boost/asio.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/exception/diagnostic_information.hpp>
+
 #include "PercivalDataType.h"
 #include "PercivalSubFrame.h"
 #include "DataReceiver.h"
 #include "PercivalBuffer.h"
 #include "PercivalBufferPool.h"
+#include "PercivalPacketChecker.h"
+
+typedef struct errorStats_t
+{
+  uint32_t missingPackets;
+  uint32_t latePackets;
+  uint32_t duplicatePackets;
+} ErrorStats;
 
 class PercivalSubFrame;
 
-class PercivalServer
+class PercivalServer : public IPercivalCallback
 {
   public:
 
@@ -34,6 +51,8 @@ class PercivalServer
     virtual ~PercivalServer();
 
     void setDebug(uint32_t level);
+
+    void setToSpatialMode(uint32_t subFrameID);
 
     void setWatchdogTimeout(uint32_t time);
 
@@ -52,16 +71,15 @@ class PercivalServer
                        float    *stageGains,        // Gain to apply for each of the output stages (in scrambled order)
                        float    *stageOffsets);     // Offsets to apply for each of the output stages (in scrambled order)
 
-    int setupSubFrame(uint32_t frameID,
-                      const std::string& host,
-                      unsigned short port,
+    int setupChannel(const std::string& host, unsigned short port, uint32_t packetSize);
+
+    int setupSubFrame(uint32_t subFrameID,
                       uint32_t topLeftX,
                       uint32_t topLeftY,
                       uint32_t bottomRightX,
-                      uint32_t bottomRightY,
-                      uint32_t subFrames);
+                      uint32_t bottomRightY);
 
-    int releaseSubFrame(int frameID);
+    int releaseSubFrame(int subFrameID);
 
     int releaseAllSubFrames();
 
@@ -71,19 +89,35 @@ class PercivalServer
 
     int registerCallback(IPercivalCallback *callback);
 
-    int processSubFrame(uint32_t frameID, PercivalBuffer *buffer, uint32_t frameNumber);
+    virtual void imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
 
-    int timeout(uint32_t frameID);
+    void resetPacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
 
-    void unscramble(int      numPts,       // Number of points to process
-                    uint8_t *in_data,     // Input data
-                    uint8_t *reset_data,  // Reset data
-                    uint8_t *out_data,    // Output data
+    void framePacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
+
+    void processFrame(uint16_t frameNumber);
+
+    virtual void timeout();
+
+    virtual PercivalBuffer *allocateBuffer();
+
+    virtual void releaseBuffer(PercivalBuffer *buffer);
+
+//    int processSubFrame(uint32_t frameID, PercivalBuffer *buffer, uint32_t frameNumber);
+
+//    int timeout(uint32_t frameID);
+
+    void unscramble(int      offset,       // Offset from index 0
+                    int      numPts,       // Number of points to process
+                    uint8_t *in_data,      // Input data
+                    uint8_t *reset_data,   // Reset data
+                    uint8_t *out_data,     // Output data
                     uint32_t x1,
                     uint32_t x2,
                     uint32_t y1);
 
-    void unscramble(int      numPts,       // Number of points to process
+    void unscramble(int      offset,       // Offset from index 0
+                    int      numPts,       // Number of points to process
                     uint16_t *in_data,     // Input data
                     uint16_t *reset_data,  // Reset data
                     uint16_t *out_data,    // Output data
@@ -91,7 +125,8 @@ class PercivalServer
                     uint32_t x2,
                     uint32_t y1);
 
-    void unscramble(int      numPts,       // Number of points to process
+    void unscramble(int      offset,       // Offset from index 0
+                    int      numPts,       // Number of points to process
                     uint32_t *in_data,     // Input data
                     uint32_t *reset_data,  // Reset data
                     uint32_t *out_data,    // Output data
@@ -101,12 +136,17 @@ class PercivalServer
 
   private:
 
-    uint32_t     debug_;             // Debug level
-    uint32_t     watchdogTimeout_;   // Watchdog timeout (ms)
-    std::string  errorMessage_;      // Error message string
-    bool         acquiring_;         // Are we acquiring
-    boost::mutex access_;            // Mutex for mask locking
-    bool         descramble_;        // Should we descramble or just reconstruct the raw input frame
+    uint32_t       debug_;           // Debug level
+    uint32_t       watchdogTimeout_; // Watchdog timeout (ms)
+    std::string    errorMessage_;    // Error message string
+    bool           acquiring_;       // Are we acquiring
+    boost::mutex   access_;          // Mutex for mask locking
+    bool           descramble_;      // Should we descramble or just reconstruct the raw input frame
+    std::string    host_;            // Host IP address to bind to
+    unsigned short port_;            // Port to bind to
+    uint32_t       packetSize_;      // Size of UDP packet payload in bytes
+    uint32_t       mode_;            // Current mode, (0 = spatial, 1 = temporal)
+    uint32_t       currentSubFrame_; // When in spatial mode this informs which subframe to use
 
     uint32_t     width_;             // Width of full frame
     uint32_t     height_;            // Height of full frame
@@ -120,15 +160,29 @@ class PercivalServer
     float        *ADCOffset_;        // Pointer to combined offset for both ADC's
     float        *stageGains_;       // Gain to apply for each of the output stages (in scrambled order)
     float        *stageOffsets_;     // Offsets to apply for each of the output stages (in scrambled order)
+    boost::shared_ptr<boost::thread>  workerThread_;
 
-    std::map<int, PercivalSubFrame *>   subFrameMap_; // Map to contain sub-image UDP data receivers
+    std::map<int, PercivalSubFrame *>   subFrameMap_; // Map to contain sub-image objects
+
     uint32_t                            serverMask_;  // bitmask of servers setup
     uint32_t                            serverReady_; // bitmask of servers that have notified of frames
-    uint32_t                            frameNumber_; // Current frame number
+    uint32_t                            frameNumber_;         // Current frame number
+    uint32_t                            expectNewFrame_;      // Set when we have completed a frame
+    uint32_t                            resetFrameNumber_;    // Current reset frame number
+    uint32_t                            expectNewResetFrame_; // Set when we have completed a reset frame
+    uint32_t                            resetFrameReady_;     // Set when we have completed a reset frame
 
-    IPercivalCallback                   *callback_;   // Callback interface
-    PercivalBuffer                      *fullFrame_;   // Full frame buffer
-
+    IPercivalCallback                   *callback_;        // Callback interface
+    PercivalBuffer                      *fullFrame_;       // Full frame buffer
+    PercivalBuffer                      *rawFrame_;        // Scrambled full frame buffer
+    PercivalBuffer                      *resetFrame1_;     // Double buffer for reset frame
+    PercivalBuffer                      *resetFrame2_;     // Double buffer for reset frame
+    DataReceiver                        *receiver_;        // Data receiver
+    PercivalBufferPool                  *buffers_;         // Pool of individual UDP packet buffers
+    PercivalPacketChecker               *checker_;         // Keep a record of incoming packets
+    PercivalPacketChecker               *resetChecker_;    // Keep a record of incoming reset packets
+    ErrorStats                          errorStats_;       // Keep a record of error statistics
+    ErrorStats                          resetErrorStats_;  // Keep a record of error statistics
 };
 
 #endif /* DATASENDER_H_ */

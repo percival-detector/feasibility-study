@@ -22,6 +22,7 @@
 #include <time.h>
 
 #include "PercivalDataType.h"
+#include "PercivalPacketChecker.h"
 
 /*
 typedef struct bufferInfo_t
@@ -71,7 +72,7 @@ class DataReceiver
 
     int shutdownSocket();
 
-    int startAcquisition(uint32_t frameBytes, uint32_t subFrames);
+    int startAcquisition(uint32_t packetBytes);
 
     int stopAcquisition();
 
@@ -89,6 +90,7 @@ class DataReceiver
     bool                              acquiring_;                 // Are we listening for packets
     PacketHeader                      packetHeader_;              // Structure containing packet header information
     PercivalBuffer                    *currentBuffer_;            // Pointer to the current buffer memory allocation
+//    PercivalPacketChecker             *packetChecker_;            // Pointer to the packet checker for frame integrity
     boost::asio::io_service   	      ioService_;                 // Boost service object
     boost::asio::ip::udp::endpoint	  remoteEndpoint_;
     boost::asio::ip::udp::socket      *recvSocket_;
@@ -97,17 +99,21 @@ class DataReceiver
     boost::shared_ptr<boost::thread>  receiverThread_;
     boost::shared_ptr<boost::thread>  workerThread_;
     uint32_t                          frameHeaderLength_;         // 
-    uint32_t                          framePayloadBytesReceived_; // 
-    uint32_t                          frameTotalBytesReceived_;   // Running
-    uint32_t                          subFramesReceived_;         // Number of sub-frames received
-    uint32_t                          subFramePacketsReceived_;   // Number of sub-frame packets received
-    uint32_t                          subFrameBytesReceived_;     // Number of sub-frame bytes received
-    uint32_t                          subFrameLength_;            // Number of bytes in each sub-frame
-    uint32_t                          frameBytes_;                // Number of bytes in a full frame
-    uint32_t                          subFrames_;                 // Number of sub-frames in a full frame
-    uint32_t                          framesReceived_;            // Number of frames received this run
-    uint32_t                          latchedFrameNumber_;        // Sanity check that frames are increasing
-    uint32_t                          currentFrameNumber_;
+//    uint32_t                          framePayloadBytesReceived_; // 
+//    uint32_t                          frameTotalBytesReceived_;   // Running
+//    uint32_t                          subFramesReceived_;         // Number of sub-frames received
+//    uint32_t                          subFramePacketsReceived_;   // Number of sub-frame packets received
+//    uint32_t                          frameBytesReceived_;        // Number of bytes received
+//    uint32_t                          parcelBytes_;               // Number of bytes in each parcel
+    uint32_t                          packetBytes_;               // Number of bytes in a packet
+//    uint32_t                          frameBytes_;                // Number of bytes in a full frame
+//    uint32_t                          parcels_;                   // Number of parcels in a frame
+//    uint32_t                          framesReceived_;            // Number of frames received this run
+//    uint32_t                          latchedFrameNumber_;        // Sanity check that frames are increasing
+//    uint32_t                          currentFrameNumber_;
+//    void                              *pktBuffer_;                // Individual UDP packet buffer
+//    uint32_t                          expectNewFrameNumber_;      // If this is 1 we expect a new frame number in the next packet
+//    ErrorStats                        errorStats_;                // Structure for storing the error statistics
 };
 
 

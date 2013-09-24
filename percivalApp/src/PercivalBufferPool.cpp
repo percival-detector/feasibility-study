@@ -18,6 +18,12 @@ PercivalBufferPool::~PercivalBufferPool()
 {
   boost::lock_guard<boost::mutex> lock(access_);
   // Iterate over buffer stack and delete each buffer
+//std::cout << "Size: " << freeBuffers_.size() << std::endl;
+//  while (!freeBuffers_.empty()){
+//    PercivalBuffer *ptr = freeBuffers_.top();
+//    freeBuffers_.pop();
+//    delete ptr;
+//  }
 }
 
 PercivalBuffer *PercivalBufferPool::allocate()
@@ -38,4 +44,11 @@ void PercivalBufferPool::free(PercivalBuffer *buffer)
   boost::lock_guard<boost::mutex> lock(access_);
   freeBuffers_.push(buffer);
 }
+
+int PercivalBufferPool::size()
+{
+  boost::lock_guard<boost::mutex> lock(access_);
+  return freeBuffers_.size();
+}
+
 

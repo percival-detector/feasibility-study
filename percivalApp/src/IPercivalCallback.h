@@ -24,11 +24,13 @@ class IPercivalCallback
   public:
     virtual ~IPercivalCallback() {};
     
-    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber) = 0;
+    virtual void imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType) = 0;
 
     virtual void timeout() = 0;
 
     virtual PercivalBuffer *allocateBuffer() = 0;
+
+    virtual void releaseBuffer(PercivalBuffer *buffer) = 0;
 };
 
 

@@ -258,6 +258,9 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
     virtual int createFileName(int maxChars, char *fullFileName);
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
 
+    void freeImageBuffers();
+    void setupImageBuffers();
+
     virtual void posting_task(int taskNumber);
 
   protected:
@@ -471,6 +474,23 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
 
     epicsEventId startEventId_[8];
     epicsEventId stopEventId_[8];
+
+    void **buffer1_;
+    void **buffer2_;
+    void **buffer3_;
+    void **buffer4_;
+    void **buffer5_;
+    void **buffer6_;
+    void **buffer7_;
+    void **buffer8_;
+    void **reset1_;
+    void **reset2_;
+    void **reset3_;
+    void **reset4_;
+    void **reset5_;
+    void **reset6_;
+    void **reset7_;
+    void **reset8_;
 
 };
 

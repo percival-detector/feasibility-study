@@ -619,6 +619,9 @@ void Configurator::generateScrambledImage()
   // stage offsets
   hid_t    dataset_stage_offsets_id = 0, dataspace_stage_offsets_id;
   hsize_t  stage_offsets_dims[2];
+  // reset data
+  hid_t    dataset_reset_id = 0, dataspace_reset_id;
+  hsize_t  reset_dims[3];
   // Status
   herr_t   status;
 
@@ -631,8 +634,8 @@ void Configurator::generateScrambledImage()
   ADC_high_gain_ = (float *)malloc(noOfADCs_ * sizeof(float));
   ADC_offset_    = (float *)malloc(noOfADCs_ * sizeof(float));
   for (uint32_t index = 0; index < noOfADCs_; index++){
-    ADC_low_gain_[index]  = 1.0;
-    ADC_high_gain_[index] = 1.0;
+    ADC_low_gain_[index]  = 8.0;    // Fine gain
+    ADC_high_gain_[index] = 1024.0; // Coarse gain
     ADC_offset_[index]    = 0.0;
   }
   stage_gains_ = (float *)malloc(4 * imageWidth_ * imageHeight_ * sizeof(float));
@@ -642,6 +645,11 @@ void Configurator::generateScrambledImage()
       stage_gains_[(threshold * imageWidth_ * imageHeight_) + index] = 1.0;
       stage_offsets_[(threshold * imageWidth_ * imageHeight_) + index] = 0.0;
     }
+  }
+  // Allocate reset data
+  resetDataUInt16_ = (uint16_t *)malloc(imageWidth_ * imageHeight_ * noOfImages_ * sizeof(uint32_t));
+  for (uint32_t index = 0; index < (imageWidth_ * imageHeight_ * noOfImages_); index++){
+    resetDataUInt16_[index] = 0;
   }
   // Create the data space, dataset and write out the thresholds 
   gain_thresholds_dims[0] = 4;
@@ -694,6 +702,15 @@ void Configurator::generateScrambledImage()
   status = H5Dwrite(dataset_stage_offsets_id, H5T_IEEE_F32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, stage_offsets_);
   status = H5Dclose(dataset_stage_offsets_id);
   status = H5Sclose(dataspace_stage_offsets_id);
+  // Create the data space, dataset and write out the reset data
+  reset_dims[0] = noOfImages_;
+  reset_dims[1] = imageHeight_;
+  reset_dims[2] = imageWidth_;
+  dataspace_reset_id = H5Screate_simple(3, reset_dims, NULL);
+  dataset_reset_id = H5Dcreate2(file_id_, "/reset_data", H5T_STD_U16LE, dataspace_reset_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+  status = H5Dwrite(dataset_reset_id, H5T_STD_U16LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, resetDataUInt16_);
+  status = H5Dclose(dataset_reset_id);
+  status = H5Sclose(dataspace_reset_id);
 
 
   // Create the data space for the dataset.
@@ -756,8 +773,8 @@ void Configurator::generateScrambledImage()
                 scrambledDataUInt16_[pixelDestAddress] = (uint16_t)applyGains(pixelSourceAddress - (imageNo * imageWidth_ * imageHeight_),
                                                                               rawDataUInt16_[pixelSourceAddress],
                                                                               ADC_index_,
-                                                                              ADC_high_gain_,
                                                                               ADC_low_gain_,
+                                                                              ADC_high_gain_,
                                                                               ADC_offset_,
                                                                               stage_gains_,
                                                                               stage_offsets_);
@@ -807,8 +824,8 @@ uint32_t Configurator::applyGains(uint32_t index,         // Unscrambled index o
                                   float * stage_offsets)  // Offsets to apply for each of the output stages (in scrambled order)
 {
     uint32_t gain, ADC_low, ADC_high, ADC, imageSize;
-    float value;
-    
+    uint32_t value;
+
     imageSize = imageWidth_ * imageHeight_;
     value = in_data;
     ADC   = ADC_index[index];
@@ -819,8 +836,8 @@ uint32_t Configurator::applyGains(uint32_t index,         // Unscrambled index o
     else gain = 3;
     value = ( value - stage_offsets[gain*imageSize+index])/stage_gains[gain*imageSize+index] - ADC_offset[ADC];
     ADC_low  = (((uint32_t) (value/ADC_low_gain[ADC])) & 0xFF ) << 2;
-    ADC_high = (((uint32_t) (( value - ( ADC_low >> 2 ) * ADC_low_gain[ADC] ) / ADC_high_gain[ADC] )) & 0x1F00 ) << 2;
-        
+    ADC_high = (((uint32_t) (( value - ( ADC_low >> 2 ) * ADC_low_gain[ADC] ) / ADC_high_gain[ADC] )) & 0x1F ) << 10;
+
     return gain + ADC_low + ADC_high;
 }
 
@@ -868,6 +885,19 @@ int Configurator::readScrambledImage()
   status = H5Sclose(dataspace_id);
 
   // Repeat the reading of a data set for the descramble array and for all other gain arrays
+
+  // Open the dataset.
+  dataset_id = H5Dopen(file_id_, "/reset_data", H5P_DEFAULT);
+  // Retrieve the data space
+  dataspace_id = H5Dget_space(dataset_id);
+  // Allocate the memory required for the reset data
+  resetDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
+  // Read the dataset
+  status = H5Dread(dataset_id, H5T_STD_U16LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, resetDataUInt16_);
+  // End access to the dataset and release resources used by it.
+  status = H5Dclose(dataset_id);
+  // Terminate access to the data space.
+  status = H5Sclose(dataspace_id);
 
   // Open the dataset.
   dataset_id = H5Dopen(file_id_, "/descramble_array", H5P_DEFAULT);
@@ -1382,6 +1412,22 @@ void Configurator::copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX
     ptr1 = buffer + ((yIndex-topLeftY) * width);
     ptr2 = scrambledDataUInt8_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
     memcpy(ptr1, ptr2, (width * sizeof(uint8_t)));
+  }
+}
+
+void Configurator::copyResetDataSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer)
+{
+  PercivalDebug dbg(debug_, "Configurator::copyScrambledSectionUInt16");
+  uint32_t yIndex;
+  uint32_t width;
+  width = botRightX - topLeftX + 1;
+  // Just copy frame zero currently
+  uint16_t *ptr1 = buffer;
+  uint16_t *ptr2 = resetDataUInt16_;
+  for (yIndex = topLeftY; yIndex <= botRightY; yIndex++){
+    ptr1 = buffer + ((yIndex-topLeftY) * width);
+    ptr2 = resetDataUInt16_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
+    memcpy(ptr1, ptr2, (width * sizeof(uint16_t)));
   }
 }
 

@@ -21,59 +21,6 @@
 
 #include "PercivalDataType.h"
 
-/*
-typedef struct bufferInfo_t
-{
-	uint8_t*     addr;
-	unsigned int length;
-} BufferInfo;
-
-typedef struct packetHeader_t
-{
-	uint32_t frameNumber;
-	uint32_t subFrameNumber;
-	uint32_t packetNumberFlags;
-} PacketHeader;
-
-const uint32_t kStartOfFrameMarker = 1 << 31;
-const uint32_t kEndOfFrameMarker   = 1 << 30;
-const uint32_t kPacketNumberMask   = 0x3FFFFFFF;
-
-typedef enum
-{
-	headerAtStart,
-	headerAtEnd
-} DataSenderHeaderPosition;
-
-typedef uint32_t FrameNumber;
-*/
-/*
-typedef boost::function<BufferInfo(void)> allocateCallback_t;
-typedef boost::function<void(int)> freeCallback_t;
-typedef boost::function<void(int, time_t)> receiveCallback_t;
-typedef boost::function<void(int)> signalCallback_t;
-*/
-/*
-typedef struct callbackBundle_t
-{
-	allocateCallback_t allocate;
-	freeCallback_t     free;
-	receiveCallback_t  receive;
-	signalCallback_t   signal;
-
-} CallbackBundle;
-
-namespace FemDataSenderSignal {
-	typedef enum {
-		femAcquisitionNullSignal,
-		femAcquisitionComplete,
-		femAcquisitionCorruptImage
-	} FemDataReceiverSignals;
-}
-*/
-
-//const unsigned int kWatchdogHandlerIntervalMs = 1000;
-
 class DataSender
 {
   public:
@@ -92,27 +39,21 @@ class DataSender
 
     int shutdownSocket();
 
+    int sendImage(void     *buffer,          // Pointer to the data to send
+                  uint32_t bufferSize,       // Size of buffer in bytes
+                  uint8_t  subFrameNumber,   // Sub-Frame number
+                  uint32_t packetSize,       // UDP Packet size
+                  uint16_t frameNumber,      // Frame number
+                  uint8_t  reset);           // Is this a reset frame or not
 
-//    void sendImage(uint32_t frameNumber, 
-    int sendImage(uint32_t dataType, void *buffer, uint32_t size, uint32_t subFrames, uint32_t packetSize, uint32_t time, uint32_t frameNumber);
+    void send(uint16_t frameNumber,          // Frame number
+              uint8_t subFrameNumber,        // Sub-Frame number
+              uint16_t packetNumber,         // UDP Packet number
+              uint8_t reset,                 // Is this a reset frame or not
+              uint8_t *payload,              // Pointer to the data to send
+              uint32_t payloadSize);         // Size of the data send
 
-    void send(uint32_t frameNumber, uint32_t packetNumber, bool sof, bool eof, uint8_t *payload, uint32_t payloadSize);
-
-    //void startAcquisition(void);
-    //void stopAcquisition(void);
-
-    //void registerCallbacks(CallbackBundle* aBundle);
-
-    void setFrameLength(unsigned int mFrameLength);
-    void setFrameHeaderLength(unsigned int aHeaderLength);
     void setFrameHeaderPosition(DataSenderHeaderPosition aPosition);
-    void setNumSubFrames(unsigned int aNumSubFrames);
-
-    void setAcquisitionPeriod(unsigned int aPeriodMs);
-    void setAcquisitionTime(unsigned int aTimeMs);
-    void enableFrameCounterCheck(bool aEnable);
-
-    bool acqusitionActive(void);
 
   private:
 
@@ -129,34 +70,11 @@ class DataSender
     // Are we running (socket setup OK)
     bool                              running_;
 
-
-
-//	boost::asio::deadline_timer       mWatchdogTimer;
-//	boost::shared_ptr<boost::thread>  mReceiverThread;
-
-/*	unsigned int                      mRecvWatchdogCounter;
-
-	CallbackBundle     				  mCallbacks;
-
-	bool							  mAcquiring;
-	unsigned int                      mRemainingFrames;
-*/
-	unsigned int                    mNumFrames;
-	unsigned int                    mFrameLength;
-	unsigned int                    mFrameHeaderLength;
-
-
-	unsigned int                    mAcquisitionPeriod;
-	unsigned int                    mAcquisitionTime;
-	unsigned int                    mNumSubFrames;
-	unsigned int                    mSubFrameLength;
-	bool                            mEnableFrameCounterCheck;
-
-	PacketHeader                    mPacketHeader;
+	PacketHeader                    packetHeader_;
 
 	//BufferInfo                      mCurrentBuffer;
 
-	FrameNumber                     mCurrentFrameNumber;
+	//FrameNumber                     mCurrentFrameNumber;
 	//FrameNumber                       mLatchedFrameNumber;
 
 	//unsigned int                      mFrameTotalBytesReceived;

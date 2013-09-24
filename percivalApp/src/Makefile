@@ -20,6 +20,18 @@ boost_thread_DIR = $(BOOST)/lib
 # ----------------------------------------
 # Build a basic test application
 #-----------------------------------------
+PROD_IOC += testPackets
+testPackets_SRCS += testPercivalPacketChecker.cpp
+testPackets_SRCS += PercivalPacketChecker.cpp
+testPackets_SRCS += PercivalDebug.cpp
+testPackets_LIBS += boost_system
+testPackets_LIBS += boost_thread
+boost_system_DIR = $(BOOST)/lib
+boost_thread_DIR = $(BOOST)/lib
+
+# ----------------------------------------
+# Build a basic test application
+#-----------------------------------------
 PROD_IOC += testConfig
 testConfig_SRCS += testConfigurator.cpp
 testConfig_SRCS += Configurator.cpp
@@ -42,6 +54,7 @@ testPercServer_SRCS += PercivalBuffer.cpp
 testPercServer_SRCS += PercivalBufferPool.cpp
 testPercServer_SRCS += DataReceiver.cpp
 testPercServer_SRCS += PercivalDebug.cpp
+testPercServer_SRCS += PercivalPacketChecker.cpp
 testPercServer_LIBS += boost_system
 testPercServer_LIBS += boost_thread
 boost_system_DIR = $(BOOST)/lib
@@ -104,7 +117,8 @@ DBD += ADPercivalDriver.dbd
 
 # The following are compiled and added to the support library
 percival_SRCS += asynConfiguratorDriver.cpp
-percival_SRCS += asynGeneratorDriver.cpp
+#percival_SRCS += asynGeneratorDriver.cpp
+percival_SRCS += asynTemporalGeneratorDriver.cpp
 percival_SRCS += ADPercivalDriver.cpp
 percival_SRCS += Configurator.cpp
 percival_SRCS += DataSender.cpp
@@ -114,6 +128,7 @@ percival_SRCS += PercivalBuffer.cpp
 percival_SRCS += PercivalBufferPool.cpp
 percival_SRCS += PercivalServer.cpp
 percival_SRCS += PercivalSubFrame.cpp
+percival_SRCS += PercivalPacketChecker.cpp
 
 #percival_LIBS += asyn
 #percival_LIBS += hdf5

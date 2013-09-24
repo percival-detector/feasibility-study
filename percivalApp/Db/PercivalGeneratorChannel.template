@@ -129,14 +129,14 @@ record(longout, "$(P)$(R)GDSubFramesChannel$(CHAN)")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_$(CHAN)")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAME_CHANNEL_$(CHAN)")
    field(VAL,  "0")
 }
 
 record(longin, "$(P)$(R)GDSubFramesChannel$(CHAN)_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAMES_CHANNEL_$(CHAN)")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_SUB_FRAME_CHANNEL_$(CHAN)")
    field(SCAN, "I/O Intr")
 }
 

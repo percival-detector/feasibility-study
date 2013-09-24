@@ -267,6 +267,98 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 }
 
 ###################################################################
+#  These records setup the socket                                 #
+###################################################################
+
+record(stringout, "$(P)$(R)PercAddr")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ADDR")
+   field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)PercAddr_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ADDR")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercPort")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PORT")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercPort_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PORT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercPacketBytes")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PACKET_BYTES")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercPacketBytes_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PACKET_BYTES")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercSubFrame")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAME")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercSubFrame_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAME")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  This record shows if the socket is receiving, and the status   #
+###################################################################
+
+record(longin, "$(P)$(R)PercReceive_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_RECEIVE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercError_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERROR")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)PercStatus_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_STATUS")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
 #  Substitutions for each of the channels available               #
 ###################################################################
 
@@ -277,4 +369,12 @@ include "ADPercivalDriverChannel.template"
 substitute "CHAN=3"
 include "ADPercivalDriverChannel.template"
 substitute "CHAN=4"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=5"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=6"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=7"
+include "ADPercivalDriverChannel.template"
+substitute "CHAN=8"
 include "ADPercivalDriverChannel.template"

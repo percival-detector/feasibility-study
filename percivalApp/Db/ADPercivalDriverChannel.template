@@ -3,185 +3,98 @@
 # September 2, 2013
 
 ###################################################################
-#  These records allow enabling/disabling each channel            #
+#  These records setup each sub-frame physical layout             #
 ###################################################################
 
-record(mbbo, "$(P)$(R)Channel$(CHAN)Enable")
+record(longout, "$(P)$(R)PercTopLeftXSF$(CHAN)")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ENABLE_CHANNEL_$(CHAN)")
-   field(ZRST, "Disabled")
-   field(ZRVL, "0")
-   field(ONST, "Enabled")
-   field(ONVL, "1")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_X_SF_$(CHAN)")
    field(VAL,  "0")
 }
 
-record(mbbi, "$(P)$(R)Channel$(CHAN)Enable_RBV")
+record(longin, "$(P)$(R)PercTopLeftXSF$(CHAN)_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ENABLE_CHANNEL_$(CHAN)")
-   field(ZRST, "Disabled")
-   field(ZRVL, "0")
-   field(ONST, "Enabled")
-   field(ONVL, "1")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_X_SF_$(CHAN)")
    field(SCAN, "I/O Intr")
 }
 
-###################################################################
-#  These records setup the sub-frame for each channel             #
-###################################################################
-
-record(longout, "$(P)$(R)PercTopLeftXChannel$(CHAN)")
+record(longout, "$(P)$(R)PercTopLeftYSF$(CHAN)")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_X_CHANNEL_$(CHAN)")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_Y_SF_$(CHAN)")
    field(VAL,  "0")
 }
 
-record(longin, "$(P)$(R)PercTopLeftXChannel$(CHAN)_RBV")
+record(longin, "$(P)$(R)PercTopLeftYSF$(CHAN)_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_X_CHANNEL_$(CHAN)")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_Y_SF_$(CHAN)")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)PercTopLeftYChannel$(CHAN)")
+record(longout, "$(P)$(R)PercBotRightXSF$(CHAN)")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_Y_CHANNEL_$(CHAN)")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_X_SF_$(CHAN)")
    field(VAL,  "0")
 }
 
-record(longin, "$(P)$(R)PercTopLeftYChannel$(CHAN)_RBV")
+record(longin, "$(P)$(R)PercBotRightXSF$(CHAN)_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_TOP_LEFT_Y_CHANNEL_$(CHAN)")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_X_SF_$(CHAN)")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)PercBotRightXChannel$(CHAN)")
+record(longout, "$(P)$(R)PercBotRightYSF$(CHAN)")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_X_CHANNEL_$(CHAN)")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_Y_SF_$(CHAN)")
    field(VAL,  "0")
 }
 
-record(longin, "$(P)$(R)PercBotRightXChannel$(CHAN)_RBV")
+record(longin, "$(P)$(R)PercBotRightYSF$(CHAN)_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_X_CHANNEL_$(CHAN)")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_Y_SF_$(CHAN)")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)PercBotRightYChannel$(CHAN)")
+record(longin, "$(P)$(R)PercWidthSF$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_WIDTH_SF_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercHeightSF$(CHAN)_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_HEIGHT_SF_$(CHAN)")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PercSubFrameID$(CHAN)")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_Y_CHANNEL_$(CHAN)")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAME_ID_$(CHAN)")
    field(VAL,  "0")
 }
 
-record(longin, "$(P)$(R)PercBotRightYChannel$(CHAN)_RBV")
+record(longin, "$(P)$(R)PercSubFrameID$(CHAN)_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_BOT_RIGHT_Y_CHANNEL_$(CHAN)")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAME_ID_$(CHAN)")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PercWidthChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_WIDTH_CHANNEL_$(CHAN)")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)PercHeightChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_HEIGHT_CHANNEL_$(CHAN)")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)PercSubFramesChannel$(CHAN)")
-{
-   field(PINI, "NO")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAMES_CHANNEL_$(CHAN)")
-   field(VAL,  "0")
-}
-
-record(longin, "$(P)$(R)PercSubFramesChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SUB_FRAMES_CHANNEL_$(CHAN)")
-   field(SCAN, "I/O Intr")
-}
-
-###################################################################
-#  These records setup the socket for each channel                #
-###################################################################
-
-record(stringout, "$(P)$(R)PercAddrChannel$(CHAN)")
-{
-   field(PINI, "NO")
-   field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ADDR_CHANNEL_$(CHAN)")
-   field(VAL,  "")
-}
-
-record(stringin, "$(P)$(R)PercAddrChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ADDR_CHANNEL_$(CHAN)")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)PercPortChannel$(CHAN)")
-{
-   field(PINI, "NO")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PORT_CHANNEL_$(CHAN)")
-   field(VAL,  "0")
-}
-
-record(longin, "$(P)$(R)PercPortChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PORT_CHANNEL_$(CHAN)")
-   field(SCAN, "I/O Intr")
-}
-
-###################################################################
-#  This record shows if the channel is receiving, and the status  #
-###################################################################
-
-record(longin, "$(P)$(R)PercReceiveChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_RECEIVE_CHANNEL_$(CHAN)")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)PercErrorChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERROR_CHANNEL_$(CHAN)")
-   field(SCAN, "I/O Intr")
-}
-
-record(stringin, "$(P)$(R)PercStatusChannel$(CHAN)_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_STATUS_CHANNEL_$(CHAN)")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
 
 
 

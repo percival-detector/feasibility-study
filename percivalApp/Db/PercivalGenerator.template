@@ -452,6 +452,33 @@ record(mbbi, "$(P)$(R)GDImageMode_RBV")
 }
 
 ###################################################################
+#  These records control generator mode, spatial or temporal      # 
+###################################################################
+
+record(mbbo, "$(P)$(R)GDMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_MODE")
+   field(ZRST, "Spatial")
+   field(ZRVL, "0")
+   field(ONST, "Temporal")
+   field(ONVL, "1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)GDMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_MODE")
+   field(ZRST, "Spatial")
+   field(ZRVL, "0")
+   field(ONST, "Temporal")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  Substitutions for each of the channels available               #
 ###################################################################
 
@@ -462,5 +489,13 @@ include "PercivalGeneratorChannel.template"
 substitute "CHAN=3"
 include "PercivalGeneratorChannel.template"
 substitute "CHAN=4"
+include "PercivalGeneratorChannel.template"
+substitute "CHAN=5"
+include "PercivalGeneratorChannel.template"
+substitute "CHAN=6"
+include "PercivalGeneratorChannel.template"
+substitute "CHAN=7"
+include "PercivalGeneratorChannel.template"
+substitute "CHAN=8"
 include "PercivalGeneratorChannel.template"
 

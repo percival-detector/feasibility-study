@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 889
-y 56
+x 897
+y 72
 w 390
 h 820
 font "arial-bold-r-12.0"
@@ -33,7 +33,7 @@ release 0
 x 0
 y 0
 w 390
-h 810
+h 820
 lineColor index 5
 fill
 fillColor index 5
@@ -48,7 +48,7 @@ release 0
 x 5
 y 430
 w 380
-h 375
+h 385
 lineColor index 14
 fill
 fillColor index 3
@@ -233,8 +233,8 @@ minor 1
 release 1
 x 5
 y 5
-w 86
-h 14
+w 88
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -886,7 +886,7 @@ major 4
 minor 1
 release 1
 x 10
-y 610
+y 580
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -905,7 +905,7 @@ major 4
 minor 0
 release 0
 x 80
-y 605
+y 575
 w 90
 h 25
 fgColor index 25
@@ -925,7 +925,7 @@ major 4
 minor 1
 release 1
 x 10
-y 640
+y 610
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -944,7 +944,7 @@ major 4
 minor 0
 release 0
 x 80
-y 635
+y 605
 w 90
 h 25
 fgColor index 25
@@ -964,7 +964,7 @@ major 4
 minor 1
 release 1
 x 10
-y 670
+y 640
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -983,7 +983,7 @@ major 4
 minor 0
 release 0
 x 80
-y 665
+y 635
 w 90
 h 25
 fgColor index 25
@@ -1003,7 +1003,7 @@ major 4
 minor 1
 release 1
 x 10
-y 700
+y 670
 w 60
 h 20
 font "arial-bold-r-12.0"
@@ -1022,7 +1022,7 @@ major 4
 minor 0
 release 0
 x 80
-y 695
+y 665
 w 90
 h 25
 fgColor index 25
@@ -1042,7 +1042,7 @@ major 4
 minor 1
 release 1
 x 80
-y 585
+y 555
 w 95
 h 20
 font "arial-bold-r-12.0"
@@ -1061,7 +1061,7 @@ major 4
 minor 1
 release 0
 x 260
-y 530
+y 520
 w 45
 h 30
 fgColor index 25
@@ -1085,7 +1085,7 @@ major 4
 minor 0
 release 0
 x 360
-y 535
+y 525
 w 18
 h 18
 controlPv "$(P)$(R)GDPostCommand_RBV"
@@ -1103,7 +1103,7 @@ major 4
 minor 1
 release 0
 x 310
-y 530
+y 520
 w 45
 h 30
 fgColor index 20
@@ -1127,7 +1127,7 @@ major 4
 minor 0
 release 0
 x 190
-y 610
+y 580
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel1_RBV"
@@ -1145,7 +1145,7 @@ major 4
 minor 0
 release 0
 x 190
-y 640
+y 610
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel2_RBV"
@@ -1163,7 +1163,7 @@ major 4
 minor 0
 release 0
 x 190
-y 670
+y 640
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel3_RBV"
@@ -1181,7 +1181,7 @@ major 4
 minor 0
 release 0
 x 190
-y 700
+y 670
 w 18
 h 18
 controlPv "$(P)$(R)GDPostChannel4_RBV"
@@ -1198,7 +1198,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 265
+x 140
 y 450
 w 50
 h 20
@@ -1217,7 +1217,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 325
+x 200
 y 450
 w 50
 h 20
@@ -1240,8 +1240,8 @@ minor 1
 release 1
 x 5
 y 425
-w 102
-h 14
+w 103
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -1258,7 +1258,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 135
+x 10
 y 450
 w 115
 h 20
@@ -1279,7 +1279,7 @@ major 10
 minor 0
 release 0
 x 270
-y 610
+y 580
 w 50
 h 20
 controlPv "$(P)$(R)GDCounterChannel1_RBV"
@@ -1298,7 +1298,7 @@ major 10
 minor 0
 release 0
 x 270
-y 640
+y 610
 w 50
 h 20
 controlPv "$(P)$(R)GDCounterChannel2_RBV"
@@ -1317,7 +1317,7 @@ major 10
 minor 0
 release 0
 x 270
-y 670
+y 640
 w 50
 h 20
 controlPv "$(P)$(R)GDCounterChannel3_RBV"
@@ -1336,7 +1336,7 @@ major 10
 minor 0
 release 0
 x 270
-y 700
+y 670
 w 50
 h 20
 controlPv "$(P)$(R)GDCounterChannel4_RBV"
@@ -1355,7 +1355,7 @@ major 4
 minor 4
 release 0
 x 325
-y 605
+y 575
 w 50
 h 25
 fgColor index 14
@@ -1381,7 +1381,7 @@ major 4
 minor 4
 release 0
 x 325
-y 635
+y 605
 w 50
 h 25
 fgColor index 14
@@ -1407,7 +1407,7 @@ major 4
 minor 4
 release 0
 x 325
-y 665
+y 635
 w 50
 h 25
 fgColor index 14
@@ -1433,7 +1433,7 @@ major 4
 minor 4
 release 0
 x 325
-y 695
+y 665
 w 50
 h 25
 fgColor index 14
@@ -1515,7 +1515,7 @@ major 4
 minor 0
 release 0
 x 230
-y 610
+y 580
 w 18
 h 18
 controlPv "$(P)$(R)GDErrorChannel1_RBV"
@@ -1533,7 +1533,7 @@ major 4
 minor 0
 release 0
 x 230
-y 640
+y 610
 w 18
 h 18
 controlPv "$(P)$(R)GDErrorChannel2_RBV"
@@ -1551,7 +1551,7 @@ major 4
 minor 0
 release 0
 x 230
-y 670
+y 640
 w 18
 h 18
 controlPv "$(P)$(R)GDErrorChannel3_RBV"
@@ -1569,7 +1569,7 @@ major 4
 minor 0
 release 0
 x 230
-y 700
+y 670
 w 18
 h 18
 controlPv "$(P)$(R)GDErrorChannel4_RBV"
@@ -1683,7 +1683,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 265
+x 140
 y 470
 w 50
 h 20
@@ -1700,7 +1700,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 325
+x 200
 y 470
 w 50
 h 20
@@ -1719,9 +1719,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 110
+x 10
 y 470
-w 140
+w 115
 h 20
 font "arial-bold-r-12.0"
 fontAlign "right"
@@ -1729,7 +1729,7 @@ fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "No Of Images To Post"
+  "Number To Post"
 }
 endObjectProperties
 
@@ -1739,7 +1739,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 135
+x 10
 y 500
 w 115
 h 20
@@ -1759,7 +1759,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 260
+x 135
 y 495
 w 115
 h 25
@@ -1771,5 +1771,525 @@ botShadowColor index 11
 controlPv "$(P)$(R)GDImageMode"
 indicatorPv "$(P)$(R)GDImageMode_RBV"
 font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 700
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 5"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 695
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel5Enable"
+indicatorPv "$(P)$(R)Channel5Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 730
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 6"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 725
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel6Enable"
+indicatorPv "$(P)$(R)Channel6Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 760
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 7"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 755
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel7Enable"
+indicatorPv "$(P)$(R)Channel7Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 790
+w 60
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Channel 8"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 785
+w 90
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Channel8Enable"
+indicatorPv "$(P)$(R)Channel8Enable_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 700
+w 18
+h 18
+controlPv "$(P)$(R)GDPostChannel5_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 730
+w 18
+h 18
+controlPv "$(P)$(R)GDPostChannel6_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 760
+w 18
+h 18
+controlPv "$(P)$(R)GDPostChannel7_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 790
+w 18
+h 18
+controlPv "$(P)$(R)GDPostChannel8_RBV"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 700
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel5_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 730
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel6_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 760
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel7_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 270
+y 790
+w 50
+h 20
+controlPv "$(P)$(R)GDCounterChannel8_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 695
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=5"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 725
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=6"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 755
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=7"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 325
+y 785
+w 50
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "PercivalGeneratorChannel"
+}
+symbols {
+  0 "C=8"
+}
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 700
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel5_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 730
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel6_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 760
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel7_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 230
+y 790
+w 18
+h 18
+controlPv "$(P)$(R)GDErrorChannel8_RBV"
+lineColor index 14
+onColor index 20
+offColor index 24
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 135
+y 525
+w 115
+h 25
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)GDMode"
+indicatorPv "$(P)$(R)GDMode_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 530
+w 115
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Generator Mode"
+}
 endObjectProperties
 

@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 732
-y 48
+x 463
+y 57
 w 390
 h 820
 font "arial-bold-r-12.0"
@@ -322,7 +322,7 @@ minor 6
 release 0
 x 180
 y 655
-w 160
+w 175
 h 20
 controlPv "$(P)$(R)PercFileReadMessage_RBV"
 font "helvetica-medium-r-10.0"
@@ -344,7 +344,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 350
+x 360
 y 655
 w 18
 h 18
@@ -456,126 +456,6 @@ value {
 }
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 10
-y 705
-w 60
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Channel 1"
-}
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 80
-y 700
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Channel1Enable"
-indicatorPv "$(P)$(R)Channel1Enable_RBV"
-font "arial-bold-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 80
-y 680
-w 95
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Enabled"
-}
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 190
-y 705
-w 18
-h 18
-controlPv "$(P)$(R)PercReceiveChannel1_RBV"
-lineColor index 14
-onColor index 15
-offColor index 19
-lineWidth 2
-numBits 1
-endObjectProperties
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 4
-release 0
-x 265
-y 700
-w 50
-h 25
-fgColor index 14
-bgColor index 3
-topShadowColor index 1
-botShadowColor index 11
-font "arial-bold-r-12.0"
-buttonLabel "Details"
-numPvs 4
-numDsps 1
-displayFileName {
-  0 "ADPercivalDetectorChannel"
-}
-symbols {
-  0 "C=1"
-}
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 230
-y 705
-w 18
-h 18
-controlPv "$(P)$(R)PercErrorChannel1_RBV"
-lineColor index 14
-onColor index 20
-offColor index 24
-lineWidth 2
-numBits 1
-endObjectProperties
-
 # (Menu Button)
 object activeMenuButtonClass
 beginObjectProperties
@@ -672,134 +552,30 @@ indicatorPv "$(P)$(R)ChannelMode_RBV"
 font "arial-bold-r-12.0"
 endObjectProperties
 
-# (Group)
-object activeGroupClass
+# (Related Display)
+object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 0
+minor 4
 release 0
-x 10
-y 730
-w 305
-h 85
-
-beginGroup
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 10
-y 735
-w 60
+x 115
+y 740
+w 45
 h 20
-font "arial-bold-r-12.0"
 fgColor index 14
 bgColor index 3
-useDisplayBg
-value {
-  "Channel 2"
-}
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 80
-y 730
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
 topShadowColor index 1
 botShadowColor index 11
-controlPv "$(P)$(R)Channel2Enable"
-indicatorPv "$(P)$(R)Channel2Enable_RBV"
 font "arial-bold-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 10
-y 765
-w 60
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Channel 3"
+buttonLabel "SF 1"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorChannel"
 }
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 80
-y 760
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Channel3Enable"
-indicatorPv "$(P)$(R)Channel3Enable_RBV"
-font "arial-bold-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 10
-y 795
-w 60
-h 20
-font "arial-bold-r-12.0"
-fgColor index 14
-bgColor index 3
-useDisplayBg
-value {
-  "Channel 4"
+symbols {
+  0 "C=1"
 }
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 80
-y 790
-w 90
-h 25
-fgColor index 25
-bgColor index 3
-inconsistentColor index 0
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(P)$(R)Channel4Enable"
-indicatorPv "$(P)$(R)Channel4Enable_RBV"
-font "arial-bold-r-12.0"
 endObjectProperties
 
 # (Byte)
@@ -808,11 +584,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 190
-y 735
+x 360
+y 680
 w 18
 h 18
-controlPv "$(P)$(R)PercReceiveChannel2_RBV"
+controlPv "$(P)$(R)PercReceive_RBV"
 lineColor index 14
 onColor index 15
 offColor index 19
@@ -826,34 +602,100 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 190
-y 765
+x 360
+y 705
 w 18
 h 18
-controlPv "$(P)$(R)PercReceiveChannel3_RBV"
+controlPv "$(P)$(R)PercError_RBV"
 lineColor index 14
-onColor index 15
-offColor index 19
+onColor index 20
+offColor index 24
 lineWidth 2
 numBits 1
 endObjectProperties
 
-# (Byte)
-object ByteClass
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
+release 1
+x 270
+y 680
+w 75
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Running"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 270
+y 705
+w 75
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Error Status"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
 release 0
-x 190
-y 795
-w 18
-h 18
-controlPv "$(P)$(R)PercReceiveChannel4_RBV"
-lineColor index 14
-onColor index 15
-offColor index 19
-lineWidth 2
-numBits 1
+x 115
+y 715
+w 150
+h 20
+controlPv "$(P)$(R)PercStatus_RBV"
+font "helvetica-medium-r-10.0"
+fontAlign "center"
+fgColor index 16
+bgColor index 10
+limitsFromDb
+nullColor index 0
+smartRefresh
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 715
+w 100
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Error Message"
+}
 endObjectProperties
 
 # (Related Display)
@@ -862,16 +704,16 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 265
-y 730
-w 50
-h 25
+x 165
+y 740
+w 45
+h 20
 fgColor index 14
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
 font "arial-bold-r-12.0"
-buttonLabel "Details"
+buttonLabel "SF 2"
 numPvs 4
 numDsps 1
 displayFileName {
@@ -888,16 +730,42 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 265
-y 760
-w 50
-h 25
+x 165
+y 765
+w 45
+h 20
 fgColor index 14
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
 font "arial-bold-r-12.0"
-buttonLabel "Details"
+buttonLabel "SF 6"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorChannel"
+}
+symbols {
+  0 "C=6"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 215
+y 740
+w 45
+h 20
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "SF 3"
 numPvs 4
 numDsps 1
 displayFileName {
@@ -914,16 +782,68 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 265
-y 790
-w 50
-h 25
+x 115
+y 765
+w 45
+h 20
 fgColor index 14
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
 font "arial-bold-r-12.0"
-buttonLabel "Details"
+buttonLabel "SF 5"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorChannel"
+}
+symbols {
+  0 "C=5"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 215
+y 765
+w 45
+h 20
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "SF 7"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorChannel"
+}
+symbols {
+  0 "C=7"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 265
+y 740
+w 45
+h 20
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "SF 4"
 numPvs 4
 numDsps 1
 displayFileName {
@@ -934,64 +854,135 @@ symbols {
 }
 endObjectProperties
 
-# (Byte)
-object ByteClass
+# (Related Display)
+object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 0
+minor 4
 release 0
-x 230
-y 735
-w 18
-h 18
-controlPv "$(P)$(R)PercErrorChannel2_RBV"
-lineColor index 14
-onColor index 20
-offColor index 24
-lineWidth 2
-numBits 1
-endObjectProperties
-
-# (Byte)
-object ByteClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 230
+x 265
 y 765
-w 18
-h 18
-controlPv "$(P)$(R)PercErrorChannel3_RBV"
-lineColor index 14
-onColor index 20
-offColor index 24
-lineWidth 2
-numBits 1
+w 45
+h 20
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "SF 8"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorChannel"
+}
+symbols {
+  0 "C=8"
+}
 endObjectProperties
 
-# (Byte)
-object ByteClass
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
-x 230
-y 795
-w 18
-h 18
-controlPv "$(P)$(R)PercErrorChannel4_RBV"
-lineColor index 14
-onColor index 20
-offColor index 24
-lineWidth 2
-numBits 1
+minor 1
+release 1
+x 0
+y 740
+w 110
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Sub Frame Details"
+}
 endObjectProperties
 
-endGroup
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 115
+y 685
+w 55
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorSocket"
+}
+endObjectProperties
 
-visPv "$(P)$(R)ChannelMode_RBV"
-visMin "0"
-visMax "1"
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 690
+w 100
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Socket Details"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 795
+w 100
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Error Statistics"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 115
+y 790
+w 55
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "Details"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "ADPercivalDetectorErrors"
+}
 endObjectProperties
 

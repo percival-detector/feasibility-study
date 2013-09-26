@@ -5,8 +5,8 @@
  *      Author: gnx91527
  */
 
-#ifndef ASYNCONFIGURATORDRIVER_H_
-#define ASYNCONFIGURATORDRIVER_H_
+#ifndef ASYNGENERATORDRIVER_H_
+#define ASYNGENERATORDRIVER_H_
 
 #include <epicsEvent.h>
 #include <epicsThread.h>
@@ -491,6 +491,15 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
     void **reset6_;
     void **reset7_;
     void **reset8_;
+    uint32_t bufSize1_;
+    uint32_t bufSize2_;
+    uint32_t bufSize3_;
+    uint32_t bufSize4_;
+    uint32_t bufSize5_;
+    uint32_t bufSize6_;
+    uint32_t bufSize7_;
+    uint32_t bufSize8_;
+    uint32_t noOfImages_;
 
 };
 

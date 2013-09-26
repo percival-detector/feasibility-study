@@ -39,6 +39,7 @@ typedef struct errorStats_t
   uint32_t missingPackets;
   uint32_t latePackets;
   uint32_t duplicatePackets;
+  uint32_t incorrectSubFramePackets;
 } ErrorStats;
 
 class PercivalSubFrame;
@@ -53,6 +54,8 @@ class PercivalServer : public IPercivalCallback
     void setDebug(uint32_t level);
 
     void setToSpatialMode(uint32_t subFrameID);
+
+    void setToTemporalMode();
 
     void setWatchdogTimeout(uint32_t time);
 
@@ -87,6 +90,15 @@ class PercivalServer : public IPercivalCallback
 
     int stopAcquisition();
 
+    int readErrorStats(uint32_t *dupPkt,
+                       uint32_t *misPkt,
+                       uint32_t *ltePkt,
+                       uint32_t *incPkt,
+                       uint32_t *dupRPkt,
+                       uint32_t *misRPkt,
+                       uint32_t *lteRPkt,
+                       uint32_t *incRPkt);
+
     int registerCallback(IPercivalCallback *callback);
 
     virtual void imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
@@ -95,26 +107,23 @@ class PercivalServer : public IPercivalCallback
 
     void framePacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
 
-    void processFrame(uint16_t frameNumber);
+    void processFrame(uint16_t frameNumber, PercivalBuffer *rawFrame);
+    //void processFrame(uint16_t frameNumber);
+
+    void temporalResetPacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
+
+    void processTemporalResetFrame(uint16_t frameNumber);
+
+    void temporalFramePacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
+
+    void processTemporalFrame(uint16_t frameNumber, PercivalBuffer *subFrameBuffers[8]);
+    //void processTemporalFrame(uint16_t frameNumber);
 
     virtual void timeout();
 
     virtual PercivalBuffer *allocateBuffer();
 
     virtual void releaseBuffer(PercivalBuffer *buffer);
-
-//    int processSubFrame(uint32_t frameID, PercivalBuffer *buffer, uint32_t frameNumber);
-
-//    int timeout(uint32_t frameID);
-
-    void unscramble(int      offset,       // Offset from index 0
-                    int      numPts,       // Number of points to process
-                    uint8_t *in_data,      // Input data
-                    uint8_t *reset_data,   // Reset data
-                    uint8_t *out_data,     // Output data
-                    uint32_t x1,
-                    uint32_t x2,
-                    uint32_t y1);
 
     void unscramble(int      offset,       // Offset from index 0
                     int      numPts,       // Number of points to process
@@ -125,14 +134,13 @@ class PercivalServer : public IPercivalCallback
                     uint32_t x2,
                     uint32_t y1);
 
-    void unscramble(int      offset,       // Offset from index 0
-                    int      numPts,       // Number of points to process
-                    uint32_t *in_data,     // Input data
-                    uint32_t *reset_data,  // Reset data
-                    uint32_t *out_data,    // Output data
-                    uint32_t x1,
-                    uint32_t x2,
-                    uint32_t y1);
+    void unscrambleToFull(int      numPts,       // Number of points to process
+                          uint16_t *in_data,     // Input data
+                          uint16_t *reset_data,  // Reset data
+                          uint16_t *out_data,    // Output data
+                          uint32_t x1,
+                          uint32_t x2,
+                          uint32_t y1);
 
   private:
 
@@ -140,7 +148,9 @@ class PercivalServer : public IPercivalCallback
     uint32_t       watchdogTimeout_; // Watchdog timeout (ms)
     std::string    errorMessage_;    // Error message string
     bool           acquiring_;       // Are we acquiring
-    boost::mutex   access_;          // Mutex for mask locking
+    boost::mutex   access_;          // Mutex for packet locking
+    boost::mutex   frameAccess_;     // Mutex for frame process locking
+    boost::mutex   resetAccess_;     // Mutex for reset process locking
     bool           descramble_;      // Should we descramble or just reconstruct the raw input frame
     std::string    host_;            // Host IP address to bind to
     unsigned short port_;            // Port to bind to
@@ -175,10 +185,13 @@ class PercivalServer : public IPercivalCallback
     IPercivalCallback                   *callback_;        // Callback interface
     PercivalBuffer                      *fullFrame_;       // Full frame buffer
     PercivalBuffer                      *rawFrame_;        // Scrambled full frame buffer
-    PercivalBuffer                      *resetFrame1_;     // Double buffer for reset frame
-    PercivalBuffer                      *resetFrame2_;     // Double buffer for reset frame
+    PercivalBuffer                      *subFrames_[8];    // In temporal mode we need to store all subframes in buffers
+    PercivalBuffer                      *resetSubFrames_[8];    // In temporal mode we need to store all subframes in buffers
+    PercivalBuffer                      *resetFrame1_;     // Buffer for reset frame as it is received
+    std::map<uint16_t, PercivalBuffer*> resetFrameMap_;    // Map for storing reset frames
     DataReceiver                        *receiver_;        // Data receiver
     PercivalBufferPool                  *buffers_;         // Pool of individual UDP packet buffers
+    PercivalBufferPool                  *sfBuffers_;       // Pool of buffers for subframes
     PercivalPacketChecker               *checker_;         // Keep a record of incoming packets
     PercivalPacketChecker               *resetChecker_;    // Keep a record of incoming reset packets
     ErrorStats                          errorStats_;       // Keep a record of error statistics

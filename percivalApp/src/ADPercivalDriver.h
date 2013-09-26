@@ -105,6 +105,15 @@
 #define PercPacketBytesString   "PERC_PACKET_BYTES"     //     (asynInt32,    r/w)   Number of payload bytes per UDP packet
 #define PercSubFrameString      "PERC_SUB_FRAME"        //     (asynInt32,    r/w)   Spatial mode, sub-frame ID for this detector (0-7)
 
+#define PercErrorDupPktString   "PERC_ERR_DUP_PKT"      //     (asynInt32,    r/o)   Duplicate packet error
+#define PercErrorMisPktString   "PERC_ERR_MIS_PKT"      //     (asynInt32,    r/o)   Missing packet error
+#define PercErrorLtePktString   "PERC_ERR_LTE_PKT"      //     (asynInt32,    r/o)   Late packet error
+#define PercErrorIncPktString   "PERC_ERR_INC_PKT"      //     (asynInt32,    r/o)   Unexpected data error
+#define PercErrorDupRPktString  "PERC_ERR_DUP_R_PKT"    //     (asynInt32,    r/o)   Duplicate reset packet error
+#define PercErrorMisRPktString  "PERC_ERR_MIS_R_PKT"    //     (asynInt32,    r/o)   Missing reset packet error
+#define PercErrorLteRPktString  "PERC_ERR_LTE_R_PKT"    //     (asynInt32,    r/o)   Late reset packet error
+#define PercErrorIncRPktString  "PERC_ERR_INC_R_PKT"    //     (asynInt32,    r/o)   Unexpected reset data error
+
 class ADPercivalDriver: public ADDriver, public IPercivalCallback
 {
   public:
@@ -114,14 +123,13 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
                      int priority,
                      int stackSize);
 
+    virtual void stats_task();
+
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
-//    virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
-//    virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-//    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
-//    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
-    virtual void setupImage();
+    virtual void setupSpatialImage();
+    virtual void setupTemporalImage();
     virtual void report(FILE *fp, int details);
 
     // These are the methods that are new to this class
@@ -130,7 +138,6 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
 
     virtual void imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
-//    virtual void imageReceived(PercivalBuffer *buffer, uint32_t frameNumber);
     virtual void timeout();
     virtual PercivalBuffer *allocateBuffer();
     virtual void releaseBuffer(PercivalBuffer *buffer);
@@ -223,7 +230,17 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercPort;
     int PercPacketBytes;
     int PercSubFrame;
-    #define LAST_PERCIVAL_PARAM PercSubFrame
+
+    int PercErrorDupPkt;
+    int PercErrorMisPkt;
+    int PercErrorLtePkt;
+    int PercErrorIncPkt;
+    int PercErrorDupRPkt;
+    int PercErrorMisRPkt;
+    int PercErrorLteRPkt;
+    int PercErrorIncRPkt;
+
+    #define LAST_PERCIVAL_PARAM PercErrorIncRPkt
 
   private:
   
@@ -256,7 +273,7 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     size_t        dims_[2];
     int           ndims_;
     NDArrayInfo_t arrayInfo_;
-
+    PercivalBuffer *pBuffer_;
 };
 
 

@@ -13,6 +13,9 @@
 
 #include <boost/cstdint.hpp>
 
+#include "PercivalBufferPool.h"
+#include "PercivalBuffer.h"
+
 class PercivalSubFrame
 {
   public:
@@ -37,18 +40,23 @@ class PercivalSubFrame
 
     uint32_t getBottomRightY();
 
+    PercivalBuffer *allocate();
+
+    void release(PercivalBuffer *buffer);
+
   private:
 
-    uint32_t       debug_;            // Debug level
-    uint32_t       subFrameID_;       // Numerical unique ID for this sub-frame
-    uint32_t       topLeftX_;         // Sub frame top left X
-    uint32_t       topLeftY_;         // Sub frame top left Y
-    uint32_t       bottomRightX_;     // Sub frame bottom right X
-    uint32_t       bottomRightY_;     // Sub frame bottom right Y
-    uint32_t       width_;            // Width of this sub-frame
-    uint32_t       height_;           // Height of this sub-frame
-    uint32_t       pixelSize_;        // Number of pixels in this sub-frame
-    
+    uint32_t           debug_;            // Debug level
+    uint32_t           subFrameID_;       // Numerical unique ID for this sub-frame
+    uint32_t           topLeftX_;         // Sub frame top left X
+    uint32_t           topLeftY_;         // Sub frame top left Y
+    uint32_t           bottomRightX_;     // Sub frame bottom right X
+    uint32_t           bottomRightY_;     // Sub frame bottom right Y
+    uint32_t           width_;            // Width of this sub-frame
+    uint32_t           height_;           // Height of this sub-frame
+    uint32_t           pixelSize_;        // Number of pixels in this sub-frame
+    PercivalBufferPool *buffers_;         // Pool for subframe buffers
+
 };
 
 #endif  /* PERCIVALSUBFRAME_H_ */

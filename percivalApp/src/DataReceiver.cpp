@@ -136,7 +136,7 @@ int DataReceiver::startAcquisition(uint32_t packetBytes)
     dbg.log(0, "Cannot start acquisition without a registered callback");
   }
 
-  dbg.log(0, "Acquiring  ", acquiring_);
+  dbg.log(1, "Acquiring  ", acquiring_);
 
   if (!acquiring_){
     dbg.log(1, "Starting acquisition loop");

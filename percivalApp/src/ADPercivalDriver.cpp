@@ -14,11 +14,12 @@
 
 static const char *driverName = "ADPercivalDriver";
 
-//static void acq_task_c(void *ptr)
-//{
-//	ADPercivalDriver *pPtr = (ADPercivalDriver *)ptr;
-//  pPtr->acquisition_task();
-//}
+static void stats_task_c(void *ptr)
+{
+	ADPercivalDriver *drvPtr = (ADPercivalDriver *)ptr;
+  drvPtr->stats_task();
+}
+
 
 
 /** This is the constructor for the ADPercivalDriver class.
@@ -140,6 +141,15 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercPacketBytesString,   asynParamInt32,     &PercPacketBytes);
   createParam(PercSubFrameString,      asynParamInt32,     &PercSubFrame);
 
+  createParam(PercErrorDupPktString,   asynParamInt32,     &PercErrorDupPkt);
+  createParam(PercErrorMisPktString,   asynParamInt32,     &PercErrorMisPkt);
+  createParam(PercErrorLtePktString,   asynParamInt32,     &PercErrorLtePkt);
+  createParam(PercErrorIncPktString,   asynParamInt32,     &PercErrorIncPkt);
+  createParam(PercErrorDupRPktString,  asynParamInt32,     &PercErrorDupRPkt);
+  createParam(PercErrorMisRPktString,  asynParamInt32,     &PercErrorMisRPkt);
+  createParam(PercErrorLteRPktString,  asynParamInt32,     &PercErrorLteRPkt);
+  createParam(PercErrorIncRPktString,  asynParamInt32,     &PercErrorIncRPkt);
+
   // Set some default values for parameters
   status =  setStringParam (ADManufacturer,      "Percival");
   status |= setStringParam (ADModel,             "TestCam");
@@ -242,8 +252,18 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercPacketBytes,   0);
   status |= setIntegerParam(PercSubFrame,      0);
 
+  status |= setIntegerParam(PercErrorDupPkt,   0);
+  status |= setIntegerParam(PercErrorMisPkt,   0);
+  status |= setIntegerParam(PercErrorLtePkt,   0);
+  status |= setIntegerParam(PercErrorIncPkt,   0);
+  status |= setIntegerParam(PercErrorDupRPkt,  0);
+  status |= setIntegerParam(PercErrorMisRPkt,  0);
+  status |= setIntegerParam(PercErrorLteRPkt,  0);
+  status |= setIntegerParam(PercErrorIncRPkt,  0);
+
   callParamCallbacks();
 
+  pBuffer_ = NULL;
   descrambleArray_ = 0;
 
   // Initialise the buffer pool pointer to 0
@@ -273,6 +293,45 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
 		return;
 	}
 
+  // Start the stats task in a separate thread
+	status = (epicsThreadCreate("stats_task",
+            epicsThreadPriorityMedium,
+            epicsThreadGetStackSize(epicsThreadStackMedium),
+            (EPICSTHREADFUNC)stats_task_c,
+            this) == NULL);
+  if (status){
+    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s:%s epicsThreadCreate failure for stats task\n", driverName, functionName);
+    return;
+  }
+
+}
+
+void ADPercivalDriver::stats_task()
+{
+  uint32_t dupPkt;
+  uint32_t misPkt;
+  uint32_t ltePkt;
+  uint32_t incPkt;
+  uint32_t dupRPkt;
+  uint32_t misRPkt;
+  uint32_t lteRPkt;
+  uint32_t incRPkt;
+  // Loop forever in this task
+  while (1){
+    sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt);
+    this->lock();
+    setIntegerParam(PercErrorDupPkt, dupPkt);
+    setIntegerParam(PercErrorMisPkt, misPkt);
+    setIntegerParam(PercErrorLtePkt, ltePkt);
+    setIntegerParam(PercErrorIncPkt, incPkt);
+    setIntegerParam(PercErrorDupRPkt, dupRPkt);
+    setIntegerParam(PercErrorMisRPkt, misRPkt);
+    setIntegerParam(PercErrorLteRPkt, lteRPkt);
+    setIntegerParam(PercErrorIncRPkt, incRPkt);
+    callParamCallbacks();
+    this->unlock();
+    epicsThreadSleep(1.0);
+  }
 }
 
 void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType)
@@ -286,6 +345,12 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
   epicsTimeStamp imageTime;
 
   this->lock();
+  // If we have an old buffer then its time to release
+  if (pBuffer_ != NULL){
+      // Release the Percival buffer back into the pool
+      buffers_->free(pBuffer_);
+  }
+  pBuffer_ = buffer;
 
   // Allocate an NDArray
   if (pImage_){
@@ -350,8 +415,6 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
     }
   }
 
-  // Release the Percival buffer back into the pool
-  buffers_->free(buffer);
 
   // Read in the number of Images and counter
   getIntegerParam(ADNumImages, &numImages);
@@ -391,6 +454,7 @@ void ADPercivalDriver::timeout()
 PercivalBuffer *ADPercivalDriver::allocateBuffer()
 {
   const char *functionName = "allocateBuffer";
+  //PercivalBuffer *buffer = buffers_->allocateClean();
   PercivalBuffer *buffer = buffers_->allocate();
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
               "%s:%s: allocated buffer address: %ld\n", 
@@ -463,58 +527,115 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int port;
     int packetBytes;
     int error = 0;
+    int mode = 0;
     epicsInt32 adstatus;
     getIntegerParam(ADStatus, &adstatus);
     //int error = 0;
     if (value && (adstatus == ADStatusIdle)){
-
-      // Spatial mode only initially
-      setupImage();
+      // Read the mode
+      getIntegerParam(PercChannelMode, &mode);
+      // If the mode is zero then we are running in spatial mode
+      if (mode == 0){
+        // Spatial mode only initially
+        setupSpatialImage();
       
-      // Get the selected subframe
-      getIntegerParam(PercSubFrame, &subFrame);
+        // Get the selected subframe
+        getIntegerParam(PercSubFrame, &subFrame);
       
-      // Reset status message and error
-      setIntegerParam(PercError, 0);
-      setStringParam(PercStatus, "");
+        // Reset status message and error
+        setIntegerParam(PercError, 0);
+        setStringParam(PercStatus, "");
 
-      getIntegerParam(PercSubFrame1ID+subFrame, &subFrameID);
-      getIntegerParam(PercTopLeftXSF1+subFrame, &tlx);
-      getIntegerParam(PercTopLeftYSF1+subFrame, &tly);
-      getIntegerParam(PercBotRightXSF1+subFrame, &brx);
-      getIntegerParam(PercBotRightYSF1+subFrame, &bry);
-      // Perfom a few checks
-      if (tlx >= brx){
-        error = 1;
-        setStringParam(PercStatus, "Width must be > 0");
+        getIntegerParam(PercSubFrame1ID+subFrame, &subFrameID);
+        getIntegerParam(PercTopLeftXSF1+subFrame, &tlx);
+        getIntegerParam(PercTopLeftYSF1+subFrame, &tly);
+        getIntegerParam(PercBotRightXSF1+subFrame, &brx);
+        getIntegerParam(PercBotRightYSF1+subFrame, &bry);
+        // Perfom a few checks
+        if (tlx >= brx){
+          error = 1;
+          setStringParam(PercStatus, "Width must be > 0");
+        }
+        if (tly >= bry){
+          error = 1;
+          setStringParam(PercStatus, "Height must be > 0");
+        }
+        if (error){
+          setIntegerParam(PercError, 1);
+        }
+
+        if (!error){
+          // Setup the channel
+          getStringParam(PercAddr, sizeof(address), address);
+          getIntegerParam(PercPort, &port);
+          getIntegerParam(PercPacketBytes, &packetBytes);
+          sPtr_->setupChannel(address, port, packetBytes);
+
+          // Setup the subframe within the server
+          sPtr_->setupSubFrame(subFrameID, tlx, tly, brx, bry);
+          setIntegerParam(PercReceive, 1);
+ 
+          // Zero the image counter
+          setIntegerParam(ADNumImagesCounter, 0);
+          // Tell the server to start the acquisition
+          sPtr_->startAcquisition();
+          setIntegerParam(ADStatus, ADStatusAcquire);
+          setStringParam(ADStatusMessage, "Acquiring images");
+        }
+      } else if (mode == 1){
+        // We are running in temporal mode
+        // Spatial mode only initially
+        setupTemporalImage();
+      
+        // Reset status message and error
+        setIntegerParam(PercError, 0);
+        setStringParam(PercStatus, "");
+
+        for (subFrame = 0; subFrame < 8; subFrame++){
+          getIntegerParam(PercSubFrame1ID+subFrame, &subFrameID);
+          getIntegerParam(PercTopLeftXSF1+subFrame, &tlx);
+          getIntegerParam(PercTopLeftYSF1+subFrame, &tly);
+          getIntegerParam(PercBotRightXSF1+subFrame, &brx);
+          getIntegerParam(PercBotRightYSF1+subFrame, &bry);
+          // Perfom a few checks
+          if (tlx >= brx){
+            error = 1;
+            setStringParam(PercStatus, "Sub-Frame Width must be > 0");
+          }
+          if (tly >= bry){
+            error = 1;
+            setStringParam(PercStatus, "Sub-Frame Height must be > 0");
+          }
+          if (error){
+            setIntegerParam(PercError, 1);
+          }
+        }
+        if (!error){
+          // Setup the channel
+          getStringParam(PercAddr, sizeof(address), address);
+          getIntegerParam(PercPort, &port);
+          getIntegerParam(PercPacketBytes, &packetBytes);
+          sPtr_->setupChannel(address, port, packetBytes);
+
+          for (subFrame = 0; subFrame < 8; subFrame++){
+            getIntegerParam(PercSubFrame1ID+subFrame, &subFrameID);
+            getIntegerParam(PercTopLeftXSF1+subFrame, &tlx);
+            getIntegerParam(PercTopLeftYSF1+subFrame, &tly);
+            getIntegerParam(PercBotRightXSF1+subFrame, &brx);
+            getIntegerParam(PercBotRightYSF1+subFrame, &bry);
+            // Setup each subframe within the server
+            sPtr_->setupSubFrame(subFrameID, tlx, tly, brx, bry);
+          }
+          setIntegerParam(PercReceive, 1);
+ 
+          // Zero the image counter
+          setIntegerParam(ADNumImagesCounter, 0);
+          // Tell the server to start the acquisition
+          sPtr_->startAcquisition();
+          setIntegerParam(ADStatus, ADStatusAcquire);
+          setStringParam(ADStatusMessage, "Acquiring images");
+        }
       }
-      if (tly >= bry){
-        error = 1;
-        setStringParam(PercStatus, "Height must be > 0");
-      }
-      if (error){
-        setIntegerParam(PercError, 1);
-      }
-
-      if (!error){
-        // Setup the channel
-        getStringParam(PercAddr, sizeof(address), address);
-        getIntegerParam(PercPort, &port);
-        getIntegerParam(PercPacketBytes, &packetBytes);
-        sPtr_->setupChannel(address, port, packetBytes);
-
-        // Setup the subframe within the server
-        sPtr_->setupSubFrame(subFrameID, tlx, tly, brx, bry);
-        setIntegerParam(PercReceive, 1);
-
-        // Zero the image counter
-        setIntegerParam(ADNumImagesCounter, 0);
-        // Tell the server to start the acquisition
-        sPtr_->startAcquisition();
-        setIntegerParam(ADStatus, ADStatusAcquire);
-        setStringParam(ADStatusMessage, "Acquiring images");
-      }
-
 /*      int channelMode;
       getIntegerParam(PercChannelMode, &channelMode);
       setupImage();
@@ -734,93 +855,89 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
   return (asynStatus)status;
 }
 
-void ADPercivalDriver::setupImage()
+void ADPercivalDriver::setupSpatialImage()
 {
-/*  // Check the current channel mode.  If multi-channel mode setup as defined by config file
-  int channelMode;
-  getIntegerParam(PercChannelMode, &channelMode);
-  // Check the channel mode, if multi set a full frame
-  if (channelMode == 0){
-    // Setup image dimensions
-    dims_[0] = configPtr_->getImageWidth();
-    dims_[1] = configPtr_->getImageHeight();
+  // Setup server with single channel size
+  int tlx, tly, brx, bry, width, height, subFrame;
 
-    setIntegerParam(ADSizeX,            dims_[0]);
-    setIntegerParam(ADSizeY,            dims_[1]);
-    setIntegerParam(NDArraySizeX,       dims_[0]);
-    setIntegerParam(NDArraySizeY,       dims_[1]);
+  // Get the selected subframe
+  getIntegerParam(PercSubFrame, &subFrame);
+  getIntegerParam(PercTopLeftXSF1 + subFrame, &tlx);
+  getIntegerParam(PercTopLeftYSF1 + subFrame, &tly);
+  getIntegerParam(PercBotRightXSF1 + subFrame, &brx);
+  getIntegerParam(PercBotRightYSF1 + subFrame, &bry);
+  width  = brx - tlx + 1;
+  height = bry - tly + 1;
+  dims_[0] = width;
+  dims_[1] = height;
 
-    // Create the Percival buffer pool from the size of image loaded from the configuration file
-    if (buffers_){
-      delete(buffers_);
-    }
-    buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
-    setIntegerParam(NDArraySize, dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+  setIntegerParam(ADSizeX,      width);
+  setIntegerParam(ADSizeY,      height);
+  setIntegerParam(NDArraySizeX, width);
+  setIntegerParam(NDArraySizeY, height);
 
-    // Setup server for full frame as defined by configuration file
-    sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
-  } else {
-*/
-    // Setup server with single channel size
-    int tlx, tly, brx, bry, width, height, subFrame;
-
-    // Get the selected subframe
-    getIntegerParam(PercSubFrame, &subFrame);
-    getIntegerParam(PercTopLeftXSF1 + subFrame, &tlx);
-    getIntegerParam(PercTopLeftYSF1 + subFrame, &tly);
-    getIntegerParam(PercBotRightXSF1 + subFrame, &brx);
-    getIntegerParam(PercBotRightYSF1 + subFrame, &bry);
-    width  = brx - tlx + 1;
-    height = bry - tly + 1;
-    dims_[0] = width;
-    dims_[1] = height;
-
-    setIntegerParam(ADSizeX,      width);
-    setIntegerParam(ADSizeY,      height);
-    setIntegerParam(NDArraySizeX, width);
-    setIntegerParam(NDArraySizeY, height);
-
-    // Create the Percival buffer pool from the size of image loaded from the configuration file
-//    if (buffers_){
-//      delete(buffers_);
-//    }
-    buffers_ = new PercivalBufferPool(width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
-    setIntegerParam(NDArraySize, width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
-    callParamCallbacks();
-
-    if (sfDescrambleArray_){
-      free(sfDescrambleArray_);
-      sfDescrambleArray_ = 0;
-    }
-    // We need to pass in the correct descrambleArray for the subframe in this case
-    sfDescrambleArray_ = (uint32_t *)malloc(width * height * sizeof(uint32_t));
-    // Loop over rows, copying in 1 row of descramble data at a time
-    uint32_t *ptr1 = sfDescrambleArray_;
-    for (int rows = tly; rows < (bry+1); rows++){
-      uint32_t *ptr2 = descrambleArray_+(rows*configPtr_->getImageWidth())+tlx;
-      memcpy(ptr1, ptr2, width*sizeof(uint32_t));
-      ptr1 += width;
-    }
-    // Now each index in the descramble array is pointing to a point in the whole frame
-    // Realign each point to a point in the subframe
-    for (int x = 0; x < width; x++){
-      for (int y = 0; y < height; y++){
-        uint32_t raw_index = sfDescrambleArray_[(y*width)+x];
-        // Find the corresponding index within the subframe
-        uint32_t ffy = raw_index / configPtr_->getImageWidth();
-        uint32_t ffx = raw_index - (ffy * configPtr_->getImageWidth());
-        uint32_t sfy = ffy - tly;
-        uint32_t sfx = ffx - tlx;
-        sfDescrambleArray_[(y*width)+x] = (sfy*width)+sfx;
-      }
-    }
-    // Setup server for partial frame as defined by selected subframe
-//    sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
-    sPtr_->setToSpatialMode(subFrame);
-    sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), sfDescrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
-/*
+  // Create the Percival buffer pool from the size of image loaded from the configuration file
+  if (buffers_ != 0){
+    delete buffers_;
   }
-*/
+  buffers_ = new PercivalBufferPool(width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+  setIntegerParam(NDArraySize, width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+  callParamCallbacks();
+
+  if (sfDescrambleArray_){
+    free(sfDescrambleArray_);
+    sfDescrambleArray_ = 0;
+  }
+  // We need to pass in the correct descrambleArray for the subframe in this case
+  sfDescrambleArray_ = (uint32_t *)malloc(width * height * sizeof(uint32_t));
+  // Loop over rows, copying in 1 row of descramble data at a time
+  uint32_t *ptr1 = sfDescrambleArray_;
+  for (int rows = tly; rows < (bry+1); rows++){
+    uint32_t *ptr2 = descrambleArray_+(rows*configPtr_->getImageWidth())+tlx;
+    memcpy(ptr1, ptr2, width*sizeof(uint32_t));
+    ptr1 += width;
+  }
+  // Now each index in the descramble array is pointing to a point in the whole frame
+  // Realign each point to a point in the subframe
+  for (int x = 0; x < width; x++){
+    for (int y = 0; y < height; y++){
+      uint32_t raw_index = sfDescrambleArray_[(y*width)+x];
+      // Find the corresponding index within the subframe
+      uint32_t ffy = raw_index / configPtr_->getImageWidth();
+      uint32_t ffx = raw_index - (ffy * configPtr_->getImageWidth());
+      uint32_t sfy = ffy - tly;
+      uint32_t sfx = ffx - tlx;
+      sfDescrambleArray_[(y*width)+x] = (sfy*width)+sfx;
+    }
+  }
+  // Setup server for partial frame as defined by selected subframe
+  sPtr_->setToSpatialMode(subFrame);
+  sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), sfDescrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+}
+
+void ADPercivalDriver::setupTemporalImage()
+{
+  // Setup image dimensions from the configuration file
+  dims_[0] = configPtr_->getImageWidth();
+  dims_[1] = configPtr_->getImageHeight();
+
+  setIntegerParam(ADSizeX,            dims_[0]);
+  setIntegerParam(ADSizeY,            dims_[1]);
+  setIntegerParam(NDArraySizeX,       dims_[0]);
+  setIntegerParam(NDArraySizeY,       dims_[1]);
+  setIntegerParam(NDDataType,         configPtr_->getDataType());
+
+  // Create the Percival buffer pool from the size of image loaded from the configuration file
+  if (buffers_ != 0){
+    delete(buffers_);
+  }
+  buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * sizeof(uint16_t));
+  setIntegerParam(NDArraySize, dims_[0] * dims_[1] * sizeof(uint16_t));
+  callParamCallbacks();
+
+  // Setup server for full frame as defined by configuration
+  sPtr_->setToTemporalMode();
+  sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
 }
 
 /** Report status of the driver.

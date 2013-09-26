@@ -39,9 +39,24 @@ PercivalBuffer *PercivalBufferPool::allocate()
   return ptr;
 }
 
+PercivalBuffer *PercivalBufferPool::allocateClean()
+{
+  boost::lock_guard<boost::mutex> lock(access_);
+  PercivalBuffer *ptr;
+  if (freeBuffers_.empty()){
+    ptr = new PercivalBuffer(bufferSize_);
+  } else {
+    ptr = freeBuffers_.top();
+    freeBuffers_.pop();
+  }
+  memset(ptr->raw(), 0, bufferSize_);
+  return ptr;
+}
+
 void PercivalBufferPool::free(PercivalBuffer *buffer)
 {
   boost::lock_guard<boost::mutex> lock(access_);
+  memset(buffer->raw(), 0, bufferSize_);
   freeBuffers_.push(buffer);
 }
 

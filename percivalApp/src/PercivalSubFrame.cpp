@@ -26,11 +26,13 @@ PercivalSubFrame::PercivalSubFrame(uint32_t subFrameID,
   width_ = bottomRightX - topLeftX + 1;
   height_ = bottomRightY - topLeftY + 1;
   pixelSize_ = width_ * height_;
+  buffers_ = new PercivalBufferPool(pixelSize_ * sizeof(uint16_t));
 }
 
 PercivalSubFrame::~PercivalSubFrame()
 {
   PercivalDebug dbg(debug_, "PercivalSubFrame::~PercivalSubFrame");
+  delete buffers_;
 }
 
 void PercivalSubFrame::setDebug(uint32_t level)
@@ -70,4 +72,15 @@ uint32_t PercivalSubFrame::getBottomRightY()
   return bottomRightY_;
 }
 
+PercivalBuffer *PercivalSubFrame::allocate()
+{
+  PercivalDebug dbg(debug_, "PercivalSubFrame::allocate");
+  return buffers_->allocate();
+}
+
+void PercivalSubFrame::release(PercivalBuffer *buffer)
+{
+  PercivalDebug dbg(debug_, "PercivalSubFrame::release");
+  buffers_->free(buffer);
+}
 

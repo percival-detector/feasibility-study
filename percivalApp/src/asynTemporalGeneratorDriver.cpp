@@ -190,6 +190,11 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
       if (!error){
         // Here we are starting the posting
         int channelEnabled = 0;
+
+        // First free if necessary and then reallocate buffers for temporal mode
+        freeImageBuffers();
+        setupImageBuffers();
+
         // For each channel check the enabled state. If enabled then set the
         // channel specific posting "ON" and send the event
         getIntegerParam(GDEnableChannel1, &channelEnabled);
@@ -449,120 +454,122 @@ int asynGeneratorDriver::createFileName(int maxChars, char *filePath, char *file
 
 void asynGeneratorDriver::freeImageBuffers()
 {
-  uint32_t images = configPtr->getNoOfImages();
+  uint32_t images = noOfImages_;
 
+  if (images > 0){
   // If the buffer is not zero then free the memory
-  if (buffer1_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer1_[imageIndex]);
+    if (buffer1_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer1_[imageIndex]);
+      }
+      free(buffer1_);
+      buffer1_ = 0;
     }
-    free(buffer1_);
-    buffer1_ = 0;
-  }
-  if (buffer2_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer2_[imageIndex]);
+    if (buffer2_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer2_[imageIndex]);
+      }
+      free(buffer2_);
+      buffer2_ = 0;
     }
-    free(buffer2_);
-    buffer2_ = 0;
-  }
-  if (buffer3_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer3_[imageIndex]);
+    if (buffer3_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer3_[imageIndex]);
+      }
+      free(buffer3_);
+      buffer3_ = 0;
     }
-    free(buffer3_);
-    buffer3_ = 0;
-  }
-  if (buffer4_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer4_[imageIndex]);
+    if (buffer4_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer4_[imageIndex]);
+      }
+      free(buffer4_);
+      buffer4_ = 0;
     }
-    free(buffer4_);
-    buffer4_ = 0;
-  }
-  if (buffer5_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer5_[imageIndex]);
+    if (buffer5_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer5_[imageIndex]);
+      }
+      free(buffer5_);
+      buffer5_ = 0;
     }
-    free(buffer5_);
-    buffer5_ = 0;
-  }
-  if (buffer6_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer6_[imageIndex]);
+    if (buffer6_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer6_[imageIndex]);
+      }
+      free(buffer6_);
+      buffer6_ = 0;
     }
-    free(buffer6_);
-    buffer6_ = 0;
-  }
-  if (buffer7_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer7_[imageIndex]);
+    if (buffer7_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer7_[imageIndex]);
+      }
+      free(buffer7_);
+      buffer7_ = 0;
     }
-    free(buffer7_);
-    buffer7_ = 0;
-  }
-  if (buffer8_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(buffer8_[imageIndex]);
+    if (buffer8_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(buffer8_[imageIndex]);
+      }
+      free(buffer8_);
+      buffer8_ = 0;
     }
-    free(buffer8_);
-    buffer8_ = 0;
-  }
-  if (reset1_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset1_[imageIndex]);
+    if (reset1_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset1_[imageIndex]);
+      }
+      free(reset1_);
+      reset1_ = 0;
     }
-    free(reset1_);
-    reset1_ = 0;
-  }
-  if (reset2_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset2_[imageIndex]);
+    if (reset2_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset2_[imageIndex]);
+      }
+      free(reset2_);
+      reset2_ = 0;
     }
-    free(reset2_);
-    reset2_ = 0;
-  }
-  if (reset3_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset3_[imageIndex]);
+    if (reset3_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset3_[imageIndex]);
+      }
+      free(reset3_);
+      reset3_ = 0;
     }
-    free(reset3_);
-    reset3_ = 0;
-  }
-  if (reset4_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset4_[imageIndex]);
+    if (reset4_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset4_[imageIndex]);
+      }
+      free(reset4_);
+      reset4_ = 0;
     }
-    free(reset4_);
-    reset4_ = 0;
-  }
-  if (reset5_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset5_[imageIndex]);
+    if (reset5_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset5_[imageIndex]);
+      }
+      free(reset5_);
+      reset5_ = 0;
     }
-    free(reset5_);
-    reset5_ = 0;
-  }
-  if (reset6_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset6_[imageIndex]);
+    if (reset6_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset6_[imageIndex]);
+      }
+      free(reset6_);
+      reset6_ = 0;
     }
-    free(reset6_);
-    reset6_ = 0;
-  }
-  if (reset7_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset7_[imageIndex]);
+    if (reset7_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset7_[imageIndex]);
+      }
+      free(reset7_);
+      reset7_ = 0;
     }
-    free(reset7_);
-    reset7_ = 0;
-  }
-  if (reset8_){
-    for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-      free(reset8_[imageIndex]);
+    if (reset8_){
+      for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
+        free(reset8_[imageIndex]);
+      }
+      free(reset8_);
+      reset8_ = 0;
     }
-    free(reset8_);
-    reset8_ = 0;
   }
 }
 
@@ -570,6 +577,7 @@ void asynGeneratorDriver::setupImageBuffers()
 {
   int subTlx, subTly, subBrx, subBry, sIWidth, sIHeight;
   uint32_t images = configPtr->getNoOfImages();
+  noOfImages_ = images;
 
   // Read the sub image for sub frame 1
   getIntegerParam(GDTopLeftXChannel1, &subTlx);
@@ -578,6 +586,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel1, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize1_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer1_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer1_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -597,6 +606,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel2, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize2_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer2_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer2_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -616,6 +626,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel3, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize3_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer3_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer3_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -635,6 +646,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel4, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize4_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer4_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer4_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -654,6 +666,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel5, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize5_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer5_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer5_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -673,6 +686,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel6, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize6_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer6_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer6_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -692,6 +706,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel7, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize7_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer7_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer7_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -711,6 +726,7 @@ void asynGeneratorDriver::setupImageBuffers()
   getIntegerParam(GDBotRightYChannel8, &subBry);
   sIWidth = subBrx - subTlx + 1;
   sIHeight = subBry - subTly + 1;
+  bufSize8_ = (uint32_t)(sIWidth * sIHeight * sizeof(uint16_t));
   buffer8_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     buffer8_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -953,8 +969,46 @@ void asynGeneratorDriver::posting_task(int taskNumber)
         // Also send the reset data for the next frame, along with the number of sub frames and packet size
         senderPtr->sendImage(resetBuffer[counter%images], bufSize, subFrameNumber, packetSize, counter+1, 1);
       } else {
-        // We are in temporal mode, post each subframe out on the same channel
-        
+
+        // We are in temporal mode.
+        // Check our task number against the frame counter, if it is our turn then post all 8 buffers out
+        // on our channel.  If it is not our turn then do nothing.
+        if ((counter-1)%8 == taskNumber){
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer1_[counter%images], bufSize1_, 0, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer2_[counter%images], bufSize2_, 1, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer3_[counter%images], bufSize3_, 2, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer4_[counter%images], bufSize4_, 3, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer5_[counter%images], bufSize5_, 4, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer6_[counter%images], bufSize6_, 5, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer7_[counter%images], bufSize7_, 6, packetSize, counter, 0);
+          // Send the sub image, along with the number of sub frames and packet size
+          senderPtr->sendImage(buffer8_[counter%images], bufSize8_, 7, packetSize, counter, 0);
+        }
+        if (counter%8 == taskNumber){
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset1_[counter%images], bufSize1_, 0, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset2_[counter%images], bufSize2_, 1, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset3_[counter%images], bufSize3_, 2, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset4_[counter%images], bufSize4_, 3, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset5_[counter%images], bufSize5_, 4, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset6_[counter%images], bufSize6_, 5, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset7_[counter%images], bufSize7_, 6, packetSize, counter+1, 1);
+          // Also send the reset data for the next frame, along with the number of sub frames and packet size
+          senderPtr->sendImage(reset8_[counter%images], bufSize8_, 7, packetSize, counter+1, 1);
+        }
       }
 
       // Call the callbacks to update any changes
@@ -1436,22 +1490,31 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   this->stopEventId_[6] = epicsEventCreate(epicsEventEmpty);
   this->stopEventId_[7] = epicsEventCreate(epicsEventEmpty);
 
-  buffer1_ = 0;
-  buffer2_ = 0;
-  buffer3_ = 0;
-  buffer4_ = 0;
-  buffer5_ = 0;
-  buffer6_ = 0;
-  buffer7_ = 0;
-  buffer8_ = 0;
-  reset1_ = 0;
-  reset2_ = 0;
-  reset3_ = 0;
-  reset4_ = 0;
-  reset5_ = 0;
-  reset6_ = 0;
-  reset7_ = 0;
-  reset8_ = 0;
+  buffer1_  = 0;
+  buffer2_  = 0;
+  buffer3_  = 0;
+  buffer4_  = 0;
+  buffer5_  = 0;
+  buffer6_  = 0;
+  buffer7_  = 0;
+  buffer8_  = 0;
+  reset1_   = 0;
+  reset2_   = 0;
+  reset3_   = 0;
+  reset4_   = 0;
+  reset5_   = 0;
+  reset6_   = 0;
+  reset7_   = 0;
+  reset8_   = 0;
+  bufSize1_ = 0;
+  bufSize2_ = 0;
+  bufSize3_ = 0;
+  bufSize4_ = 0;
+  bufSize5_ = 0;
+  bufSize6_ = 0;
+  bufSize7_ = 0;
+  bufSize8_ = 0;
+  noOfImages_ = 0;
 
   // Start each channel in a separate thread
 	status = (epicsThreadCreate("post_task_1",

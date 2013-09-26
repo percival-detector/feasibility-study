@@ -59,9 +59,9 @@ record(mbbo, "$(P)$(R)ChannelMode")
    field(PINI, "NO")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_CHANNEL_MODE")
-   field(ZRST, "Multi-channel")
+   field(ZRST, "Spatial")
    field(ZRVL, "0")
-   field(ONST, "Single-channel")
+   field(ONST, "Temporal")
    field(ONVL, "1")
    field(VAL,  "0")
 }
@@ -70,9 +70,9 @@ record(mbbi, "$(P)$(R)ChannelMode_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_CHANNEL_MODE")
-   field(ZRST, "Multi-channel")
+   field(ZRST, "Spatial")
    field(ZRVL, "0")
-   field(ONST, "Single-channel")
+   field(ONST, "Temporal")
    field(ONVL, "1")
    field(SCAN, "I/O Intr")
 }
@@ -354,6 +354,66 @@ record(stringin, "$(P)$(R)PercStatus_RBV")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_STATUS")
    field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  Error statistics                                               #
+###################################################################
+
+record(longin, "$(P)$(R)PercErrorDupPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_DUP_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorMisPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_MIS_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorLtePkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_LTE_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorIncPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_INC_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorDupRPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_DUP_R_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorMisRPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_MIS_R_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorLteRPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_LTE_R_PKT")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercErrorIncRPkt_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_INC_R_PKT")
    field(SCAN, "I/O Intr")
 }
 

@@ -118,35 +118,35 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
 
   if (function == RawFileRead){
     char fileName[MAX_FILENAME_LEN];
-    setIntegerParam(FileWriteStatus, 1);
-    setStringParam (FileWriteMessage, "Reading configuration file");
+    setIntegerParam(FileReadStatus, 1);
+    setStringParam (FileReadMessage, "Reading configuration file");
     callParamCallbacks();
     status |= getStringParam(FullFileName, sizeof(fileName), fileName);
-    configPtr->readConfiguration(fileName);
-    setStringParam(FileWriteMessage, "Read configuration complete");
-    setIntegerParam(FileWriteStatus, 0);
-    setIntegerParam(ImageSizeX,        configPtr->getImageWidth());
-    setIntegerParam(ImageSizeY,        configPtr->getImageHeight());
-    setIntegerParam(ImagePatternX,     configPtr->getRepeatX());
-    setIntegerParam(ImagePatternY,     configPtr->getRepeatY());
-    setIntegerParam(DPixelsPerChipX,   configPtr->getPixelsPerChipX());
-    setIntegerParam(DPixelsPerChipY,   configPtr->getPixelsPerChipY());
-    setIntegerParam(DChipsPerBlockX,   configPtr->getChipsPerBlockX());
-    setIntegerParam(DChipsPerBlockY,   configPtr->getChipsPerBlockY());
-    setIntegerParam(DBlocksPerStripeX, configPtr->getBlocksPerStripeX());
-    setIntegerParam(DBlocksPerStripeY, configPtr->getBlocksPerStripeY());
-    setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
-    setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
-    setIntegerParam(DStripesPerImageX, configPtr->getStripesPerImageX());
-    setIntegerParam(DStripesPerImageY, configPtr->getStripesPerImageY());
-    //int dtype = configPtr->getDataType();
-    //if (dtype == UnsignedInt8){
+    status = configPtr->readConfiguration(fileName);
+    if (status){
+      // Error reading the file.  Notify
+      setStringParam(FileReadMessage, configPtr->errorMessage().c_str());
+      setIntegerParam(FileReadStatus, 0);
+      setIntegerParam(FileErrorStatus, 1);
+    } else {
+      setStringParam(FileReadMessage, "Read configuration complete");
+      setIntegerParam(FileReadStatus, 0);
+      setIntegerParam(ImageSizeX,        configPtr->getImageWidth());
+      setIntegerParam(ImageSizeY,        configPtr->getImageHeight());
+      setIntegerParam(ImagePatternX,     configPtr->getRepeatX());
+      setIntegerParam(ImagePatternY,     configPtr->getRepeatY());
+      setIntegerParam(DPixelsPerChipX,   configPtr->getPixelsPerChipX());
+      setIntegerParam(DPixelsPerChipY,   configPtr->getPixelsPerChipY());
+      setIntegerParam(DChipsPerBlockX,   configPtr->getChipsPerBlockX());
+      setIntegerParam(DChipsPerBlockY,   configPtr->getChipsPerBlockY());
+      setIntegerParam(DBlocksPerStripeX, configPtr->getBlocksPerStripeX());
+      setIntegerParam(DBlocksPerStripeY, configPtr->getBlocksPerStripeY());
+      setIntegerParam(DChipsPerStripeX,  configPtr->getChipsPerStripeX());
+      setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
+      setIntegerParam(DStripesPerImageX, configPtr->getStripesPerImageX());
+      setIntegerParam(DStripesPerImageY, configPtr->getStripesPerImageY());
       setIntegerParam(DataType, configPtr->getDataType());
-    //} else if (dtype == UnsignedInt16){
-    //  setIntegerParam(DataType, UInt16);
-    //} else if (dtype == UnsignedInt32){
-    //  setIntegerParam(DataType, UInt32);
-    //}
+    }
   } else if (function == GDPostCommand){
     // Are we starting posting
     if (value == 1){
@@ -1093,8 +1093,9 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   createParam(FileNameString,             asynParamOctet,           &FileName);
   createParam(FullFileNameString,         asynParamOctet,           &FullFileName);
   createParam(RawFileReadString,          asynParamInt32,           &RawFileRead);
-  createParam(FileWriteStatusString,      asynParamInt32,           &FileWriteStatus);
-  createParam(FileWriteMessageString,     asynParamOctet,           &FileWriteMessage);
+  createParam(FileReadStatusString,       asynParamInt32,           &FileReadStatus);
+  createParam(FileReadMessageString,      asynParamOctet,           &FileReadMessage);
+  createParam(FileErrorStatusString,      asynParamInt32,           &FileErrorStatus);
   createParam(DPixelsPerChipXString,      asynParamInt32,           &DPixelsPerChipX);
   createParam(DPixelsPerChipYString,      asynParamInt32,           &DPixelsPerChipY);
   createParam(DChipsPerBlockXString,      asynParamInt32,           &DChipsPerBlockX);
@@ -1306,11 +1307,12 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   setIntegerParam(ImageSize,            0);
   setIntegerParam(NDimensions,          3);
   setIntegerParam(DataType,             UInt8);
-  setIntegerParam(FileWriteStatus,      0);
+  setIntegerParam(FileReadStatus,       0);
   setStringParam (FilePath,             "");
   setStringParam (FileName,             "");
   setStringParam (FullFileName,         "");
-  setStringParam (FileWriteMessage,     "");
+  setStringParam (FileReadMessage,      "");
+  setIntegerParam(FileErrorStatus,      0);
   setIntegerParam(DPixelsPerChipX,      configPtr->getPixelsPerChipX());
   setIntegerParam(DPixelsPerChipY,      configPtr->getPixelsPerChipY());
   setIntegerParam(DChipsPerBlockX,      configPtr->getChipsPerBlockX());

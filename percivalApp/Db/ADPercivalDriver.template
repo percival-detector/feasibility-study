@@ -108,11 +108,12 @@ record(mbbi, "$(P)$(R)Descramble_RBV")
 #  These records define the configuration file path and filename  #
 ###################################################################
 
-record(stringin, "$(P)$(R)PercFilePath_RBV")
+record(waveform, "$(P)$(R)PercFilePath_RBV")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_PATH")
-   field(VAL,  "Unknown")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
    field(SCAN, "I/O Intr")
 }
 
@@ -124,11 +125,12 @@ record(waveform, "$(P)$(R)PercFilePath")
    field(NELM, "256") 
 }
 
-record(stringin, "$(P)$(R)PercFileName_RBV")
+record(waveform, "$(P)$(R)PercFileName_RBV")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_NAME")
-   field(VAL,  "Unknown")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
    field(SCAN, "I/O Intr")
 }
 
@@ -147,11 +149,12 @@ record(longin, "$(P)$(R)PercFilePathExists_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(P)$(R)PercFullFileName_RBV")
+record(waveform, "$(P)$(R)PercFullFileName_RBV")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FULL_FILE_NAME")
-   field(VAL,  "Unknown")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
    field(SCAN, "I/O Intr")
 }
 

@@ -233,8 +233,8 @@ minor 1
 release 1
 x 5
 y 5
-w 88
-h 13
+w 86
+h 14
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -415,7 +415,7 @@ x 185
 y 390
 w 160
 h 20
-controlPv "$(P)$(R)FileWriteMessage_RBV"
+controlPv "$(P)$(R)FileReadMessage_RBV"
 font "helvetica-medium-r-10.0"
 fontAlign "center"
 fgColor index 16
@@ -476,7 +476,7 @@ x 130
 y 390
 w 18
 h 18
-controlPv "$(P)$(R)FileWriteStatus_RBV"
+controlPv "$(P)$(R)FileReadStatus_RBV"
 lineColor index 14
 onColor index 15
 offColor index 19
@@ -499,7 +499,7 @@ onColor index 4
 offColor index 3
 topShadowColor index 1
 botShadowColor index 11
-controlPv "$(P)$(R)RawFileWrite"
+controlPv "$(P)$(R)RawFileRead"
 pressValue "1"
 onLabel "Read Config"
 offLabel "Read Config"
@@ -1240,8 +1240,8 @@ minor 1
 release 1
 x 5
 y 425
-w 103
-h 13
+w 102
+h 14
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5

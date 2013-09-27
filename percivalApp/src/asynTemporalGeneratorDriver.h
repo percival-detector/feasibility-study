@@ -51,9 +51,10 @@ typedef enum {
 #define FilePathExistsString     "FILE_PATH_EXISTS"              /**< (asynInt32,    r/w) File path exists? */
 #define FileNameString           "FILE_NAME"                     /**< (asynOctet,    r/w) The file name */
 #define FullFileNameString       "FULL_FILE_NAME"                /**< (asynOctet,    r/o) The actual complete file name for the last file saved */
-#define RawFileReadString        "RAW_FILE_WRITE"                /**< (asynInt32,    r/w) Write a raw file out */
-#define FileWriteStatusString    "WRITE_STATUS"                  /**< (asynInt32,    r/w) File write status */
-#define FileWriteMessageString   "WRITE_MESSAGE"                 /**< (asynOctet,    r/w) File write message */
+#define RawFileReadString        "RAW_FILE_READ"                 /**< (asynInt32,    r/w) Write a raw file out */
+#define FileReadStatusString     "GD_READ_STATUS"                /**< (asynInt32,    r/w) File write status */
+#define FileReadMessageString    "READ_MESSAGE"                  /**< (asynOctet,    r/w) File write message */
+#define FileErrorStatusString    "FILE_ERROR_STATUS"             /**< (asynInt32,    r/o) File read error status */
 
 // The following parameters setup the physical layout of the detector
 #define DPixelsPerChipXString    "D_PIXELS_PER_CHIP_X"           /**< (asynInt32,    r/w) Number of pixels per chip in the x direction */
@@ -281,8 +282,9 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
     int FileName;
     int FullFileName;
     int RawFileRead;
-    int FileWriteStatus;
-    int FileWriteMessage;
+    int FileReadStatus;
+    int FileReadMessage;
+    int FileErrorStatus;
     int DPixelsPerChipX;
     int DPixelsPerChipY;
     int DChipsPerBlockX;

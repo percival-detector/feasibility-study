@@ -196,11 +196,12 @@ record(mbbi, "$(P)$(R)ImageScrambleType_RBV")
 #  These records define the raw image path and filename           #
 ###################################################################
 
-record(stringin, "$(P)$(R)FilePath_RBV")
+record(waveform, "$(P)$(R)FilePath_RBV")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
-   field(VAL,  "Unknown")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
    field(SCAN, "I/O Intr")
 }
 
@@ -212,11 +213,12 @@ record(waveform, "$(P)$(R)FilePath")
    field(NELM, "256") 
 }
 
-record(stringin, "$(P)$(R)FileName_RBV")
+record(waveform, "$(P)$(R)FileName_RBV")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
-   field(VAL,  "Unknown")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
    field(SCAN, "I/O Intr")
 }
 
@@ -235,11 +237,12 @@ record(longin, "$(P)$(R)FilePathExists_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(P)$(R)FullFileName_RBV")
+record(waveform, "$(P)$(R)FullFileName_RBV")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
-   field(VAL,  "Unknown")
+   field(FTVL, "CHAR")
+   field(NELM, "256") 
    field(SCAN, "I/O Intr")
 }
 
@@ -247,10 +250,10 @@ record(stringin, "$(P)$(R)FullFileName_RBV")
 #  These records provide status                                   #
 ###################################################################
 
-record(stringin, "$(P)$(R)FileWriteMessage_RBV")
+record(stringin, "$(P)$(R)FileReadMessage_RBV")
 {
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MESSAGE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_MESSAGE")
    field(VAL,  "Unknown")
    field(SCAN, "I/O Intr")
 }
@@ -259,11 +262,11 @@ record(stringin, "$(P)$(R)FileWriteMessage_RBV")
 #  This record writes out the currently defined raw image         #
 ###################################################################
 
-record(longout, "$(P)$(R)RawFileWrite")
+record(longout, "$(P)$(R)RawFileRead")
 {
    field(PINI, "NO")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RAW_FILE_WRITE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RAW_FILE_READ")
    field(VAL,  "0")
 }
 
@@ -271,10 +274,10 @@ record(longout, "$(P)$(R)RawFileWrite")
 #  This record reades the current file write status               #
 ###################################################################
 
-record(longin, "$(P)$(R)FileWriteStatus_RBV")
+record(longin, "$(P)$(R)FileReadStatus_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_STATUS")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_READ_STATUS")
    field(SCAN, "I/O Intr")
 }
 
@@ -284,10 +287,9 @@ record(longin, "$(P)$(R)FileWriteStatus_RBV")
 
 record(longin, "$(P)$(R)FileErrorStatus_RBV")
 {
-#   field(DTYP, "asynInt32")
-#   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_STATUS")
-#   field(SCAN, "I/O Intr")
-   field(VAL,  "0")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_ERROR_STATUS")
+   field(SCAN, "I/O Intr")
 }
 
 ###################################################################

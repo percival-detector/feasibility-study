@@ -181,7 +181,7 @@ minor 6
 release 0
 x 5
 y 555
-w 175
+w 200
 h 20
 controlPv "$(P)$(R)PercFilePath_RBV"
 font "helvetica-medium-r-10.0"
@@ -229,9 +229,9 @@ beginObjectProperties
 major 4
 minor 6
 release 0
-x 215
+x 235
 y 555
-w 170
+w 150
 h 20
 controlPv "$(P)$(R)PercFileName_RBV"
 font "helvetica-medium-r-10.0"
@@ -252,9 +252,9 @@ beginObjectProperties
 major 4
 minor 6
 release 0
-x 215
+x 235
 y 575
-w 170
+w 150
 h 20
 controlPv "$(P)$(R)PercFileName"
 font "helvetica-medium-r-10.0"
@@ -302,7 +302,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 185
+x 210
 y 555
 w 18
 h 18

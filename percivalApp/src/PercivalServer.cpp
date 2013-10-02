@@ -962,6 +962,7 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
   uint32_t ADC_low;
   uint32_t ADC_high;
   uint32_t ADC;
+  uint32_t stageIndex;
   float ADC_output;
 
   for (index = 0; index < numPts; index++ ){
@@ -972,13 +973,14 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
     } else {
       // Here we are going to descramble
 
-      gain     = in_data[index] & 0x3;
-      ADC_low  = ( in_data[index] >> 2 ) & 0xFF;
-      ADC_high = ( in_data[index] >> 10 ) & 0x1F;
-      ADC      = ADCIndex_[dataIndex_[index]];
+      gain       = in_data[index] & 0x3;
+      ADC_low    = ( in_data[index] >> 2 ) & 0xFF;
+      ADC_high   = ( in_data[index] >> 10 ) & 0x1F;
+      ADC        = ADCIndex_[dataIndex_[index]];
+      stageIndex = gain*pixelSize_+dataIndex_[index];
       
       ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
-      out_data[dataIndex_[index]] = ADC_output * stageGains_[gain*pixelSize_+dataIndex_[index]] + stageOffsets_[gain*pixelSize_+dataIndex_[index]];
+      out_data[dataIndex_[index]] = ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
 
       if (reset_data != NULL){
         if (gain == 0) {
@@ -986,7 +988,7 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
           ADC_low  = ( reset_data[index] >> 2 ) & 0xFF;
           ADC_high = ( reset_data[index] >> 10 ) & 0x1F;
           ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
-          out_data[dataIndex_[index]] -= ADC_output * stageGains_[gain*pixelSize_+dataIndex_[index]] + stageOffsets_[gain*pixelSize_+dataIndex_[index]];
+          out_data[dataIndex_[index]] -= ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
         }
       }
     }
@@ -1003,46 +1005,50 @@ void PercivalServer::unscrambleToFull(int      numPts,       // Number of points
 {
   //PercivalDebug dbg(debug_, "PercivalServer::unscramble");
   int index;     // Index of point in subframe
-  int xp;        // X prime, x coordinate within subframe
-  int yp;        // Y prime, y coordinate within subframe
+  uint32_t xp;        // X prime, x coordinate within subframe
+  uint32_t yp;        // Y prime, y coordinate within subframe
   int ip;        // Index prime, index of point within full frame
   uint32_t gain;
   uint32_t ADC_low;
   uint32_t ADC_high;
   uint32_t ADC;
+  uint32_t stageIndex;
   float ADC_output;
 
-  for (index = 0; index < numPts; index++ ){
-    yp = index / (x2 - x1 + 1);            // Y point within subframe
-    xp = index - (yp * (x2 - x1 + 1));     // X point within subframe
-    ip = (width_ * (yp + y1)) + x1 + xp;
+  uint32_t sfWidth = x2 - x1 + 1;
+  uint32_t numRows = numPts / sfWidth;
+  index = 0;
+  for (yp = 0; yp < numRows; yp++){
+    for (xp = 0; xp < sfWidth; xp++ ){
+      ip = (width_ * (yp + y1)) + x1 + xp;
 
-//std::cout << "Calculated x [" << xp << "]  y [" << yp << "]  index [" << ip << "]  rawindex [" << index << "]  value [" << in_data[index] << "]" << std::endl;
+      // Check if we are descrambling or simply reconstructing
+      if (!descramble_){
+        // OK, here we are just reconstructing the original raw frame
+        out_data[ip] = in_data[index];
+      } else {
+        // Here we are going to descramble
 
-    // Check if we are descrambling or simply reconstructing
-    if (!descramble_){
-      // OK, here we are just reconstructing the original raw frame
-      out_data[ip] = in_data[index];
-    } else {
-      // Here we are going to descramble
-
-      gain     = in_data[index] & 0x3;
-      ADC_low  = ( in_data[index] >> 2 ) & 0xFF;
-      ADC_high = ( in_data[index] >> 10 ) & 0x1F;
-      ADC      = ADCIndex_[dataIndex_[ip]];
+        gain       = in_data[index] & 0x3;
+        ADC_low    = ( in_data[index] >> 2 ) & 0xFF;
+        ADC_high   = ( in_data[index] >> 10 ) & 0x1F;
+        ADC        = ADCIndex_[dataIndex_[ip]];
+        stageIndex = gain*pixelSize_+dataIndex_[ip];
       
-      ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
-      out_data[dataIndex_[ip]] = ADC_output * stageGains_[gain*pixelSize_+dataIndex_[ip]] + stageOffsets_[gain*pixelSize_+dataIndex_[ip]];
+        ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
+        out_data[dataIndex_[ip]] = ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
 
-      if (reset_data != NULL){
-        if (gain == 0) {
-          // Subtract DCS Reset signal if in diode sampling mode 
-          ADC_low  = ( reset_data[ip] >> 2 ) & 0xFF;
-          ADC_high = ( reset_data[ip] >> 10 ) & 0x1F;
-          ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
-          out_data[dataIndex_[ip]] -= ADC_output * stageGains_[gain*pixelSize_+dataIndex_[ip]] + stageOffsets_[gain*pixelSize_+dataIndex_[ip]];
+        if (reset_data != NULL){
+          if (gain == 0) {
+            // Subtract DCS Reset signal if in diode sampling mode 
+            ADC_low  = ( reset_data[ip] >> 2 ) & 0xFF;
+            ADC_high = ( reset_data[ip] >> 10 ) & 0x1F;
+            ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
+            out_data[dataIndex_[ip]] -= ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
+          }
         }
       }
+      index++;
     }
   }
 }

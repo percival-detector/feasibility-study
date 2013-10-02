@@ -225,20 +225,20 @@ int DataReceiver::stopAcquisition()
 
 void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std::size_t bytesReceived)
 {
-  PercivalDebug dbg(debug_, "DataReceiver::handleReceive");
+//  PercivalDebug dbg(debug_, "DataReceiver::handleReceive");
   uint16_t frameNumber    = packetHeader_.frameNumber;
   uint8_t  subFrameNumber = packetHeader_.subFrameNumber;
   uint16_t packetNumber   = packetHeader_.packetNumber;
   uint8_t  packetType     = packetHeader_.packetType;
-  dbg.log(1, "Thread ID", boost::this_thread::get_id());
-  dbg.log(1, "Bytes received", (uint32_t)bytesReceived);
+//  dbg.log(1, "Thread ID", boost::this_thread::get_id());
+//  dbg.log(1, "Bytes received", (uint32_t)bytesReceived);
 
-  dbg.log(1, "****************************");
-  dbg.log(1, "Frame   ", frameNumber);
-  dbg.log(1, "SubFrame", (uint32_t)subFrameNumber);
-  dbg.log(1, "Packet  ", packetNumber);
-  dbg.log(1, "Type    ", (uint32_t)packetType);
-  dbg.log(1, "Error   ", errorCode.message());
+//  dbg.log(1, "****************************");
+//  dbg.log(1, "Frame   ", frameNumber);
+//  dbg.log(1, "SubFrame", (uint32_t)subFrameNumber);
+//  dbg.log(1, "Packet  ", packetNumber);
+//  dbg.log(1, "Type    ", (uint32_t)packetType);
+//  dbg.log(1, "Error   ", errorCode.message());
 
 if (errorCode.value() == boost::system::errc::success){
   if (callback_){
@@ -248,9 +248,9 @@ if (errorCode.value() == boost::system::errc::success){
     callback_->imageReceived(currentBuffer_, (uint32_t)(bytesReceived - sizeof(packetHeader_)), frameNumber, subFrameNumber, packetNumber, packetType);
 
     // Allocate new buffer
-    currentBuffer_ = callback_->allocateBuffer();
+//    currentBuffer_ = callback_->allocateBuffer();
     // Initialize the buffer
-    memset(currentBuffer_->raw(), 0, packetBytes_);
+//    memset(currentBuffer_->raw(), 0, packetBytes_);
   }
 }
 

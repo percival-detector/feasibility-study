@@ -146,7 +146,7 @@ int DataSender::sendImage(void     *buffer,
     }
     packetNumber++;
 
-//    boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+    boost::this_thread::sleep(boost::posix_time::microseconds(1));
 //std::cout << "SubFrame [" << frame << "] Bytes sent [" << bytesSent << "] Packet number [" << packetNumber << "]" << std::endl;
   }
   // Final check that we sent the correct number of bytes

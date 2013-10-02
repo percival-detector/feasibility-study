@@ -99,6 +99,8 @@ class PercivalServer : public IPercivalCallback
                        uint32_t *lteRPkt,
                        uint32_t *incRPkt);
 
+    int readProcessTime(uint32_t *processTime);
+
     int registerCallback(IPercivalCallback *callback);
 
     virtual void imageReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
@@ -125,8 +127,7 @@ class PercivalServer : public IPercivalCallback
 
     virtual void releaseBuffer(PercivalBuffer *buffer);
 
-    void unscramble(int      offset,       // Offset from index 0
-                    int      numPts,       // Number of points to process
+    void unscramble(int      numPts,       // Number of points to process
                     uint16_t *in_data,     // Input data
                     uint16_t *reset_data,  // Reset data
                     uint16_t *out_data,    // Output data
@@ -181,11 +182,14 @@ class PercivalServer : public IPercivalCallback
     uint32_t                            resetFrameNumber_;    // Current reset frame number
     uint32_t                            expectNewResetFrame_; // Set when we have completed a reset frame
     uint32_t                            resetFrameReady_;     // Set when we have completed a reset frame
+    uint32_t                            processTime_;         // Process time in microseconds for a frame
 
     IPercivalCallback                   *callback_;        // Callback interface
     PercivalBuffer                      *fullFrame_;       // Full frame buffer
     PercivalBuffer                      *rawFrame_;        // Scrambled full frame buffer
+    PercivalBuffer                      *processFrame_;    // Frame pointer used for descrambling
     PercivalBuffer                      *subFrames_[8];    // In temporal mode we need to store all subframes in buffers
+    PercivalBuffer                      *subFrameBuffers_[8];  // In temporal mode we need to store all subframes in buffers
     PercivalBuffer                      *resetSubFrames_[8];    // In temporal mode we need to store all subframes in buffers
     PercivalBuffer                      *resetFrame1_;     // Buffer for reset frame as it is received
     std::map<uint16_t, PercivalBuffer*> resetFrameMap_;    // Map for storing reset frames

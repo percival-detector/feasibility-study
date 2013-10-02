@@ -119,6 +119,7 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
   if (function == RawFileRead){
     char fileName[MAX_FILENAME_LEN];
     setIntegerParam(FileReadStatus, 1);
+    setIntegerParam(FileErrorStatus, 0);
     setStringParam (FileReadMessage, "Reading configuration file");
     callParamCallbacks();
     status |= getStringParam(FullFileName, sizeof(fileName), fileName);

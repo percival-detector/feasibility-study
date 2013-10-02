@@ -141,6 +141,8 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercPacketBytesString,   asynParamInt32,     &PercPacketBytes);
   createParam(PercSubFrameString,      asynParamInt32,     &PercSubFrame);
 
+  createParam(PercProcessTimeString,   asynParamInt32,     &PercProcessTime);
+
   createParam(PercErrorDupPktString,   asynParamInt32,     &PercErrorDupPkt);
   createParam(PercErrorMisPktString,   asynParamInt32,     &PercErrorMisPkt);
   createParam(PercErrorLtePktString,   asynParamInt32,     &PercErrorLtePkt);
@@ -252,6 +254,8 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercPacketBytes,   0);
   status |= setIntegerParam(PercSubFrame,      0);
 
+  status |= setIntegerParam(PercProcessTime,   0);
+
   status |= setIntegerParam(PercErrorDupPkt,   0);
   status |= setIntegerParam(PercErrorMisPkt,   0);
   status |= setIntegerParam(PercErrorLtePkt,   0);
@@ -316,9 +320,11 @@ void ADPercivalDriver::stats_task()
   uint32_t misRPkt;
   uint32_t lteRPkt;
   uint32_t incRPkt;
+  uint32_t processTime;
   // Loop forever in this task
   while (1){
     sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt);
+    sPtr_->readProcessTime(&processTime);
     this->lock();
     setIntegerParam(PercErrorDupPkt, dupPkt);
     setIntegerParam(PercErrorMisPkt, misPkt);
@@ -328,6 +334,7 @@ void ADPercivalDriver::stats_task()
     setIntegerParam(PercErrorMisRPkt, misRPkt);
     setIntegerParam(PercErrorLteRPkt, lteRPkt);
     setIntegerParam(PercErrorIncRPkt, incRPkt);
+    setIntegerParam(PercProcessTime, processTime);
     callParamCallbacks();
     this->unlock();
     epicsThreadSleep(1.0);
@@ -424,8 +431,18 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
       ((imageMode == ADImageMultiple) && (numImagesCounter >= numImages))) {
     // This is a command to stop acquisition
     sPtr_->stopAcquisition();
+    // Wait here for 1 second to let processing finish
+    epicsThreadSleep(1.0);
     // Release all of the subframes
     sPtr_->releaseAllSubFrames();
+
+    // Release old buffers
+    if (pBuffer_ != NULL){
+      // Release the Percival buffer back into the pool
+      buffers_->free(pBuffer_);
+    }
+    pBuffer_ = NULL;
+
     // Set the status
     //setIntegerParam(PercReceiveChannel1, 0);
     //setIntegerParam(PercReceiveChannel2, 0);
@@ -713,8 +730,16 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     if (!value && (adstatus != ADStatusIdle)){
       // This is a command to stop acquisition
       sPtr_->stopAcquisition();
+      // Wait here for 1 second to let processing finish
+      epicsThreadSleep(1.0);
       // Release all of the subframes
       sPtr_->releaseAllSubFrames();
+      // Release old buffers
+      if (pBuffer_ != NULL){
+        // Release the Percival buffer back into the pool
+        buffers_->free(pBuffer_);
+      }
+      pBuffer_ = NULL;
       // Set the status
       setIntegerParam(PercReceive, 0);
       setIntegerParam(ADStatus, ADStatusIdle);

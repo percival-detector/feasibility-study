@@ -105,6 +105,8 @@
 #define PercPacketBytesString   "PERC_PACKET_BYTES"     //     (asynInt32,    r/w)   Number of payload bytes per UDP packet
 #define PercSubFrameString      "PERC_SUB_FRAME"        //     (asynInt32,    r/w)   Spatial mode, sub-frame ID for this detector (0-7)
 
+#define PercProcessTimeString   "PERC_PROCESS_TIME"     //     (asynInt32,    r/o)   Process time in microseconds
+
 #define PercErrorDupPktString   "PERC_ERR_DUP_PKT"      //     (asynInt32,    r/o)   Duplicate packet error
 #define PercErrorMisPktString   "PERC_ERR_MIS_PKT"      //     (asynInt32,    r/o)   Missing packet error
 #define PercErrorLtePktString   "PERC_ERR_LTE_PKT"      //     (asynInt32,    r/o)   Late packet error
@@ -230,6 +232,8 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercPort;
     int PercPacketBytes;
     int PercSubFrame;
+
+    int PercProcessTime;
 
     int PercErrorDupPkt;
     int PercErrorMisPkt;

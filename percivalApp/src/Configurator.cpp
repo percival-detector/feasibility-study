@@ -374,6 +374,27 @@ int Configurator::openHDF5File(const std::string& filename)
   return 0;
 }
 
+int Configurator::openROHDF5File(const std::string& filename)
+{
+  PercivalDebug dbg(debug_, "Configurator::openROHDF5File");
+
+  herr_t status;
+  // First close the file if it is already open
+  if (file_id_){
+    status = H5Fclose(file_id_);
+  }
+
+  // Now open the file by filename
+  file_id_ = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+  if (file_id_ < 0){
+    dbg.log(0, "Unable to open file", filename);
+    errorMessage_ = "Unable to open HDF5 file";
+    file_id_ = 0;
+    return -1;
+  }
+  return 0;
+}
+
 void Configurator::createHDF5File(const std::string& filename)
 {
   PercivalDebug dbg(debug_, "Configurator::createHDF5File");
@@ -412,7 +433,7 @@ int Configurator::readConfiguration(const std::string& filename)
   dbg.log(2, "Filename", filename);
 
   // Create a new HDF5 configuration file using the default properties
-  status = openHDF5File(filename);
+  status = openROHDF5File(filename);
   if (status){
     return status;
   }

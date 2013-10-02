@@ -420,6 +420,13 @@ record(longin, "$(P)$(R)PercErrorIncRPkt_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)PercProcessTime_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PROCESS_TIME")
+   field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  Substitutions for each of the channels available               #

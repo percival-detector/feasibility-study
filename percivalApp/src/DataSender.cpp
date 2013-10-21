@@ -38,7 +38,7 @@ std::string DataSender::errorMessage()
 }
 
 int DataSender::setupSocket(const std::string& localHost,
-                            unsigned short localPort, 
+                            unsigned short localPort,
                             const std::string& remoteHost,
                             unsigned short remotePort)
 {
@@ -81,7 +81,8 @@ int DataSender::setupSocket(const std::string& localHost,
 
   //int nativeSocket = (int)(mSendSocket->native_handle());
   int nativeSocket = (int)(sendSocket_->native());
-	int sndBufSize = 8388608;
+//	int sndBufSize = 8388608;
+    int sndBufSize = 67108864;
 	int rc = setsockopt(nativeSocket, SOL_SOCKET, SO_SNDBUF, (void*)&sndBufSize, sizeof(sndBufSize));
 	if (rc != 0){
     dbg.log(0, "Setsockopt failed");
@@ -103,7 +104,7 @@ int DataSender::shutdownSocket()
     {
       sendSocket_->close();
       delete(sendSocket_);
-      ioService_.stop();    
+      ioService_.stop();
     } catch (boost::exception& e){
       errorMessage_ = "Unable to shutdown socket";
       dbg.log(0, "Unable to shutdown socket");
@@ -146,7 +147,7 @@ int DataSender::sendImage(void     *buffer,
     }
     packetNumber++;
 
-//    boost::this_thread::sleep(boost::posix_time::microseconds(1));
+    //boost::this_thread::sleep(boost::posix_time::microseconds(1));
 //std::cout << "SubFrame [" << frame << "] Bytes sent [" << bytesSent << "] Packet number [" << packetNumber << "]" << std::endl;
   }
   // Final check that we sent the correct number of bytes

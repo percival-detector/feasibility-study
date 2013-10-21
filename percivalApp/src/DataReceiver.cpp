@@ -92,7 +92,8 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
   }
 
   int nativeSocket = (int)(recvSocket_->native());
-	int rcvBufSize = 8388608;
+//	int rcvBufSize = 8388608;
+    int rcvBufSize = 67108864;
 	int rc = setsockopt(nativeSocket, SOL_SOCKET, SO_RCVBUF, (void*)&rcvBufSize, sizeof(rcvBufSize));
 	if (rc != 0){
     dbg.log(0, "Setsockopt failed");

@@ -90,6 +90,8 @@ record(mbbo, "$(P)$(R)Descramble")
    field(ZRVL, "0")
    field(ONST, "Descramble")
    field(ONVL, "1")
+   field(TWST, "Reorder Only")
+   field(TWVL, "2")
    field(VAL,  "0")
 }
 
@@ -101,6 +103,8 @@ record(mbbi, "$(P)$(R)Descramble_RBV")
    field(ZRVL, "0")
    field(ONST, "Descramble")
    field(ONVL, "1")
+   field(TWST, "Reorder Only")
+   field(TWVL, "2")
    field(SCAN, "I/O Intr")
 }
 

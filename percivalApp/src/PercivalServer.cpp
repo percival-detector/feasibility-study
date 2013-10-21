@@ -16,7 +16,7 @@ PercivalServer::PercivalServer()
     watchdogTimeout_(2000),
     errorMessage_(""),
     acquiring_(false),
-    descramble_(false),
+    descramble_(0),
     host_(""),
     port_(0),
     packetSize_(0),
@@ -96,7 +96,7 @@ std::string PercivalServer::errorMessage()
   return errorMessage_;
 }
 
-void PercivalServer::setDescramble(bool descramble)
+void PercivalServer::setDescramble(uint32_t descramble)
 {
   PercivalDebug dbg(debug_, "PercivalServer::errorMessage");
   dbg.log(1, "Descramble", descramble);
@@ -978,13 +978,13 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
       ADC_high   = ( in_data[index] >> 10 ) & 0x1F;
       ADC        = ADCIndex_[dataIndex_[index]];
       stageIndex = gain*pixelSize_+dataIndex_[index];
-      
+
       ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
       out_data[dataIndex_[index]] = ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
 
       if (reset_data != NULL){
         if (gain == 0) {
-          // Subtract DCS Reset signal if in diode sampling mode 
+          // Subtract DCS Reset signal if in diode sampling mode
           ADC_low  = ( reset_data[index] >> 2 ) & 0xFF;
           ADC_high = ( reset_data[index] >> 10 ) & 0x1F;
           ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
@@ -1009,8 +1009,8 @@ void PercivalServer::unscrambleToFull(int      numPts,       // Number of points
   uint32_t yp;        // Y prime, y coordinate within subframe
   int ip;        // Index prime, index of point within full frame
   uint32_t gain;
-  uint32_t ADC_low;
-  uint32_t ADC_high;
+  float ADC_low;
+  float ADC_high;
   uint32_t ADC;
   uint32_t stageIndex;
   float ADC_output;
@@ -1023,10 +1023,10 @@ void PercivalServer::unscrambleToFull(int      numPts,       // Number of points
       ip = (width_ * (yp + y1)) + x1 + xp;
 
       // Check if we are descrambling or simply reconstructing
-      if (!descramble_){
+      if (descramble_ == 0){
         // OK, here we are just reconstructing the original raw frame
         out_data[ip] = in_data[index];
-      } else {
+      } else if (descramble_ == 1){
         // Here we are going to descramble
 
         gain       = in_data[index] & 0x3;
@@ -1034,19 +1034,22 @@ void PercivalServer::unscrambleToFull(int      numPts,       // Number of points
         ADC_high   = ( in_data[index] >> 10 ) & 0x1F;
         ADC        = ADCIndex_[dataIndex_[ip]];
         stageIndex = gain*pixelSize_+dataIndex_[ip];
-      
+
         ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
         out_data[dataIndex_[ip]] = ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
 
         if (reset_data != NULL){
           if (gain == 0) {
-            // Subtract DCS Reset signal if in diode sampling mode 
+            // Subtract DCS Reset signal if in diode sampling mode
             ADC_low  = ( reset_data[ip] >> 2 ) & 0xFF;
             ADC_high = ( reset_data[ip] >> 10 ) & 0x1F;
             ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
             out_data[dataIndex_[ip]] -= ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
           }
         }
+      } else if (descramble_ == 2){
+        // OK, here we are reordering pixels only, no gain calculations or DCS reset
+        out_data[dataIndex_[ip]] = in_data[index];
       }
       index++;
     }

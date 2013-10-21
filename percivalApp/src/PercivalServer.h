@@ -61,7 +61,7 @@ class PercivalServer : public IPercivalCallback
 
     std::string errorMessage();
 
-    void setDescramble(bool descramble);
+    void setDescramble(uint32_t descramble);
 
     int setupFullFrame(uint32_t width,              // Width of full frame in pixels
                        uint32_t height,             // Height of full frame in pixels
@@ -152,7 +152,7 @@ class PercivalServer : public IPercivalCallback
     boost::mutex   access_;          // Mutex for packet locking
     boost::mutex   frameAccess_;     // Mutex for frame process locking
     boost::mutex   resetAccess_;     // Mutex for reset process locking
-    bool           descramble_;      // Should we descramble or just reconstruct the raw input frame
+    uint32_t       descramble_;      // Should we (0 = reconstruct raw, 1 = full descramble, 2 = reorder only)
     std::string    host_;            // Host IP address to bind to
     unsigned short port_;            // Port to bind to
     uint32_t       packetSize_;      // Size of UDP packet payload in bytes

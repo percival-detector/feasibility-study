@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<components arch="linux-x86">
+	<percival.ADPercivalDriver ADDR="0" P="PERC:" PORT="perc.cam" R="DET-06:" TIMEOUT="1"/>
+	<areaDetector.NDProcess ADDR="0" Enabled="1" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERC:" PORT="perc.proc" R="PROC-06:" TIMEOUT="1"/>
+	<ffmpegServer.ffmpegStream ADDR="0" HTTP_PORT="8086" MAXH="256" MAXW="256" NDARRAY_ADDR="0" NDARRAY_PORT="perc.proc" P="PERC:" PORT="perc.mpg" R="MPG-06:" TIMEOUT="1"/>
+	<areaDetector.NDFileHDF5 ADDR="0" NDARRAY_ADDR="0" NDARRAY_PORT="perc.cam" P="PERC:" PORT="perc.hdf" QUEUE="10000" R="HDF-06:" TIMEOUT="1"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:MPG-06:EnableCallbacks &quot;Enable&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:PROC-06:MinCallbackTime &quot;0.1&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:FileWriteMode &quot;Stream&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:FilePath &quot;/home/gnx91527/images&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:FileName &quot;test&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:EnableCallbacks &quot;Enable&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:NumFramesChunks &quot;20&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:BoundaryAlign &quot;1048576&quot;" post_init="True"/>
+	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-06:BoundaryThreshold &quot;65536&quot;" post_init="True"/>
+</components>

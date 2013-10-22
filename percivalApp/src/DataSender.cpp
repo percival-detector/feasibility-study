@@ -9,6 +9,7 @@
 #include "PercivalDebug.h"
 #include <iostream>
 #include <time.h>
+#include <boost/chrono.hpp>
 
 DataSender::DataSender()
 	: headerPosition_(headerAtStart),
@@ -123,15 +124,22 @@ int DataSender::sendImage(void     *buffer,
                           uint16_t frameNumber,
                           uint8_t  reset)
 {
-  PercivalDebug dbg(debug_, "DataSender::sendImage");
+  boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+  long startTime = now.time_of_day().total_microseconds();
+  //PercivalDebug dbg(debug_, "DataSender::sendImage");
   uint16_t packetNumber = 0;
   uint32_t bytesSent = 0;
+  uint32_t timePerPacket = 0;
   uint8_t *cBuffer = (uint8_t *)buffer;
 
-  dbg.log(1, "Buffer Size (bytes)", bufferSize);
-  dbg.log(1, "Packet Size (bytes)", packetSize);
-  dbg.log(1, "Frame Number", frameNumber);
-  dbg.log(1, "Sub-Frame Number", (uint32_t)subFrameNumber);
+//  timePerPacket = 4000 / ((bufferSize / packetSize) + 1);
+//  std::cout << "[DEBUG] packets: " << (bufferSize/packetSize) << std::endl;
+  //dbg.log(1, "Time Per Packet (us)", timePerPacket);
+
+  //dbg.log(1, "Buffer Size (bytes)", bufferSize);
+  //dbg.log(1, "Packet Size (bytes)", packetSize);
+  //dbg.log(0, "Frame Number", frameNumber);
+  //dbg.log(1, "Sub-Frame Number", (uint32_t)subFrameNumber);
 
   bytesSent = 0;
   packetNumber = 0;
@@ -147,13 +155,20 @@ int DataSender::sendImage(void     *buffer,
     }
     packetNumber++;
 
-    //boost::this_thread::sleep(boost::posix_time::microseconds(1));
+    if (packetNumber % 10 == 0){
+      usleep(1);
+      //boost::this_thread::sleep_for(boost::chrono::microseconds(1));
+//      boost::this_thread::sleep(boost::posix_time::microseconds(1));
+    }
 //std::cout << "SubFrame [" << frame << "] Bytes sent [" << bytesSent << "] Packet number [" << packetNumber << "]" << std::endl;
   }
   // Final check that we sent the correct number of bytes
   if (bytesSent != bufferSize){
-    dbg.log(0, "ERROR, bytes sent not equal to total bytes to send");
+    //dbg.log(0, "ERROR, bytes sent not equal to total bytes to send");
   }
+  now = boost::posix_time::microsec_clock::local_time();
+  long duration = now.time_of_day().total_microseconds() - startTime;
+//  std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
   return 0;
 }
 
@@ -164,17 +179,17 @@ void DataSender::send(uint16_t frameNumber,
                       uint8_t *payload,
                       uint32_t payloadSize)
 {
-  PercivalDebug dbg(debug_, "DataSender::send");
+  //PercivalDebug dbg(debug_, "DataSender::send");
   // Create the packet header
   packetHeader_.frameNumber    = frameNumber;
   packetHeader_.subFrameNumber = subFrameNumber;
   packetHeader_.packetNumber   = packetNumber;
   packetHeader_.packetType     = reset;
-  dbg.log(2, "Frame Number", frameNumber);
-  dbg.log(2, "Sub-Frame Number", (uint32_t)subFrameNumber);
-  dbg.log(2, "Packet Number", packetNumber);
-  dbg.log(2, "Packet Type", (uint32_t)reset);
-  dbg.log(2, "Payload Size", payloadSize);
+  //dbg.log(2, "Frame Number", frameNumber);
+  //dbg.log(2, "Sub-Frame Number", (uint32_t)subFrameNumber);
+  //dbg.log(2, "Packet Number", packetNumber);
+  //dbg.log(2, "Packet Type", (uint32_t)reset);
+  //dbg.log(2, "Payload Size", payloadSize);
 
   //uint16_t *test;
   //test = (uint16_t *)payload;
@@ -194,11 +209,11 @@ void DataSender::send(uint16_t frameNumber,
 
   } catch(boost::exception& e){
     // HERE we need to return an error so that the acquisition can be stopped gracefully
-    dbg.log(0, e);
-    dbg.log(0, "Frame Number", frameNumber);
-    dbg.log(0, "Sub-Frame Number", subFrameNumber);
-    dbg.log(0, "Packet Number", packetNumber);
-    dbg.log(0, "Payload Size", payloadSize);
+    //dbg.log(0, e);
+    //dbg.log(0, "Frame Number", frameNumber);
+    //dbg.log(0, "Sub-Frame Number", subFrameNumber);
+    //dbg.log(0, "Packet Number", packetNumber);
+    //dbg.log(0, "Payload Size", payloadSize);
   }
 
 }

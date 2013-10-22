@@ -108,6 +108,11 @@ int PercivalServer::setupFullFrame(uint32_t width,              // Width of full
                                    DataType type,               // Data type (unsigned 8, 16 or 32 bit)
                                    uint32_t *dataIndex,         // Index in output array of input data
                                    uint32_t *ADCIndex,          // Index of ADC to use for each input data point
+//                                   uint32_t *ADCLowGain,        // Array of low gain ADC gains, one per ADC
+//                                   uint32_t *ADCHighGain,       // Array of high gain ADC gains, one per ADC
+//                                   uint32_t *ADCOffset,         // Combined offset for both ADC's
+//                                   uint32_t *stageGains,      // Gain to apply for each of the output stages (in scrambled order)
+//                                   uint32_t *stageOffsets)    // Offsets to apply for each of the output stages (in scrambled order)
                                    float    *ADCLowGain,        // Array of low gain ADC gains, one per ADC
                                    float    *ADCHighGain,       // Array of high gain ADC gains, one per ADC
                                    float    *ADCOffset,         // Combined offset for both ADC's
@@ -589,7 +594,7 @@ void PercivalServer::processFrame(uint16_t frameNumber, PercivalBuffer *rawFrame
       unscramble(pixelSize_,
                  (uint16_t *)rawFrame->raw(),
                  (uint16_t *)resetBuffer->raw(),
-                 (uint16_t *)fullFrame_->raw(),
+                 (float *)fullFrame_->raw(),
                  sfPtr->getTopLeftX(),
                  sfPtr->getBottomRightX(),
                  sfPtr->getTopLeftY());
@@ -597,7 +602,7 @@ void PercivalServer::processFrame(uint16_t frameNumber, PercivalBuffer *rawFrame
       unscramble(pixelSize_,
                  (uint16_t *)rawFrame->raw(),
                  NULL,
-                 (uint16_t *)fullFrame_->raw(),
+                 (float *)fullFrame_->raw(),
                  sfPtr->getTopLeftX(),
                  sfPtr->getBottomRightX(),
                  sfPtr->getTopLeftY());
@@ -881,7 +886,7 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
         unscrambleToFull(sfPtr->getNumberOfPixels(),
                          (uint16_t *)(subFrameBuffers[subFrame]->raw()),
                          (uint16_t *)resetBuffer->raw(),
-                         (uint16_t *)fullFrame_->raw(),
+                         (float *)fullFrame_->raw(),
                          sfPtr->getTopLeftX(),
                          sfPtr->getBottomRightX(),
                          sfPtr->getTopLeftY());
@@ -889,7 +894,7 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
         unscrambleToFull(sfPtr->getNumberOfPixels(),
                          (uint16_t *)(subFrameBuffers[subFrame]->raw()),
                          NULL,
-                         (uint16_t *)fullFrame_->raw(),
+                         (float *)fullFrame_->raw(),
                          sfPtr->getTopLeftX(),
                          sfPtr->getBottomRightX(),
                          sfPtr->getTopLeftY());
@@ -951,7 +956,7 @@ void PercivalServer::releaseBuffer(PercivalBuffer *buffer)
 void PercivalServer::unscramble(int      numPts,       // Number of points to process
                                 uint16_t *in_data,     // Input data
                                 uint16_t *reset_data,  // Reset data
-                                uint16_t *out_data,    // Output data
+                                float    *out_data,    // Output data
                                 uint32_t x1,
                                 uint32_t x2,
                                 uint32_t y1)
@@ -995,6 +1000,89 @@ void PercivalServer::unscramble(int      numPts,       // Number of points to pr
   }
 }
 
+void PercivalServer::unscrambleToFull(int      numPts,       // Number of points to process
+                                      uint16_t *in_data,     // Input data
+                                      uint16_t *reset_data,  // Reset data
+                                      float    *out_data,    // Output data
+                                      uint32_t x1,
+                                      uint32_t x2,
+                                      uint32_t y1)
+{
+  //PercivalDebug dbg(debug_, "PercivalServer::unscramble");
+  int index;     // Index of point in subframe
+  uint32_t xp;        // X prime, x coordinate within subframe
+  uint32_t yp;        // Y prime, y coordinate within subframe
+  int ip;        // Index prime, index of point within full frame
+  uint32_t gain;
+//  uint32_t ADC_low;
+//  uint32_t ADC_high;
+//  uint32_t ADC_low_r;
+//  uint32_t ADC_high_r;
+  float ADC_low;
+  float ADC_high;
+  float ADC_low_r;
+  float ADC_high_r;
+  uint32_t ADC;
+  uint32_t stageIndex;
+//  uint32_t ADC_output;
+  float ADC_output;
+
+  uint32_t sfWidth = x2 - x1 + 1;
+  uint32_t numRows = numPts / sfWidth;
+  index = 0;
+
+  // Check if we are descrambling or simply reconstructing
+  if (descramble_ == 0){
+    for (yp = 0; yp < numRows; yp++){
+      ip = (width_ * (yp + y1)) + x1;
+      for (xp = 0; xp < sfWidth; xp++ ){
+        // OK, here we are just reconstructing the original raw frame
+        out_data[ip] = in_data[index];
+        index++;
+        ip++;
+      }
+    }
+  } else if (descramble_ == 1){
+    for (yp = 0; yp < numRows; yp++){
+      ip = (width_ * (yp + y1)) + x1;
+      for (xp = 0; xp < sfWidth; xp++ ){
+        // Here we are going to descramble
+//        ip = (width_ * (yp + y1)) + x1 + xp;
+
+        gain       = in_data[index] & 0x3;
+        ADC_low    = ( in_data[index] >> 2 ) & 0xFF;
+        ADC_high   = ( in_data[index] >> 10 ) & 0x1F;
+        ADC        = ADCIndex_[dataIndex_[ip]];
+        stageIndex = gain*pixelSize_+dataIndex_[ip];
+
+        if (reset_data != NULL && gain == 0){
+          // Subtract DCS Reset signal if in diode sampling mode
+          ADC_low_r  = ( reset_data[ip] >> 2 ) & 0xFF;
+          ADC_high_r = ( reset_data[ip] >> 10 ) & 0x1F;
+          ADC_output = (ADC_high-ADC_high_r) * ADCHighGain_[ADC] + (ADC_low-ADC_low_r) * ADCLowGain_[ADC];
+          out_data[dataIndex_[ip]] = ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
+        } else {
+          ADC_output = (ADC_high * ADCHighGain_[ADC] + ADC_low * ADCLowGain_[ADC] + ADCOffset_[ADC]);
+          out_data[dataIndex_[ip]] = ADC_output * stageGains_[stageIndex] + stageOffsets_[stageIndex];
+        }
+        index++;
+        ip++;
+      }
+    }
+  } else if (descramble_ == 2){
+    for (yp = 0; yp < numRows; yp++){
+      ip = (width_ * (yp + y1)) + x1;
+      for (xp = 0; xp < sfWidth; xp++ ){
+        // OK, here we are reordering pixels only, no gain calculations or DCS reset
+        out_data[dataIndex_[ip]] = in_data[index];
+        index++;
+        ip++;
+      }
+    }
+  }
+}
+
+/*
 void PercivalServer::unscrambleToFull(int      numPts,       // Number of points to process
                                       uint16_t *in_data,     // Input data
                                       uint16_t *reset_data,  // Reset data
@@ -1055,5 +1143,5 @@ void PercivalServer::unscrambleToFull(int      numPts,       // Number of points
     }
   }
 }
-
+*/
 

@@ -364,13 +364,15 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
     pImage_->release();
   }
   // Allocate the buffer using the read image.
-  if (configPtr_->getDataType() == UnsignedInt8){
-    pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt8, buffer->size(), buffer->raw());
-  }else if (configPtr_->getDataType() == UnsignedInt16){
-    pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt16, buffer->size(), buffer->raw());
-  } else if (configPtr_->getDataType() == UnsignedInt32){
-    pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt32, buffer->size(), buffer->raw());
-  }
+  //if (configPtr_->getDataType() == UnsignedInt8){
+  //  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt8, buffer->size(), buffer->raw());
+  //}else if (configPtr_->getDataType() == UnsignedInt16){
+
+  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDFloat32, buffer->size(), buffer->raw());
+
+  //} else if (configPtr_->getDataType() == UnsignedInt32){
+  //  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt32, buffer->size(), buffer->raw());
+  //}
   if (!pImage_){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s:%s: error allocating raw buffer\n",
@@ -777,8 +779,10 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
       if (buffers_){
         delete(buffers_);
       }
-      buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
-      setIntegerParam(NDArraySize, dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+      buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * sizeof(uint32_t));
+      setIntegerParam(NDArraySize, dims_[0] * dims_[1] * sizeof(uint32_t));
+//      buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+//      setIntegerParam(NDArraySize, dims_[0] * dims_[1] * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
 
       // Now allocate and copy in the descramble array from the configuration file
       if (descrambleArray_){
@@ -798,34 +802,60 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         free(ADC_low_gain_);
       }
       ADC_low_gain_ = (float *)malloc(noOfADCs_ * sizeof(float));
+      ADC_low_gain_uint32_ = (uint32_t *)malloc(noOfADCs_ * sizeof(float));
       configPtr_->copyADCLowGain(ADC_low_gain_);
+
+      for (int index = 0; index < (int)noOfADCs_; index++){
+        ADC_low_gain_uint32_[index] = (uint32_t)ADC_low_gain_[index];
+      }
 
       if (ADC_high_gain_){
         free(ADC_high_gain_);
       }
       ADC_high_gain_ = (float *)malloc(noOfADCs_ * sizeof(float));
+      ADC_high_gain_uint32_ = (uint32_t *)malloc(noOfADCs_ * sizeof(float));
       configPtr_->copyADCHighGain(ADC_high_gain_);
+
+      for (int index = 0; index < (int)noOfADCs_; index++){
+        ADC_high_gain_uint32_[index] = (uint32_t)ADC_high_gain_[index];
+      }
 
       if (ADC_offset_){
         free(ADC_offset_);
       }
       ADC_offset_ = (float *)malloc(noOfADCs_ * sizeof(float));
+      ADC_offset_uint32_ = (uint32_t *)malloc(noOfADCs_ * sizeof(float));
       configPtr_->copyADCOffsets(ADC_offset_);
+
+      for (int index = 0; index < (int)noOfADCs_; index++){
+        ADC_offset_uint32_[index] = (uint32_t)ADC_offset_[index];
+      }
 
       if (stage_gains_){
         free(stage_gains_);
       }
       stage_gains_ = (float *)malloc(4 * dims_[0] * dims_[1] * sizeof(float));
+      stage_gains_uint32_ = (uint32_t *)malloc(4 * dims_[0] * dims_[1] * sizeof(float));
       configPtr_->copyStageGains(stage_gains_);
+
+      for (int index = 0; index < (int)(4 * dims_[0] * dims_[1]); index++){
+        stage_gains_uint32_[index] = (uint32_t)stage_gains_[index];
+      }
 
       if (stage_offsets_){
         free(stage_offsets_);
       }
       stage_offsets_ = (float *)malloc(4 * dims_[0] * dims_[1] * sizeof(float));
+      stage_offsets_uint32_ = (uint32_t *)malloc(4 * dims_[0] * dims_[1] * sizeof(float));
       configPtr_->copyStageOffsets(stage_offsets_);
+
+      for (int index = 0; index < (int)(4 * dims_[0] * dims_[1]); index++){
+        stage_offsets_uint32_[index] = (uint32_t)stage_offsets_[index];
+      }
 
       // Setup server for full frame as defined by configuration file
       sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+//      sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_uint32_, ADC_high_gain_uint32_, ADC_offset_uint32_, stage_gains_uint32_, stage_offsets_uint32_);
     }
   } else if (param == PercDebugLevel){
     setIntegerParam(PercDebugLevel, value);
@@ -905,8 +935,10 @@ void ADPercivalDriver::setupSpatialImage()
   if (buffers_ != 0){
     delete buffers_;
   }
-  buffers_ = new PercivalBufferPool(width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
-  setIntegerParam(NDArraySize, width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+  buffers_ = new PercivalBufferPool(width * height * sizeof(uint32_t));
+  setIntegerParam(NDArraySize, width * height * sizeof(uint32_t));
+//  buffers_ = new PercivalBufferPool(width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
+//  setIntegerParam(NDArraySize, width * height * (uint32_t)pow(2.0, (double)configPtr_->getDataType()));
   callParamCallbacks();
 
   if (sfDescrambleArray_){
@@ -938,6 +970,7 @@ void ADPercivalDriver::setupSpatialImage()
   // Setup server for partial frame as defined by selected subframe
   sPtr_->setToSpatialMode(subFrame);
   sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), sfDescrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+//  sPtr_->setupFullFrame(width, height, configPtr_->getDataType(), sfDescrambleArray_, ADC_index_, ADC_low_gain_uint32_, ADC_high_gain_uint32_, ADC_offset_uint32_, stage_gains_uint32_, stage_offsets_uint32_);
 }
 
 void ADPercivalDriver::setupTemporalImage()
@@ -956,13 +989,14 @@ void ADPercivalDriver::setupTemporalImage()
   if (buffers_ != 0){
     delete(buffers_);
   }
-  buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * sizeof(uint16_t));
-  setIntegerParam(NDArraySize, dims_[0] * dims_[1] * sizeof(uint16_t));
+  buffers_ = new PercivalBufferPool(dims_[0] * dims_[1] * sizeof(uint32_t));
+  setIntegerParam(NDArraySize, dims_[0] * dims_[1] * sizeof(uint32_t));
   callParamCallbacks();
 
   // Setup server for full frame as defined by configuration
   sPtr_->setToTemporalMode();
   sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_, ADC_high_gain_, ADC_offset_, stage_gains_, stage_offsets_);
+//  sPtr_->setupFullFrame(dims_[0], dims_[1], configPtr_->getDataType(), descrambleArray_, ADC_index_, ADC_low_gain_uint32_, ADC_high_gain_uint32_, ADC_offset_uint32_, stage_gains_uint32_, stage_offsets_uint32_);
 }
 
 /** Report status of the driver.

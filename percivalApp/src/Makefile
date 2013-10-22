@@ -86,7 +86,8 @@ DBD += PercivalGenerator.dbd
 # The following are compiled and added to the support library
 percGen_SRCS += asynConfiguratorDriver.cpp
 #percGen_SRCS += asynGeneratorDriver.cpp
-percGen_SRCS += asynTemporalGeneratorDriver.cpp
+#percGen_SRCS += asynTemporalGeneratorDriver.cpp
+percGen_SRCS += asynSingleProcessGenerator.cpp
 percGen_SRCS += Configurator.cpp
 percGen_SRCS += DataSender.cpp
 percGen_SRCS += PercivalDebug.cpp
@@ -119,7 +120,8 @@ DBD += ADPercivalDriver.dbd
 # The following are compiled and added to the support library
 percival_SRCS += asynConfiguratorDriver.cpp
 #percival_SRCS += asynGeneratorDriver.cpp
-percival_SRCS += asynTemporalGeneratorDriver.cpp
+#percival_SRCS += asynTemporalGeneratorDriver.cpp
+percival_SRCS += asynSingleProcessGenerator.cpp
 percival_SRCS += ADPercivalDriver.cpp
 percival_SRCS += Configurator.cpp
 percival_SRCS += DataSender.cpp

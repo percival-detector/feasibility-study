@@ -106,6 +106,9 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
     configPtr->setStripesPerImageY(value);
     setIntegerParam(ImageSizeY, configPtr->getImageHeight());
     setIntegerParam(DChipsPerStripeY,  configPtr->getChipsPerStripeY());
+  } else if (function == DNumberOfADCs){
+    configPtr->setNumberOfADCs(value);
+    setIntegerParam(DNumberOfADCs,  configPtr->getNumberOfADCs());
   } else if (function == RawFileWrite){
     char fileName[MAX_FILENAME_LEN];
     setIntegerParam(FileWriteStatus, 1);

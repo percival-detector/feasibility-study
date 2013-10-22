@@ -859,6 +859,8 @@ void asynGeneratorDriver::posting_task(int taskNumber)
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: waiting for acquire to start\n", driverName, functionName);
 
       status = epicsEventWait(this->startEventId_[taskNumber]);
+      //status = epicsEventWait(this->startEventId_[0]);
+
       this->lock();
       // Reset the counter to zero
       setIntegerParam(counterAttribute, 0);
@@ -956,9 +958,9 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
     // Post
 //std::cout << "TASK " << taskNumber << " - Posting now..." << std::endl;
-    this->lock();
+//    this->lock();
     getIntegerParam(postAttribute, &posting);
-    this->unlock();
+//    this->unlock();
     if (posting){
       counter++;
 
@@ -992,6 +994,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
           // Send the sub image, along with the number of sub frames and packet size
           senderPtr->sendImage(buffer8_[counter%images], bufSize8_, 7, packetSize, counter, 0);
         }
+//epicsThreadSleep(0.01);
         if (counter%8 == taskNumber){
           // Also send the reset data for the next frame, along with the number of sub frames and packet size
           senderPtr->sendImage(reset1_[counter%images], bufSize1_, 0, packetSize, counter+1, 1);
@@ -1013,15 +1016,17 @@ void asynGeneratorDriver::posting_task(int taskNumber)
       }
 
       // Call the callbacks to update any changes
-      this->lock();
+//      this->lock();
       // Check for a change in debug level
       getIntegerParam(GDDebugLevel, &debugLevel);
       if ((uint32_t)debugLevel != prevDebug){
         senderPtr->setDebug(debugLevel);
         prevDebug = debugLevel;
       }
+      this->lock();
       setIntegerParam(counterAttribute, counter);
       callParamCallbacks();
+      this->unlock();
       //getIntegerParam(postAttribute, &posting);
 
       // Read in the number of Images and counter
@@ -1029,17 +1034,22 @@ void asynGeneratorDriver::posting_task(int taskNumber)
       // See if acquisition is complete
       if (((imageMode == 0) && (counter == 1)) ||
           ((imageMode == 1) && (counter >= numImages))) {
+      this->lock();
         setIntegerParam(postAttribute, 0);
         setIntegerParam(GDPostCommand, 0);
         posting = 0;
         callParamCallbacks();
+      this->unlock();
       }
 
 
-      this->unlock();
+//      this->unlock();
       if (posting){
         epicsTimeGetCurrent(&timeNow);
         double wait = counter*postTime - epicsTimeDiffInSeconds(&timeNow, &startTime);
+        if (wait < 0.0){
+          wait = 0.0;
+        }
         status = epicsEventWaitWithTimeout(this->stopEventId_[taskNumber], wait);
       }
     }

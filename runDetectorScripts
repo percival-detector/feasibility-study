@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#export EPICS_CA_ADDR_LIST="172.23.244.34 cs04r-sc-serv-77 cs04r-sc-serv-78"
+#export EPICS_CA_AUTO_ADDR_LIST=NO
+
+if [[ $1 -ge 1 ]] ; then
+./det01_4096x4096.py
+fi
+if [[ $1 -ge 2 ]] ; then
+./det02_4096x4096.py
+fi
+if [[ $1 -ge 3 ]] ; then
+./det03_4096x4096.py
+fi
+if [[ $1 -ge 4 ]] ; then
+./det04_4096x4096.py
+fi
+if [[ $1 -ge 5 ]] ; then
+./det05_4096x4096.py
+fi
+if [[ $1 -ge 6 ]] ; then
+./det06_4096x4096.py
+fi
+if [[ $1 -ge 7 ]] ; then
+./det07_4096x4096.py
+fi
+if [[ $1 -ge 8 ]] ; then
+./det08_4096x4096.py
+fi
+

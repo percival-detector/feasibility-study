@@ -68,6 +68,11 @@ class PercivalServer : public IPercivalCallback
                        DataType type,               // Data type (unsigned 8, 16 or 32 bit)
                        uint32_t *dataIndex,         // Index in output array of input data
                        uint32_t *ADCIndex,          // Index of ADC to use for each input data point
+//                       uint32_t *ADCLowGain,        // Array of low gain ADC gains, one per ADC
+//                       uint32_t *ADCHighGain,       // Array of high gain ADC gains, one per ADC
+//                       uint32_t *ADCOffset,         // Combined offset for both ADC's
+//                       uint32_t *stageGains,        // Gain to apply for each of the output stages (in scrambled order)
+//                       uint32_t *stageOffsets);     // Offsets to apply for each of the output stages (in scrambled order)
                        float    *ADCLowGain,        // Array of low gain ADC gains, one per ADC
                        float    *ADCHighGain,       // Array of high gain ADC gains, one per ADC
                        float    *ADCOffset,         // Combined offset for both ADC's
@@ -130,7 +135,7 @@ class PercivalServer : public IPercivalCallback
     void unscramble(int      numPts,       // Number of points to process
                     uint16_t *in_data,     // Input data
                     uint16_t *reset_data,  // Reset data
-                    uint16_t *out_data,    // Output data
+                    float    *out_data,    // Output data
                     uint32_t x1,
                     uint32_t x2,
                     uint32_t y1);
@@ -138,7 +143,7 @@ class PercivalServer : public IPercivalCallback
     void unscrambleToFull(int      numPts,       // Number of points to process
                           uint16_t *in_data,     // Input data
                           uint16_t *reset_data,  // Reset data
-                          uint16_t *out_data,    // Output data
+                          float    *out_data,    // Output data
                           uint32_t x1,
                           uint32_t x2,
                           uint32_t y1);
@@ -166,6 +171,11 @@ class PercivalServer : public IPercivalCallback
     uint32_t     byteSize_;          // No of bytes per full frame
     uint32_t     *dataIndex_;        // Pointer to array of unscrambled pixel locations
     uint32_t     *ADCIndex_;         // Pointer to array of ADCs for each pixel
+//    uint32_t        *ADCLowGain_;       // Pointer to array of low gain ADC gains, one per ADC
+//    uint32_t        *ADCHighGain_;      // Pointer to array of high gain ADC gains, one per ADC
+//    uint32_t        *ADCOffset_;        // Pointer to combined offset for both ADC's
+//    uint32_t        *stageGains_;       // Gain to apply for each of the output stages (in scrambled order)
+//    uint32_t        *stageOffsets_;     // Offsets to apply for each of the output stages (in scrambled order)
     float        *ADCLowGain_;       // Pointer to array of low gain ADC gains, one per ADC
     float        *ADCHighGain_;      // Pointer to array of high gain ADC gains, one per ADC
     float        *ADCOffset_;        // Pointer to combined offset for both ADC's

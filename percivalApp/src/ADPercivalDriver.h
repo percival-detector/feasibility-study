@@ -269,6 +269,12 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     float    *stage_gains_;       // Gain to apply for each of the output stages
     float    *stage_offsets_;     // Offsets to apply for each of the output stages (in scrambled order)
 
+    uint32_t *ADC_low_gain_uint32_;      // Array of low gain ADC gains, one per ADC
+    uint32_t *ADC_high_gain_uint32_;     // Array of high gain ADC gains, one per ADC
+    uint32_t *ADC_offset_uint32_;        // Combined offset for both ADC's
+    uint32_t *stage_gains_uint32_;       // Gain to apply for each of the output stages
+    uint32_t *stage_offsets_uint32_;     // Offsets to apply for each of the output stages (in scrambled order)
+
     // Variables to store the image width when placed into single channel mode
     uint32_t      realWidth_;
     uint32_t      realHeight_;

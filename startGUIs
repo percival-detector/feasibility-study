@@ -1,0 +1,46 @@
+#!/bin/bash
+
+#export EPICS_CA_ADDR_LIST="cs04r-sc-serv-77 cs04r-sc-serv-78"
+#export EPICS_CA_AUTO_ADDR_LIST=NO
+
+cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalGenerator/bin/linux-x86_64
+./stpercivalGenerator-gui &
+
+cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector01/bin/linux-x86_64
+./stpercivalDetector01-gui &
+
+if [[ $1 -ge 2 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector02/bin/linux-x86_64
+  ./stpercivalDetector02-gui &
+fi
+
+if [[ $1 -ge 3 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector03/bin/linux-x86_64
+  ./stpercivalDetector03-gui &
+fi
+
+if [[ $1 -ge 4 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector04/bin/linux-x86_64
+  ./stpercivalDetector04-gui &
+fi
+
+if [[ $1 -ge 5 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector05/bin/linux-x86_64
+  ./stpercivalDetector05-gui &
+fi
+
+if [[ $1 -ge 6 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector06/bin/linux-x86_64
+  ./stpercivalDetector06-gui &
+fi
+
+if [[ $1 -ge 7 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector07/bin/linux-x86_64
+  ./stpercivalDetector07-gui &
+fi
+
+if [[ $1 -ge 8 ]] ; then
+  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector08/bin/linux-x86_64
+  ./stpercivalDetector08-gui &
+fi
+

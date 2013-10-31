@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<components arch="linux-x86">
+	<percival.PercivalGeneratorMaster P="PERC:" R="GEN-MS:" name="master"/>
+</components>

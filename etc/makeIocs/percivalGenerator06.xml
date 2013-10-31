@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<components arch="linux-x86">
+	<percival.PercivalGenerator ADDR="0" P="PERC:" PORT="perc.gen" R="GEN-06:" TIMEOUT="1.0" name="generator"/>
+</components>

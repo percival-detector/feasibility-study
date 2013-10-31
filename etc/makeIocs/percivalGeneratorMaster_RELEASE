@@ -1,0 +1,3 @@
+# Place any example specific dependencies here
+HDF5=         /dls_sw/prod/tools/RHEL6-x86_64/hdf5/1-8-10/prefix
+BOOST=        /dls_sw/prod/tools/RHEL6-x86_64/boost/1-48-0/prefix

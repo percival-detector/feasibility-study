@@ -1,7 +1,7 @@
 # These are the IOCs we should create. The IOC should either have the same name
 # as an xml or py file in etc/makeIocs, or be suffixed with _sim to create a
 # simulation from that same file
-IOCS := percivalConfigurator percivalGenerator01 percivalGenerator02 percivalDetector01 percivalDetector02 percivalDetector03 percivalDetector04 percivalDetector05 percivalDetector06 percivalDetector07 percivalDetector08
+IOCS := percivalConfigurator percivalGeneratorMaster percivalGenerator01 percivalGenerator02 percivalGenerator03 percivalGenerator04 percivalGenerator05 percivalGenerator06 percivalGenerator07 percivalGenerator08 percivalDetector01 percivalDetector02 percivalDetector03 percivalDetector04 percivalDetector05 percivalDetector06 percivalDetector07 percivalDetector08
 
 # These are the dirs that each IOC lives in
 IOC_DIRS := $(patsubst %, $(TOP)/iocs/%, $(IOCS))

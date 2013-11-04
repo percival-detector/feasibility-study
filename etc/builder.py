@@ -103,4 +103,7 @@ class ADPercivalDriver(_ADBase):
         print '# PercivalInit( portName, maxBuffers, maxMemory )'
         print '  PercivalInit( %(PORT)10s, %(BUFFERS)10d, %(MEMORY)9d )' % self.__dict__
 
+class PercivalGeneratorMaster(AutoSubstitution):
+    '''Generator Master IOC'''
+    TemplateFile="PercivalGeneratorMaster.template"
 

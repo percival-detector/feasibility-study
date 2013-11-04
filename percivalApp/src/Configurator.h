@@ -83,7 +83,7 @@ class Configurator
     uint32_t getGainThreshold(uint32_t number);
 
     int openHDF5File(const std::string& filename);
-    int openROHDF5File(const std::string& filename);
+    int openROHDF5File(const std::string& filename); // For setting up detector IOCs on read-only filesystems
     void createHDF5File(const std::string& filename);
     int closeHDF5File();
     int readConfiguration(const std::string& filename);

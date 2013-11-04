@@ -104,8 +104,11 @@
 #define PercPortString          "PERC_PORT"             //     (asynInt32,    r/w)   NIC port string
 #define PercPacketBytesString   "PERC_PACKET_BYTES"     //     (asynInt32,    r/w)   Number of payload bytes per UDP packet
 #define PercSubFrameString      "PERC_SUB_FRAME"        //     (asynInt32,    r/w)   Spatial mode, sub-frame ID for this detector (0-7)
+#define PercCpuGroupString      "PERC_CPU_GROUP"        //     (asynInt32,    r/w)   Which CPU group to pin threads to? (0-9)
 
 #define PercProcessTimeString   "PERC_PROCESS_TIME"     //     (asynInt32,    r/o)   Process time in microseconds
+#define PercResetProcTimeString "PERC_RESET_PROC_TIME"  //     (asynInt32,    r/o)   Process time for reset frame in microseconds
+#define PercServiceTimeString   "PERC_SERVICE_TIME"     //     (asynInt32,    r/o)   Service time in microseconds
 
 #define PercErrorDupPktString   "PERC_ERR_DUP_PKT"      //     (asynInt32,    r/o)   Duplicate packet error
 #define PercErrorMisPktString   "PERC_ERR_MIS_PKT"      //     (asynInt32,    r/o)   Missing packet error
@@ -115,6 +118,7 @@
 #define PercErrorMisRPktString  "PERC_ERR_MIS_R_PKT"    //     (asynInt32,    r/o)   Missing reset packet error
 #define PercErrorLteRPktString  "PERC_ERR_LTE_R_PKT"    //     (asynInt32,    r/o)   Late reset packet error
 #define PercErrorIncRPktString  "PERC_ERR_INC_R_PKT"    //     (asynInt32,    r/o)   Unexpected reset data error
+#define PercErrorResetString    "PERC_ERR_RESET"        //     (asynInt32,    r/o)   Missing reset frame
 
 class ADPercivalDriver: public ADDriver, public IPercivalCallback
 {
@@ -232,8 +236,11 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercPort;
     int PercPacketBytes;
     int PercSubFrame;
+    int PercCpuGroup;
 
     int PercProcessTime;
+    int PercResetProcTime;
+    int PercServiceTime;
 
     int PercErrorDupPkt;
     int PercErrorMisPkt;
@@ -243,8 +250,9 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercErrorMisRPkt;
     int PercErrorLteRPkt;
     int PercErrorIncRPkt;
+    int PercErrorReset;
 
-    #define LAST_PERCIVAL_PARAM PercErrorIncRPkt
+    #define LAST_PERCIVAL_PARAM PercErrorReset
 
   private:
   

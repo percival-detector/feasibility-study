@@ -140,8 +140,11 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercPortString,          asynParamInt32,     &PercPort);
   createParam(PercPacketBytesString,   asynParamInt32,     &PercPacketBytes);
   createParam(PercSubFrameString,      asynParamInt32,     &PercSubFrame);
+  createParam(PercCpuGroupString,      asynParamInt32,     &PercCpuGroup);
 
   createParam(PercProcessTimeString,   asynParamInt32,     &PercProcessTime);
+  createParam(PercResetProcTimeString, asynParamInt32,     &PercResetProcTime);
+  createParam(PercServiceTimeString,   asynParamInt32,     &PercServiceTime);
 
   createParam(PercErrorDupPktString,   asynParamInt32,     &PercErrorDupPkt);
   createParam(PercErrorMisPktString,   asynParamInt32,     &PercErrorMisPkt);
@@ -151,6 +154,7 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercErrorMisRPktString,  asynParamInt32,     &PercErrorMisRPkt);
   createParam(PercErrorLteRPktString,  asynParamInt32,     &PercErrorLteRPkt);
   createParam(PercErrorIncRPktString,  asynParamInt32,     &PercErrorIncRPkt);
+  createParam(PercErrorResetString,    asynParamInt32,     &PercErrorReset);
 
   // Set some default values for parameters
   status =  setStringParam (ADManufacturer,      "Percival");
@@ -253,8 +257,11 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercPort,          0);
   status |= setIntegerParam(PercPacketBytes,   0);
   status |= setIntegerParam(PercSubFrame,      0);
+  status |= setIntegerParam(PercCpuGroup,      -1);
 
   status |= setIntegerParam(PercProcessTime,   0);
+  status |= setIntegerParam(PercResetProcTime, 0);
+  status |= setIntegerParam(PercServiceTime,   0);
 
   status |= setIntegerParam(PercErrorDupPkt,   0);
   status |= setIntegerParam(PercErrorMisPkt,   0);
@@ -264,6 +271,7 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercErrorMisRPkt,  0);
   status |= setIntegerParam(PercErrorLteRPkt,  0);
   status |= setIntegerParam(PercErrorIncRPkt,  0);
+  status |= setIntegerParam(PercErrorReset,    0);
 
   callParamCallbacks();
 
@@ -320,11 +328,14 @@ void ADPercivalDriver::stats_task()
   uint32_t misRPkt;
   uint32_t lteRPkt;
   uint32_t incRPkt;
+  uint32_t resetFramesMissing;
   uint32_t processTime;
+  uint32_t resetProcessTime;
+  uint32_t serviceTime;
   // Loop forever in this task
   while (1){
-    sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt);
-    sPtr_->readProcessTime(&processTime);
+    sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt, &resetFramesMissing);
+    sPtr_->readProcessTime(&processTime, &resetProcessTime, &serviceTime);
     this->lock();
     setIntegerParam(PercErrorDupPkt, dupPkt);
     setIntegerParam(PercErrorMisPkt, misPkt);
@@ -334,10 +345,13 @@ void ADPercivalDriver::stats_task()
     setIntegerParam(PercErrorMisRPkt, misRPkt);
     setIntegerParam(PercErrorLteRPkt, lteRPkt);
     setIntegerParam(PercErrorIncRPkt, incRPkt);
+    setIntegerParam(PercErrorReset, resetFramesMissing);
     setIntegerParam(PercProcessTime, processTime);
+    setIntegerParam(PercResetProcTime, resetProcessTime);
+    setIntegerParam(PercServiceTime, serviceTime);
     callParamCallbacks();
     this->unlock();
-    epicsThreadSleep(1.0);
+    epicsThreadSleep(0.5);
   }
 }
 
@@ -861,6 +875,10 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     setIntegerParam(PercDebugLevel, value);
     // Set the debug level within the classes
     sPtr_->setDebug(value);
+  } else if (param == PercCpuGroup){
+    setIntegerParam(PercCpuGroup, value);
+    // Set the preferred CPU group in the server
+    sPtr_->setCpuGroup(value);
   } else if (param == PercWatchdogTimeout){
     setIntegerParam(PercWatchdogTimeout, value);
     // Set the debug level within the classes

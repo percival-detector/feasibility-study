@@ -39,6 +39,8 @@ void PercivalPacketChecker::init(uint32_t parcels, uint32_t packets)
   parcels_ = parcels;
   packets_ = packets;
   uint32_t bytesize = parcels * packets;
+  counter_ = 0;
+  passed_ = bytesize;
   // Allocate storage for the mask
   if (checks_){
     free(checks_);
@@ -79,6 +81,7 @@ int PercivalPacketChecker::set(uint32_t parcel, uint32_t packet)
   }
   // Set the flag now
   checks_[index] = 1;
+  counter_++;
   return PP_OK;
 }
 
@@ -92,6 +95,7 @@ int PercivalPacketChecker::reset(uint32_t parcel, uint32_t packet)
   }
   // Set the flag now
   checks_[index] = 0;
+  counter_--;
   return PP_OK;
 }
 
@@ -106,12 +110,17 @@ int PercivalPacketChecker::resetAll()
   uint32_t bytesize = parcels_ * packets_;
   // Zero the mask
   memset(checks_, 0, bytesize * sizeof(char));
+  // Reset the counter
+  counter_ = 0;
   return PP_OK;
 }
 
 int PercivalPacketChecker::checkAll()
 {
-  if (memcmp(checks_, test_, (parcels_ * packets_))){
+//  if (memcmp(checks_, test_, (parcels_ * packets_))){
+//    return 0;
+//  }
+  if (counter_ != passed_){
     return 0;
   }
   return 1;

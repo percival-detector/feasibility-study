@@ -39,6 +39,8 @@ class PercivalPacketChecker
 
     char     *checks_;  // Enough masks to cover all packets of all parcels
     char     *test_;    // Test for valid mask
+    uint32_t counter_;
+    uint32_t passed_;
     uint32_t debug_;
     uint32_t parcels_;
     uint32_t packets_;

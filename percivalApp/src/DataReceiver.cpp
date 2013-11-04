@@ -8,6 +8,10 @@
 #include "DataReceiver.h"
 #include "PercivalDebug.h"
 
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 
 
 // TEMPORARY: define a packet max size
@@ -21,7 +25,8 @@ DataReceiver::DataReceiver()
     errorMessage_(""),
     running_(false),
     acquiring_(false),
-    frameHeaderLength_(sizeof(PacketHeader))
+    frameHeaderLength_(sizeof(PacketHeader)),
+    cpu_(-1)
 {
 }
 
@@ -35,6 +40,13 @@ void DataReceiver::setDebug(uint32_t level)
   PercivalDebug dbg(debug_, "DataReceiver::setDebug");
   dbg.log(1, "Debug level", level);
   debug_ = level;
+}
+
+void DataReceiver::setCpu(int cpu)
+{
+  PercivalDebug dbg(debug_, "DataReceiver::setCpu");
+  dbg.log(1, "CPU", (uint32_t)cpu);
+  cpu_ = cpu;
 }
 
 void DataReceiver::setWatchdogTimeout(uint32_t time)
@@ -93,7 +105,9 @@ int DataReceiver::setupSocket(const std::string& host, unsigned short port)
 
   int nativeSocket = (int)(recvSocket_->native());
 //	int rcvBufSize = 8388608;
-    int rcvBufSize = 67108864;
+//	int rcvBufSize = 16777216;
+  int rcvBufSize = 67108864;
+//  int rcvBufSize = 134217728;
 	int rc = setsockopt(nativeSocket, SOL_SOCKET, SO_RCVBUF, (void*)&rcvBufSize, sizeof(rcvBufSize));
 	if (rc != 0){
     dbg.log(0, "Setsockopt failed");
@@ -193,6 +207,18 @@ int DataReceiver::startAcquisition(uint32_t packetBytes)
 
     // Launch a thread to start the io_service for receiving data, running the watchdog etc
     receiverThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&boost::asio::io_service::run, &ioService_)));
+
+    // THREAD PINNING
+    if (cpu_ != -1){
+      cpu_set_t cpuset;
+      pthread_t thread = receiverThread_->native_handle();
+      //thread = pthread_self();
+      // Set affinity mask to be cpu_
+      CPU_ZERO(&cpuset);
+      CPU_SET(cpu_, &cpuset);
+      pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+    }
+    // END OF THREAD PINNING
 
   } else {
     dbg.log(0, "Acquisition already running");

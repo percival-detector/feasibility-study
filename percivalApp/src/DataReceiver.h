@@ -62,6 +62,8 @@ class DataReceiver
 
     void setDebug(uint32_t level);
 
+    void setCpu(int cpu);
+
     void setWatchdogTimeout(uint32_t time);
 
     std::string errorMessage();
@@ -114,6 +116,7 @@ class DataReceiver
 //    void                              *pktBuffer_;                // Individual UDP packet buffer
 //    uint32_t                          expectNewFrameNumber_;      // If this is 1 we expect a new frame number in the next packet
 //    ErrorStats                        errorStats_;                // Structure for storing the error statistics
+    int                               cpu_;                         // Pin receiver thread to a CPU core
 };
 
 

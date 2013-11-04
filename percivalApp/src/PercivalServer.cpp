@@ -8,6 +8,11 @@
 #include "PercivalServer.h"
 #include "PercivalDebug.h"
 
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
 #define MODE_SPATIAL  0
 #define MODE_TEMPORAL 1
 
@@ -22,12 +27,15 @@ PercivalServer::PercivalServer()
     packetSize_(0),
     mode_(MODE_SPATIAL),  // Init mode to spatial
     currentSubFrame_(0),  // Currently selected subframe 0
+    cpuGroup_(-1),
     serverMask_(0),
     serverReady_(0),
     frameNumber_(0),
     resetFrameNumber_(0),
     resetFrameReady_(0),
     processTime_(0),
+    serviceTime_(0),
+    resetProcessTime_(0),
     callback_(0),
     buffers_(0)
 {
@@ -45,6 +53,9 @@ PercivalServer::PercivalServer()
   resetErrorStats_.missingPackets = 0;
   resetErrorStats_.latePackets = 0;
   resetErrorStats_.incorrectSubFramePackets = 0;
+
+  // Init missing frame stats
+  resetFramesMissing_ = 0;
 }
 
 PercivalServer::~PercivalServer()
@@ -101,6 +112,13 @@ void PercivalServer::setDescramble(uint32_t descramble)
   PercivalDebug dbg(debug_, "PercivalServer::errorMessage");
   dbg.log(1, "Descramble", descramble);
   descramble_ = descramble;
+}
+
+void PercivalServer::setCpuGroup(int cpuGroup)
+{
+  PercivalDebug dbg(debug_, "PercivalServer::setCpuGroup");
+  dbg.log(1, "CPU group", (uint32_t)cpuGroup);
+  cpuGroup_ = cpuGroup;
 }
 
 int PercivalServer::setupFullFrame(uint32_t width,              // Width of full frame in pixels
@@ -255,8 +273,13 @@ int PercivalServer::startAcquisition()
   resetErrorStats_.latePackets = 0;
   resetErrorStats_.incorrectSubFramePackets = 0;
 
+  // Reset error stats
+  resetFramesMissing_ = 0;
+
   // Reset time stamp
   processTime_ = 0;
+  serviceTime_ = 0;
+  resetProcessTime_ = 0;
 
   // Calculate the number of expected packets
   uint32_t expectedPackets = byteSize_ / packetSize_;
@@ -284,6 +307,7 @@ int PercivalServer::startAcquisition()
   receiver_ = new DataReceiver();
   // Set debug level of the receiver class
   receiver_->setDebug(debug_);
+  receiver_->setCpu(cpuGroup_*3+2);
   receiver_->registerCallback(this);
   receiver_->setupSocket(host_, port_);
   receiver_->startAcquisition(packetSize_);
@@ -322,7 +346,8 @@ int PercivalServer::readErrorStats(uint32_t *dupPkt,
                                    uint32_t *dupRPkt,
                                    uint32_t *misRPkt,
                                    uint32_t *lteRPkt,
-                                   uint32_t *incRPkt)
+                                   uint32_t *incRPkt,
+                                   uint32_t *missingResetFrames)
 {
   PercivalDebug dbg(debug_, "PercivalServer::readErrorStats");
   *dupPkt = errorStats_.duplicatePackets;
@@ -333,12 +358,15 @@ int PercivalServer::readErrorStats(uint32_t *dupPkt,
   *misRPkt = resetErrorStats_.missingPackets;
   *lteRPkt = resetErrorStats_.latePackets;
   *incRPkt = resetErrorStats_.incorrectSubFramePackets;
+  *missingResetFrames = resetFramesMissing_;
   return 0;
 }
 
-int PercivalServer::readProcessTime(uint32_t *processTime)
+int PercivalServer::readProcessTime(uint32_t *processTime, uint32_t *resetProcessTime, uint32_t *serviceTime)
 {
   *processTime = processTime_;
+  *resetProcessTime = resetProcessTime_;
+  *serviceTime = serviceTime_;
   return 0;
 }
 
@@ -579,7 +607,7 @@ void PercivalServer::processFrame(uint16_t frameNumber, PercivalBuffer *rawFrame
     resetFrameMap_.erase(frameNumber);
   } else {
     dbg.log(1, "ERROR. Couldn't find reset frame", frameNumber);
-    resetErrorStats_.missingPackets++;
+    resetFramesMissing_++;
   }
 
   // Descramble the packet as necessary
@@ -698,8 +726,22 @@ void PercivalServer::temporalResetPacketReceived(PercivalBuffer *buffer, uint32_
 
 void PercivalServer::processTemporalResetFrame(uint16_t frameNumber)
 {
-//  boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
-//  long startTime = now.time_of_day().total_microseconds();
+  // Timing statistics
+  boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+  long startTime = now.time_of_day().total_microseconds();
+
+  // THREAD PINNING
+  if (cpuGroup_ != -1){
+    cpu_set_t cpuset;
+    pthread_t thread;
+    thread = pthread_self();
+    // Set affinity mask to be group*3+1
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpuGroup_*3+1, &cpuset);
+    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+  }
+  // END OF THREAD PINNING
+
   PercivalDebug dbg(debug_, "PercivalServer::processTemporalResetFrame");
   PercivalBuffer *resetFrameBuffers[8];
   // First record each pointer to the subframe buffer
@@ -761,18 +803,22 @@ void PercivalServer::processTemporalResetFrame(uint16_t frameNumber)
     }
     resetFrame1_ = callback_->allocateBuffer();
   } // UNLOCK
-//  now = boost::posix_time::microsec_clock::local_time();
-//  long duration = now.time_of_day().total_microseconds() - startTime;
+
+  now = boost::posix_time::microsec_clock::local_time();
+  long duration = now.time_of_day().total_microseconds() - startTime;
+  resetProcessTime_ = (uint32_t)duration;
 //  std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
 }
 
 void PercivalServer::temporalFramePacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType)
 {
-  PercivalDebug dbg(debug_, "PercivalServer::temporalFramePacketReceived");
+//  PercivalDebug dbg(debug_, "PercivalServer::temporalFramePacketReceived");
   int status = 0;
 
   // Perform packet checks to record any errors
   if (expectNewFrame_ == 1){
+boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+startTime_ = now.time_of_day().total_microseconds();
     // Record the frame number and reset the flag
     frameNumber_ = frameNumber;
     expectNewFrame_ = 0;
@@ -781,10 +827,10 @@ void PercivalServer::temporalFramePacketReceived(PercivalBuffer *buffer, uint32_
     if (frameNumber < frameNumber_){
       // This is bad, late packet.  Record the error and return
       errorStats_.latePackets++;
-      dbg.log(1, "Late packet");
-      dbg.log(1, "Current Frame", frameNumber_);
-      dbg.log(1, "New Frame    ", frameNumber);
-      dbg.log(1, "Packet       ", packetNumber);
+//      dbg.log(1, "Late packet");
+//      dbg.log(1, "Current Frame", frameNumber_);
+//      dbg.log(1, "New Frame    ", frameNumber);
+//      dbg.log(1, "Packet       ", packetNumber);
       // Release the Percival buffer back into the pool
       buffers_->free(buffer);
       return;
@@ -792,10 +838,10 @@ void PercivalServer::temporalFramePacketReceived(PercivalBuffer *buffer, uint32_
       // We have a new frame before we expected it.  Notify immediately
       // And record the error as missing packets
       errorStats_.missingPackets++;
-      dbg.log(1, "Missing packet");
-      dbg.log(1, "Current Frame", frameNumber_);
-      dbg.log(1, "New Frame    ", frameNumber);
-      dbg.log(1, "Packet       ", packetNumber);
+//      dbg.log(1, "Missing packet");
+//      dbg.log(1, "Current Frame", frameNumber_);
+//      dbg.log(1, "New Frame    ", frameNumber);
+//      dbg.log(1, "Packet       ", packetNumber);
 
       checker_->resetAll();
       {  // LOCK
@@ -818,25 +864,29 @@ void PercivalServer::temporalFramePacketReceived(PercivalBuffer *buffer, uint32_
   if (status != 0){
     // Duplicate packet.  Record but use the duplicate
     errorStats_.duplicatePackets++;
-    dbg.log(1, "Duplicate packet");
-    dbg.log(1, "Current Frame", frameNumber_);
-    dbg.log(1, "New Frame    ", frameNumber);
-    dbg.log(1, "Packet       ", packetNumber);
+//    dbg.log(1, "Duplicate packet");
+//    dbg.log(1, "Current Frame", frameNumber_);
+//    dbg.log(1, "New Frame    ", frameNumber);
+//    dbg.log(1, "Packet       ", packetNumber);
   }
   // Copy the packet into the correct subframe buffer
   int pixelsPerPacket = packetSize_ / 2;
   int offset = pixelsPerPacket * packetNumber;
-  dbg.log(1, "Pts/Packet ", (uint32_t)pixelsPerPacket);
-  dbg.log(1, "Offset     ", (uint32_t)offset);
+//  dbg.log(1, "Pts/Packet ", (uint32_t)pixelsPerPacket);
+//  dbg.log(1, "Offset     ", (uint32_t)offset);
 
   uint16_t *ptr1 = (uint16_t *)(subFrames_[subFrameNumber]->raw()) + offset;
   memcpy(ptr1, buffer->raw(), bytes);
 
   // Release the Percival buffer back into the pool
-  buffers_->free(buffer);
+//  buffers_->free(buffer);
 
   if (checker_->checkAll()){
-    dbg.log(1, "Notify temporal frame complete");
+boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+long duration = now.time_of_day().total_microseconds() - startTime_;
+serviceTime_ = (uint32_t)duration;
+//std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
+//    dbg.log(1, "Notify temporal frame complete");
     checker_->resetAll();
     {  // LOCK
       boost::lock_guard<boost::mutex> lock(frameAccess_);
@@ -858,6 +908,19 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
 {
   boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
   long startTime = now.time_of_day().total_microseconds();
+
+  // THREAD PINNING
+  if (cpuGroup_ != -1){
+    cpu_set_t cpuset;
+    pthread_t thread;
+    thread = pthread_self();
+    // Set affinity mask to be group*3
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpuGroup_*3, &cpuset);
+    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+  }
+  // END OF THREAD PINNING
+
   PercivalDebug dbg(debug_, "PercivalServer::processFrame");
 //  PercivalBuffer *subFrameBuffers[8];
   PercivalBuffer *resetBuffer = NULL;
@@ -869,7 +932,7 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
     resetFrameMap_.erase(frameNumber);
   } else {
     dbg.log(1, "ERROR. Couldn't find reset frame", frameNumber);
-    resetErrorStats_.missingPackets++;
+    resetFramesMissing_++;
 
     // If we've lost a reset frame we should think about deleting any hanging around in here
   }
@@ -903,6 +966,7 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
       dbg.log(2, "Sub Frame Release", (uint32_t)subFrame);
       subFrameMap_[subFrame]->release(subFrameBuffers[subFrame]);
     }
+
     if (callback_){
       // Free the reset buffer at this point
       if (resetBuffer != NULL){

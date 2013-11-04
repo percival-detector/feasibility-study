@@ -63,6 +63,8 @@ class PercivalServer : public IPercivalCallback
 
     void setDescramble(uint32_t descramble);
 
+    void setCpuGroup(int cpuGroup);
+
     int setupFullFrame(uint32_t width,              // Width of full frame in pixels
                        uint32_t height,             // Height of full frame in pixels
                        DataType type,               // Data type (unsigned 8, 16 or 32 bit)
@@ -102,9 +104,10 @@ class PercivalServer : public IPercivalCallback
                        uint32_t *dupRPkt,
                        uint32_t *misRPkt,
                        uint32_t *lteRPkt,
-                       uint32_t *incRPkt);
+                       uint32_t *incRPkt,
+                       uint32_t *missingResetFrames);
 
-    int readProcessTime(uint32_t *processTime);
+    int readProcessTime(uint32_t *processTime, uint32_t *resetProcessTime, uint32_t *serviceTime);
 
     int registerCallback(IPercivalCallback *callback);
 
@@ -164,6 +167,8 @@ class PercivalServer : public IPercivalCallback
     uint32_t       mode_;            // Current mode, (0 = spatial, 1 = temporal)
     uint32_t       currentSubFrame_; // When in spatial mode this informs which subframe to use
 
+long startTime_;
+
     uint32_t     width_;             // Width of full frame
     uint32_t     height_;            // Height of full frame
     DataType     type_;              // Data type of full frame
@@ -183,33 +188,38 @@ class PercivalServer : public IPercivalCallback
     float        *stageOffsets_;     // Offsets to apply for each of the output stages (in scrambled order)
     boost::shared_ptr<boost::thread>  workerThread_;
 
-    std::map<int, PercivalSubFrame *>   subFrameMap_; // Map to contain sub-image objects
+    int                                 cpuGroup_;            // Used to pin 3 threads to cpuGroup_*3, +1, +2
 
-    uint32_t                            serverMask_;  // bitmask of servers setup
-    uint32_t                            serverReady_; // bitmask of servers that have notified of frames
+    std::map<int, PercivalSubFrame *>   subFrameMap_;         // Map to contain sub-image objects
+
+    uint32_t                            serverMask_;          // bitmask of servers setup
+    uint32_t                            serverReady_;         // bitmask of servers that have notified of frames
     uint32_t                            frameNumber_;         // Current frame number
     uint32_t                            expectNewFrame_;      // Set when we have completed a frame
     uint32_t                            resetFrameNumber_;    // Current reset frame number
     uint32_t                            expectNewResetFrame_; // Set when we have completed a reset frame
     uint32_t                            resetFrameReady_;     // Set when we have completed a reset frame
     uint32_t                            processTime_;         // Process time in microseconds for a frame
+    uint32_t                            serviceTime_;         // Service time in microseconds for a frame
+    uint32_t                            resetProcessTime_;    // Process time in microseconds for a reset frame
 
-    IPercivalCallback                   *callback_;        // Callback interface
-    PercivalBuffer                      *fullFrame_;       // Full frame buffer
-    PercivalBuffer                      *rawFrame_;        // Scrambled full frame buffer
-    PercivalBuffer                      *processFrame_;    // Frame pointer used for descrambling
-    PercivalBuffer                      *subFrames_[8];    // In temporal mode we need to store all subframes in buffers
-    PercivalBuffer                      *subFrameBuffers_[8];  // In temporal mode we need to store all subframes in buffers
-    PercivalBuffer                      *resetSubFrames_[8];    // In temporal mode we need to store all subframes in buffers
-    PercivalBuffer                      *resetFrame1_;     // Buffer for reset frame as it is received
-    std::map<uint16_t, PercivalBuffer*> resetFrameMap_;    // Map for storing reset frames
-    DataReceiver                        *receiver_;        // Data receiver
-    PercivalBufferPool                  *buffers_;         // Pool of individual UDP packet buffers
-    PercivalBufferPool                  *sfBuffers_;       // Pool of buffers for subframes
-    PercivalPacketChecker               *checker_;         // Keep a record of incoming packets
-    PercivalPacketChecker               *resetChecker_;    // Keep a record of incoming reset packets
-    ErrorStats                          errorStats_;       // Keep a record of error statistics
-    ErrorStats                          resetErrorStats_;  // Keep a record of error statistics
+    IPercivalCallback                   *callback_;           // Callback interface
+    PercivalBuffer                      *fullFrame_;          // Full frame buffer
+    PercivalBuffer                      *rawFrame_;           // Scrambled full frame buffer
+    PercivalBuffer                      *processFrame_;       // Frame pointer used for descrambling
+    PercivalBuffer                      *subFrames_[8];       // In temporal mode we need to store all subframes in buffers
+    PercivalBuffer                      *subFrameBuffers_[8]; // In temporal mode we need to store all subframes in buffers
+    PercivalBuffer                      *resetSubFrames_[8];  // In temporal mode we need to store all subframes in buffers
+    PercivalBuffer                      *resetFrame1_;        // Buffer for reset frame as it is received
+    std::map<uint16_t, PercivalBuffer*> resetFrameMap_;       // Map for storing reset frames
+    DataReceiver                        *receiver_;           // Data receiver
+    PercivalBufferPool                  *buffers_;            // Pool of individual UDP packet buffers
+    PercivalBufferPool                  *sfBuffers_;          // Pool of buffers for subframes
+    PercivalPacketChecker               *checker_;            // Keep a record of incoming packets
+    PercivalPacketChecker               *resetChecker_;       // Keep a record of incoming reset packets
+    ErrorStats                          errorStats_;          // Keep a record of error statistics
+    ErrorStats                          resetErrorStats_;     // Keep a record of error statistics
+    uint32_t                            resetFramesMissing_;  // Keep a record of the number of missing reset frames
 };
 
 #endif /* DATASENDER_H_ */

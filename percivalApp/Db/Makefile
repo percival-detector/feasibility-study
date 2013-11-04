@@ -14,6 +14,7 @@ include $(TOP)/configure/CONFIG
 DB += PercivalConfigurator.template
 DB += PercivalGenerator.template
 DB += PercivalGeneratorChannel.template
+DB += PercivalGeneratorMaster.template
 DB += ADPercivalDriver.template
 DB += ADPercivalDriverChannel.template
 

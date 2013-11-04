@@ -65,8 +65,9 @@ int DataSender::setupSocket(const std::string& localHost,
     boost::asio::ip::udp::endpoint localEndpoint(boost::asio::ip::address::from_string(localHost), localPort);
     try
     {
-      sendSocket_ = new boost::asio::ip::udp::socket(ioService_, localEndpoint);
-      //mSendSocket->open(boost::asio::ip::udp::v4());
+      //sendSocket_ = new boost::asio::ip::udp::socket(ioService_, localEndpoint);
+      sendSocket_ = new boost::asio::ip::udp::socket(ioService_);
+      sendSocket_->open(boost::asio::ip::udp::v4());
     } catch (boost::exception& e){
       errorMessage_ = "Unable to create the socket";
       dbg.log(0, "Unable to create the socket");
@@ -83,7 +84,8 @@ int DataSender::setupSocket(const std::string& localHost,
   //int nativeSocket = (int)(mSendSocket->native_handle());
   int nativeSocket = (int)(sendSocket_->native());
 //	int sndBufSize = 8388608;
-    int sndBufSize = 67108864;
+//	int sndBufSize = 16777216;
+  int sndBufSize = 67108864;
 	int rc = setsockopt(nativeSocket, SOL_SOCKET, SO_SNDBUF, (void*)&sndBufSize, sizeof(sndBufSize));
 	if (rc != 0){
     dbg.log(0, "Setsockopt failed");
@@ -155,11 +157,12 @@ int DataSender::sendImage(void     *buffer,
     }
     packetNumber++;
 
-    if (packetNumber % 10 == 0){
-      usleep(1);
+//    if (packetNumber % 8 == 0){
+//      usleep(50);
+//      usleep(25);
       //boost::this_thread::sleep_for(boost::chrono::microseconds(1));
 //      boost::this_thread::sleep(boost::posix_time::microseconds(1));
-    }
+//    }
 //std::cout << "SubFrame [" << frame << "] Bytes sent [" << bytesSent << "] Packet number [" << packetNumber << "]" << std::endl;
   }
   // Final check that we sent the correct number of bytes

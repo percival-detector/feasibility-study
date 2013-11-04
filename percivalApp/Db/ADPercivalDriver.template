@@ -424,6 +424,13 @@ record(longin, "$(P)$(R)PercErrorIncRPkt_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)PercErrorReset_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_ERR_RESET")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)PercProcessTime_RBV")
 {
    field(DTYP, "asynInt32")
@@ -431,6 +438,38 @@ record(longin, "$(P)$(R)PercProcessTime_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)PercResetProcTime_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_RESET_PROC_TIME")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercServiceTime_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SERVICE_TIME")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  Pinning threads to CPU cores                                   #
+###################################################################
+
+record(longout, "$(P)$(R)PercCpuGroup")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_CPU_GROUP")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)PercCpuGroup_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_CPU_GROUP")
+   field(SCAN, "I/O Intr")
+}
 
 ###################################################################
 #  Substitutions for each of the channels available               #

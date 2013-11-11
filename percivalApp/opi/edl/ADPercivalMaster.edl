@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 227
-y 56
-w 1211
-h 496
+x 232
+y 78
+w 1218
+h 644
 font "arial-bold-r-12.0"
 ctlFont "arial-bold-r-12.0"
 btnFont "arial-bold-r-12.0"
@@ -33,7 +33,7 @@ release 0
 x 0
 y 0
 w 1210
-h 495
+h 640
 lineColor index 5
 fill
 fillColor index 5
@@ -48,7 +48,7 @@ release 0
 x 5
 y 10
 w 1200
-h 480
+h 625
 lineColor index 14
 fill
 fillColor index 3
@@ -159,7 +159,7 @@ major 4
 minor 1
 release 0
 x 10
-y 450
+y 595
 w 90
 h 35
 fgColor index 14
@@ -451,7 +451,7 @@ major 4
 minor 3
 release 0
 x 10
-y 410
+y 555
 w 90
 h 35
 fgColor index 14
@@ -862,7 +862,7 @@ major 4
 minor 1
 release 0
 x 230
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -886,7 +886,7 @@ major 4
 minor 1
 release 0
 x 355
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -910,7 +910,7 @@ major 4
 minor 1
 release 0
 x 265
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -934,7 +934,7 @@ major 4
 minor 1
 release 0
 x 390
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -958,7 +958,7 @@ major 4
 minor 0
 release 0
 x 205
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -978,7 +978,7 @@ major 4
 minor 0
 release 0
 x 205
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -998,7 +998,7 @@ major 4
 minor 0
 release 0
 x 330
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -1018,7 +1018,7 @@ major 4
 minor 0
 release 0
 x 330
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -1288,7 +1288,7 @@ major 4
 minor 1
 release 0
 x 480
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -1312,7 +1312,7 @@ major 4
 minor 1
 release 0
 x 515
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -1336,7 +1336,7 @@ major 4
 minor 0
 release 0
 x 455
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -1356,7 +1356,7 @@ major 4
 minor 0
 release 0
 x 455
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -1626,7 +1626,7 @@ major 4
 minor 1
 release 0
 x 605
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -1650,7 +1650,7 @@ major 4
 minor 1
 release 0
 x 640
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -1674,7 +1674,7 @@ major 4
 minor 0
 release 0
 x 580
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -1694,7 +1694,7 @@ major 4
 minor 0
 release 0
 x 580
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -2214,7 +2214,7 @@ major 4
 minor 1
 release 0
 x 730
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -2238,7 +2238,7 @@ major 4
 minor 1
 release 0
 x 855
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -2262,7 +2262,7 @@ major 4
 minor 1
 release 0
 x 765
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -2286,7 +2286,7 @@ major 4
 minor 1
 release 0
 x 890
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -2310,7 +2310,7 @@ major 4
 minor 0
 release 0
 x 705
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -2330,7 +2330,7 @@ major 4
 minor 0
 release 0
 x 705
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -2350,7 +2350,7 @@ major 4
 minor 0
 release 0
 x 830
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -2370,7 +2370,7 @@ major 4
 minor 0
 release 0
 x 830
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -2640,7 +2640,7 @@ major 4
 minor 1
 release 0
 x 980
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -2664,7 +2664,7 @@ major 4
 minor 1
 release 0
 x 1015
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -2688,7 +2688,7 @@ major 4
 minor 0
 release 0
 x 955
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -2708,7 +2708,7 @@ major 4
 minor 0
 release 0
 x 955
-y 385
+y 530
 w 115
 h 20
 fgColor index 25
@@ -2978,7 +2978,7 @@ major 4
 minor 1
 release 0
 x 1105
-y 435
+y 575
 w 35
 h 20
 fgColor index 19
@@ -3002,7 +3002,7 @@ major 4
 minor 1
 release 0
 x 1140
-y 435
+y 575
 w 35
 h 20
 fgColor index 20
@@ -3026,7 +3026,7 @@ major 4
 minor 0
 release 0
 x 1080
-y 410
+y 550
 w 115
 h 20
 fgColor index 25
@@ -3046,7 +3046,7 @@ major 4
 minor 0
 release 0
 x 1080
-y 385
+y 525
 w 115
 h 20
 fgColor index 25
@@ -3582,7 +3582,7 @@ major 4
 minor 3
 release 0
 x 240
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3604,7 +3604,7 @@ major 4
 minor 3
 release 0
 x 365
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3626,7 +3626,7 @@ major 4
 minor 3
 release 0
 x 490
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3648,7 +3648,7 @@ major 4
 minor 3
 release 0
 x 615
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3670,7 +3670,7 @@ major 4
 minor 3
 release 0
 x 740
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3692,7 +3692,7 @@ major 4
 minor 3
 release 0
 x 865
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3714,7 +3714,7 @@ major 4
 minor 3
 release 0
 x 990
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3736,7 +3736,7 @@ major 4
 minor 3
 release 0
 x 1115
-y 460
+y 600
 w 50
 h 25
 fgColor index 14
@@ -3749,5 +3749,521 @@ numCmds 1
 command {
   0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector08/bin/linux-x86_64/stpercivalDetector08-gui"
 }
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 240
+y 420
+w 50
+h 20
+controlPv "PERC:DET-01:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 240
+y 400
+w 50
+h 20
+controlPv "PERC:DET-01:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 240
+y 380
+w 50
+h 20
+controlPv "PERC:DET-01:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 420
+w 180
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Frame Service CPU (%)"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 400
+w 180
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Reset Process CPU (%)"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 380
+w 180
+h 20
+font "arial-bold-r-12.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Frame Process CPU (%)"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 365
+y 420
+w 50
+h 20
+controlPv "PERC:DET-02:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 365
+y 400
+w 50
+h 20
+controlPv "PERC:DET-02:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 365
+y 380
+w 50
+h 20
+controlPv "PERC:DET-02:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 490
+y 420
+w 50
+h 20
+controlPv "PERC:DET-03:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 490
+y 400
+w 50
+h 20
+controlPv "PERC:DET-03:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 490
+y 380
+w 50
+h 20
+controlPv "PERC:DET-03:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 615
+y 420
+w 50
+h 20
+controlPv "PERC:DET-04:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 615
+y 400
+w 50
+h 20
+controlPv "PERC:DET-04:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 615
+y 380
+w 50
+h 20
+controlPv "PERC:DET-04:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 740
+y 420
+w 50
+h 20
+controlPv "PERC:DET-05:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 740
+y 400
+w 50
+h 20
+controlPv "PERC:DET-05:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 740
+y 380
+w 50
+h 20
+controlPv "PERC:DET-05:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 865
+y 420
+w 50
+h 20
+controlPv "PERC:DET-06:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 865
+y 400
+w 50
+h 20
+controlPv "PERC:DET-06:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 865
+y 380
+w 50
+h 20
+controlPv "PERC:DET-06:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 990
+y 420
+w 50
+h 20
+controlPv "PERC:DET-07:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 990
+y 400
+w 50
+h 20
+controlPv "PERC:DET-07:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 990
+y 380
+w 50
+h 20
+controlPv "PERC:DET-07:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1115
+y 420
+w 50
+h 20
+controlPv "PERC:DET-08:PercPktServCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1115
+y 400
+w 50
+h 20
+controlPv "PERC:DET-08:PercResetProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1115
+y 380
+w 50
+h 20
+controlPv "PERC:DET-08:PercFrameProcCpu_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
 endObjectProperties
 

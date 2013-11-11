@@ -16,6 +16,7 @@
 #include "IPercivalCallback.h"
 #include "PercivalServer.h"
 #include "Configurator.h"
+#include "CPUstats.h"
 
 //                                   String                            asyn interface  access  Description
 #define PercFilePathString           "PERC_FILE_PATH"             //     (asynOctet,    r/w)   The file path
@@ -110,6 +111,10 @@
 #define PercResetProcTimeString "PERC_RESET_PROC_TIME"  //     (asynInt32,    r/o)   Process time for reset frame in microseconds
 #define PercServiceTimeString   "PERC_SERVICE_TIME"     //     (asynInt32,    r/o)   Service time in microseconds
 
+#define PercFrameProcCpuString  "PERC_FRAME_PROC_CPU"   // (asynInt32, r/o) CPU usage of frame processing thread (percent)
+#define PercResetProcCpuString  "PERC_RESET_PROC_CPU"   // (asynInt32, r/o) CPU usage of reset frame thread (percent)
+#define PercPktServCpuString    "PERC_PKT_SERV_CPU"     // (asynInt32, r/o) CPU usage of packet service thread (percent)
+
 #define PercErrorDupPktString   "PERC_ERR_DUP_PKT"      //     (asynInt32,    r/o)   Duplicate packet error
 #define PercErrorMisPktString   "PERC_ERR_MIS_PKT"      //     (asynInt32,    r/o)   Missing packet error
 #define PercErrorLtePktString   "PERC_ERR_LTE_PKT"      //     (asynInt32,    r/o)   Late packet error
@@ -128,6 +133,8 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
                      size_t maxMemory,
                      int priority,
                      int stackSize);
+
+    virtual ~ADPercivalDriver();
 
     virtual void stats_task();
 
@@ -242,6 +249,10 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     int PercResetProcTime;
     int PercServiceTime;
 
+    int PercFrameProcCpu;
+    int PercResetProcCpu;
+    int PercPktServCpu;
+
     int PercErrorDupPkt;
     int PercErrorMisPkt;
     int PercErrorLtePkt;
@@ -255,7 +266,7 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     #define LAST_PERCIVAL_PARAM PercErrorReset
 
   private:
-  
+
     epicsEventId startEventId_;
     epicsEventId stopEventId_;
 
@@ -287,11 +298,18 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
     uint32_t      realWidth_;
     uint32_t      realHeight_;
 
-    // Image declerations
+    // Image declarations
     size_t        dims_[2];
     int           ndims_;
     NDArrayInfo_t arrayInfo_;
     PercivalBuffer *pBuffer_;
+
+    // Bookkeeping
+    CPUstats *cpustats_;
+    uint32_t t_new_;
+    uint32_t t_old_;
+    uint32_t i_new_;
+    uint32_t i_old_;
 };
 
 
@@ -307,5 +325,5 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
 extern "C" int Percival_config(const char *portName, int maxBuffers, size_t maxMemory);
 
 
-#endif // ADPERCIVAL_H_ 
+#endif // ADPERCIVAL_H_
 

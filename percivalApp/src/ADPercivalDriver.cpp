@@ -146,6 +146,10 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   createParam(PercResetProcTimeString, asynParamInt32,     &PercResetProcTime);
   createParam(PercServiceTimeString,   asynParamInt32,     &PercServiceTime);
 
+  createParam(PercFrameProcCpuString,  asynParamInt32,     &PercFrameProcCpu);
+  createParam(PercResetProcCpuString,  asynParamInt32,     &PercResetProcCpu);
+  createParam(PercPktServCpuString,    asynParamInt32,     &PercPktServCpu);
+
   createParam(PercErrorDupPktString,   asynParamInt32,     &PercErrorDupPkt);
   createParam(PercErrorMisPktString,   asynParamInt32,     &PercErrorMisPkt);
   createParam(PercErrorLtePktString,   asynParamInt32,     &PercErrorLtePkt);
@@ -263,6 +267,10 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercResetProcTime, 0);
   status |= setIntegerParam(PercServiceTime,   0);
 
+  status |= setIntegerParam(PercFrameProcCpu,  0);
+  status |= setIntegerParam(PercResetProcCpu,  0);
+  status |= setIntegerParam(PercPktServCpu,    0);
+
   status |= setIntegerParam(PercErrorDupPkt,   0);
   status |= setIntegerParam(PercErrorMisPkt,   0);
   status |= setIntegerParam(PercErrorLtePkt,   0);
@@ -315,7 +323,16 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s:%s epicsThreadCreate failure for stats task\n", driverName, functionName);
     return;
   }
+  cpustats_ = new CPUstats();
+  t_new_ = 0;
+  t_old_ = 0;
+  i_new_ = 0;
+  i_old_ = 0;
+}
 
+ADPercivalDriver::~ADPercivalDriver()
+{
+    delete cpustats_;
 }
 
 void ADPercivalDriver::stats_task()
@@ -332,10 +349,28 @@ void ADPercivalDriver::stats_task()
   uint32_t processTime;
   uint32_t resetProcessTime;
   uint32_t serviceTime;
+  int32_t frameProcCpu;
+  int32_t resetProcCpu;
+  int32_t pktServCpu;
+  int32_t cpuGroup;
   // Loop forever in this task
   while (1){
     sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt, &resetFramesMissing);
     sPtr_->readProcessTime(&processTime, &resetProcessTime, &serviceTime);
+    cpuGroup = sPtr_->getCpuGroup();
+    if (cpuGroup == -1) {
+        // No thread pinning taking place, report dummy values
+        frameProcCpu = -1;
+        resetProcCpu = -1;
+        pktServCpu = -1;
+    } else {
+        // Get CPU usage
+        cpustats_->getCpuStats(3*cpuGroup, t_old_, i_old_, &t_new_, &i_new_, &frameProcCpu);
+        cpustats_->getCpuStats(3*cpuGroup+1, t_old_, i_old_, &t_new_, &i_new_, &resetProcCpu);
+        cpustats_->getCpuStats(3*cpuGroup+2, t_old_, i_old_, &t_new_, &i_new_, &pktServCpu);
+        t_old_ = t_new_;
+        i_old_ = i_new_;
+    }
     this->lock();
     setIntegerParam(PercErrorDupPkt, dupPkt);
     setIntegerParam(PercErrorMisPkt, misPkt);
@@ -349,6 +384,9 @@ void ADPercivalDriver::stats_task()
     setIntegerParam(PercProcessTime, processTime);
     setIntegerParam(PercResetProcTime, resetProcessTime);
     setIntegerParam(PercServiceTime, serviceTime);
+    setIntegerParam(PercFrameProcCpu, frameProcCpu);
+    setIntegerParam(PercResetProcCpu, resetProcCpu);
+    setIntegerParam(PercPktServCpu, pktServCpu);
     callParamCallbacks();
     this->unlock();
     epicsThreadSleep(0.5);
@@ -416,7 +454,7 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
     // Get the current time
     epicsTimeGetCurrent(&imageTime);
     pImage_->timeStamp = imageTime.secPastEpoch + imageTime.nsec / 1.e9;
-  
+
     // Set parameters based on collected image data
     setIntegerParam(NDArrayCounter, imageCounter);
     setIntegerParam(ADNumImagesCounter, numImagesCounter);
@@ -479,8 +517,8 @@ void ADPercivalDriver::timeout()
 {
   // Here we do not need to do anything, it has already been handled at the server level
   const char *functionName = "allocateBuffer";
-  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: timer watchdog, handled within server\n", 
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s:%s: timer watchdog, handled within server\n",
             driverName, functionName);
 }
 
@@ -489,8 +527,8 @@ PercivalBuffer *ADPercivalDriver::allocateBuffer()
   const char *functionName = "allocateBuffer";
   //PercivalBuffer *buffer = buffers_->allocateClean();
   PercivalBuffer *buffer = buffers_->allocate();
-  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-              "%s:%s: allocated buffer address: %ld\n", 
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s: allocated buffer address: %ld\n",
               driverName, functionName, (long int)buffer);
   return buffer;
 }
@@ -533,12 +571,12 @@ asynStatus ADPercivalDriver::writeOctet(asynUser *pasynUser, const char *value, 
   status = (asynStatus)callParamCallbacks(addr, addr);
 
   if (status){
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%s",
                   driverName, functionName, status, function, value);
   } else {
-    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%s\n", 
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%s\n",
               driverName, functionName, function, value);
   }
   *nActual = nChars;
@@ -571,10 +609,10 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
       if (mode == 0){
         // Spatial mode only initially
         setupSpatialImage();
-      
+
         // Get the selected subframe
         getIntegerParam(PercSubFrame, &subFrame);
-      
+
         // Reset status message and error
         setIntegerParam(PercError, 0);
         setStringParam(PercStatus, "");
@@ -607,7 +645,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
           // Setup the subframe within the server
           sPtr_->setupSubFrame(subFrameID, tlx, tly, brx, bry);
           setIntegerParam(PercReceive, 1);
- 
+
           // Zero the image counter
           setIntegerParam(ADNumImagesCounter, 0);
           // Tell the server to start the acquisition
@@ -619,7 +657,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         // We are running in temporal mode
         // Spatial mode only initially
         setupTemporalImage();
-      
+
         // Reset status message and error
         setIntegerParam(PercError, 0);
         setStringParam(PercStatus, "");
@@ -660,7 +698,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
             sPtr_->setupSubFrame(subFrameID, tlx, tly, brx, bry);
           }
           setIntegerParam(PercReceive, 1);
- 
+
           // Zero the image counter
           setIntegerParam(ADNumImagesCounter, 0);
           // Tell the server to start the acquisition
@@ -811,7 +849,7 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
       }
       ADC_index_ = (uint32_t *)malloc(dims_[0] * dims_[1] * sizeof(uint32_t));
       configPtr_->copyADCIndex(ADC_index_);
-      
+
       if (ADC_low_gain_){
         free(ADC_low_gain_);
       }
@@ -1028,10 +1066,10 @@ void ADPercivalDriver::report(FILE *fp, int details)
 }
 
 /** Checks whether the directory specified FilePath parameter exists.
-  * 
-  * This is a convenience function that determines the directory specified 
+  *
+  * This is a convenience function that determines the directory specified
   * FilePath parameter exists.
-  * It sets the value of FilePathExists to 0 (does not exist) or 1 (exists).  
+  * It sets the value of FilePathExists to 0 (does not exist) or 1 (exists).
   * It also adds a trailing '/' character to the path if one is not present.
   * Returns a error status if the directory does not exist.
   */
@@ -1045,7 +1083,7 @@ int ADPercivalDriver::checkPath()
   int len;
   int isDir=0;
   int pathExists=0;
-    
+
   status = getStringParam(PercFilePath, sizeof(filePath), filePath);
   len = strlen(filePath);
   if (len == 0) return(asynSuccess);
@@ -1074,7 +1112,7 @@ int ADPercivalDriver::checkPath()
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] fullFileName The constructed file name including the file path.
-  * 
+  *
   * This is a convenience function that constructs a complete file name
   * from the FilePath, FileName, FileNumber, and FileTemplate parameters.
   * If AutoIncrement is true then it increments the FileNumber after creating
@@ -1087,11 +1125,11 @@ int ADPercivalDriver::createFileName(int maxChars, char *fullFileName)
   char filePath[MAX_FILENAME_LEN];
   char fileName[MAX_FILENAME_LEN];
   int len;
-    
+
   this->checkPath();
   status |= getStringParam(PercFilePath, sizeof(filePath), filePath);
-  status |= getStringParam(PercFileName, sizeof(fileName), fileName); 
-  //status |= getStringParam(FileTemplate, sizeof(fileTemplate), fileTemplate); 
+  status |= getStringParam(PercFileName, sizeof(fileName), fileName);
+  //status |= getStringParam(FileTemplate, sizeof(fileTemplate), fileTemplate);
   //status |= getIntegerParam(FileNumber, &fileNumber);
   //status |= getIntegerParam(AutoIncrement, &autoIncrement);
   if (status) return(status);
@@ -1104,14 +1142,14 @@ int ADPercivalDriver::createFileName(int maxChars, char *fullFileName)
   //  fileNumber++;
   //  status |= setIntegerParam(FileNumber, fileNumber);
   //}
-  return(status);   
+  return(status);
 }
 
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] filePath The file path.
   * \param[out] fileName The constructed file name without file file path.
-  * 
+  *
   * This is a convenience function that constructs a file path and file name
   * from the FilePath, FileName, FileNumber, and FileTemplate parameters.
   * If AutoIncrement is true then it increments the FileNumber after creating
@@ -1122,11 +1160,11 @@ int ADPercivalDriver::createFileName(int maxChars, char *filePath, char *fileNam
   // Formats a complete file name from the components defined in NDStdDriverParams
   int status = asynSuccess;
   char name[MAX_FILENAME_LEN];
-    
+
   this->checkPath();
-  status |= getStringParam(PercFilePath, maxChars, filePath); 
-  status |= getStringParam(PercFileName, sizeof(name), fileName); 
-  return(status);   
+  status |= getStringParam(PercFilePath, maxChars, filePath);
+  status |= getStringParam(PercFileName, sizeof(name), fileName);
+  return(status);
 }
 
 

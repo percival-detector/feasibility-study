@@ -132,6 +132,7 @@ percival_SRCS += PercivalBufferPool.cpp
 percival_SRCS += PercivalServer.cpp
 percival_SRCS += PercivalSubFrame.cpp
 percival_SRCS += PercivalPacketChecker.cpp
+percival_SRCS += CPUstats.cpp
 
 #percival_LIBS += asyn
 #percival_LIBS += hdf5

@@ -63,6 +63,8 @@ class PercivalServer : public IPercivalCallback
 
     void setDescramble(uint32_t descramble);
 
+    int getCpuGroup();
+
     void setCpuGroup(int cpuGroup);
 
     int setupFullFrame(uint32_t width,              // Width of full frame in pixels

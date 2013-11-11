@@ -25,7 +25,8 @@ PercivalServer::PercivalServer()
     host_(""),
     port_(0),
     packetSize_(0),
-    mode_(MODE_SPATIAL),  // Init mode to spatial
+//    mode_(MODE_SPATIAL),  // Init mode to spatial
+    mode_(MODE_TEMPORAL),  // Init mode to temporal
     currentSubFrame_(0),  // Currently selected subframe 0
     cpuGroup_(-1),
     serverMask_(0),
@@ -112,6 +113,11 @@ void PercivalServer::setDescramble(uint32_t descramble)
   PercivalDebug dbg(debug_, "PercivalServer::errorMessage");
   dbg.log(1, "Descramble", descramble);
   descramble_ = descramble;
+}
+
+int PercivalServer::getCpuGroup()
+{
+    return cpuGroup_;
 }
 
 void PercivalServer::setCpuGroup(int cpuGroup)
@@ -733,8 +739,16 @@ void PercivalServer::processTemporalResetFrame(uint16_t frameNumber)
   // THREAD PINNING
   if (cpuGroup_ != -1){
     cpu_set_t cpuset;
-    pthread_t thread;
-    thread = pthread_self();
+    pthread_t thread = pthread_self();
+    //Set thread priority to maximum
+    pthread_attr_t thAttr;
+    int policy = 0;
+    int max_prio_for_policy = 0;
+    pthread_attr_init(&thAttr);
+    pthread_attr_getschedpolicy(&thAttr, &policy);
+    max_prio_for_policy = sched_get_priority_max(policy);
+    pthread_setschedprio(thread, max_prio_for_policy);
+    pthread_attr_destroy(&thAttr);
     // Set affinity mask to be group*3+1
     CPU_ZERO(&cpuset);
     CPU_SET(cpuGroup_*3+1, &cpuset);
@@ -912,8 +926,16 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
   // THREAD PINNING
   if (cpuGroup_ != -1){
     cpu_set_t cpuset;
-    pthread_t thread;
-    thread = pthread_self();
+    pthread_t thread = pthread_self();
+    //Set thread priority to maximum
+    pthread_attr_t thAttr;
+    int policy = 0;
+    int max_prio_for_policy = 0;
+    pthread_attr_init(&thAttr);
+    pthread_attr_getschedpolicy(&thAttr, &policy);
+    max_prio_for_policy = sched_get_priority_max(policy);
+    pthread_setschedprio(thread, max_prio_for_policy);
+    pthread_attr_destroy(&thAttr);
     // Set affinity mask to be group*3
     CPU_ZERO(&cpuset);
     CPU_SET(cpuGroup_*3, &cpuset);

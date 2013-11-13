@@ -306,10 +306,6 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
 
     // Bookkeeping
     CPUstats *cpustats_;
-    uint32_t t_new_;
-    uint32_t t_old_;
-    uint32_t i_new_;
-    uint32_t i_old_;
 };
 
 

@@ -267,9 +267,9 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
   status |= setIntegerParam(PercResetProcTime, 0);
   status |= setIntegerParam(PercServiceTime,   0);
 
-  status |= setIntegerParam(PercFrameProcCpu,  0);
-  status |= setIntegerParam(PercResetProcCpu,  0);
-  status |= setIntegerParam(PercPktServCpu,    0);
+  status |= setIntegerParam(PercFrameProcCpu,  -1);
+  status |= setIntegerParam(PercResetProcCpu,  -1);
+  status |= setIntegerParam(PercPktServCpu,    -1);
 
   status |= setIntegerParam(PercErrorDupPkt,   0);
   status |= setIntegerParam(PercErrorMisPkt,   0);
@@ -324,10 +324,6 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
     return;
   }
   cpustats_ = new CPUstats();
-  t_new_ = 0;
-  t_old_ = 0;
-  i_new_ = 0;
-  i_old_ = 0;
 }
 
 ADPercivalDriver::~ADPercivalDriver()
@@ -358,6 +354,7 @@ void ADPercivalDriver::stats_task()
     sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt, &resetFramesMissing);
     sPtr_->readProcessTime(&processTime, &resetProcessTime, &serviceTime);
     cpuGroup = sPtr_->getCpuGroup();
+    std::cout << "cpuGroup = " << cpuGroup << std::endl;
     if (cpuGroup == -1) {
         // No thread pinning taking place, report dummy values
         frameProcCpu = -1;
@@ -365,11 +362,9 @@ void ADPercivalDriver::stats_task()
         pktServCpu = -1;
     } else {
         // Get CPU usage
-        cpustats_->getCpuStats(3*cpuGroup, t_old_, i_old_, &t_new_, &i_new_, &frameProcCpu);
-        cpustats_->getCpuStats(3*cpuGroup+1, t_old_, i_old_, &t_new_, &i_new_, &resetProcCpu);
-        cpustats_->getCpuStats(3*cpuGroup+2, t_old_, i_old_, &t_new_, &i_new_, &pktServCpu);
-        t_old_ = t_new_;
-        i_old_ = i_new_;
+        cpustats_->getCpuStats(3*cpuGroup, &frameProcCpu);
+        cpustats_->getCpuStats(3*cpuGroup+1, &resetProcCpu);
+        cpustats_->getCpuStats(3*cpuGroup+2, &pktServCpu);
     }
     this->lock();
     setIntegerParam(PercErrorDupPkt, dupPkt);
@@ -385,6 +380,7 @@ void ADPercivalDriver::stats_task()
     setIntegerParam(PercResetProcTime, resetProcessTime);
     setIntegerParam(PercServiceTime, serviceTime);
     setIntegerParam(PercFrameProcCpu, frameProcCpu);
+    std::cout << "PercFrameProcCpu = " << PercFrameProcCpu << ", frameProcCpu = " << frameProcCpu << std::endl;
     setIntegerParam(PercResetProcCpu, resetProcCpu);
     setIntegerParam(PercPktServCpu, pktServCpu);
     callParamCallbacks();

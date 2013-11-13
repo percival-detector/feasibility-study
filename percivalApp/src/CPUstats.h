@@ -16,19 +16,10 @@
 class CPUstats
 {
     public:
-        CPUstats();
-        virtual ~CPUstats();
-        int getCpuStats(int cpu_no,
-                        unsigned int t_old,
-                        unsigned int i_old,
-                        unsigned int *t_new,
-                        unsigned int *i_new,
-                        int *usage);
+        int getCpuStats(int cpu_no, int *usage);
 
     private:
-        std::string statpath_;
-        std::ifstream stat_;
-        bool isOpen_;
+        static const unsigned int BUFFSIZE = 64*1024; //Stolen from procps/proc/sysinfo.h
 };
 
 #endif // CPUSTATS_H_

@@ -117,7 +117,7 @@ record(waveform, "$(P)$(R)PercFilePath_RBV")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_PATH")
    field(FTVL, "CHAR")
-   field(NELM, "256") 
+   field(NELM, "256")
    field(SCAN, "I/O Intr")
 }
 
@@ -126,7 +126,7 @@ record(waveform, "$(P)$(R)PercFilePath")
    field(DTYP, "asynOctetWrite")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_PATH")
    field(FTVL, "CHAR")
-   field(NELM, "256") 
+   field(NELM, "256")
 }
 
 record(waveform, "$(P)$(R)PercFileName_RBV")
@@ -134,7 +134,7 @@ record(waveform, "$(P)$(R)PercFileName_RBV")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_NAME")
    field(FTVL, "CHAR")
-   field(NELM, "256") 
+   field(NELM, "256")
    field(SCAN, "I/O Intr")
 }
 
@@ -143,7 +143,7 @@ record(waveform, "$(P)$(R)PercFileName")
    field(DTYP, "asynOctetWrite")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FILE_NAME")
    field(FTVL, "CHAR")
-   field(NELM, "256") 
+   field(NELM, "256")
 }
 
 record(longin, "$(P)$(R)PercFilePathExists_RBV")
@@ -158,7 +158,7 @@ record(waveform, "$(P)$(R)PercFullFileName_RBV")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FULL_FILE_NAME")
    field(FTVL, "CHAR")
-   field(NELM, "256") 
+   field(NELM, "256")
    field(SCAN, "I/O Intr")
 }
 
@@ -449,6 +449,31 @@ record(longin, "$(P)$(R)PercServiceTime_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_SERVICE_TIME")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  CPU statistics                                                 #
+###################################################################
+
+record(longin, "$(P)$(R)PercFrameProcCpu_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_FRAME_PROC_CPU")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercResetProcCpu_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_RESET_PROC_CPU")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PercPktServCpu_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PERC_PKT_SERV_CPU")
    field(SCAN, "I/O Intr")
 }
 

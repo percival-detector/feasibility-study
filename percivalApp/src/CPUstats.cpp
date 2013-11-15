@@ -10,7 +10,7 @@
 #define SUCCESS 0
 #define FAILURE -1
 
-int CPUstats::getCpuStats(int cpu_no, int *usage)
+int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
 {
     int pos = 0;
     int busy = 0;
@@ -35,6 +35,7 @@ int CPUstats::getCpuStats(int cpu_no, int *usage)
     // Look for CPU entry
     while ((pos < content.length()) && tokeniser.good()) {
         pos = content.find("cpu", pos);
+        std::cout << "pos = " << pos << std::endl;
 
         // Check for potential match
         if ((pos + 5) < content.length()) {
@@ -47,28 +48,43 @@ int CPUstats::getCpuStats(int cpu_no, int *usage)
 
                 // Check for CPU number match
                 if (CPU == cpu_no) {
+                    std::cout << "CPU = " << CPU << ", cpu_no = " << cpu_no << std::endl;
                     if (content[pos] == ' ') pos++;
                     tokeniser.seekg(pos);
 
                     // Extract user, nice and system times
                     for (int i = 0; i < 3; i++) {
-                        tokeniser >> busy;
-                        total = total + busy;
+                        tokeniser >> total;
+                        busy = busy + total;
+                        std::cout << "busy[" << i << "] = " << total << std::endl;
                     }
                     // Extract idle time
                     tokeniser >> idle;
                     // Extract other times for total busy time
                     for (int i = 0; i < 3; i++) {
-                        tokeniser >> busy;
-                        total = total + busy;
+                        tokeniser >> total;
+                        busy = busy + total;
+                        std::cout << "busy[" << (i+4) << "] = " << total << std::endl;
                     }
-                    std::cout << "busy = " << total << std::endl;
+                    total = busy + idle;
+                    std::cout << "old_busy = " << previous->busy << std::endl;
+                    std::cout << "busy = " << busy << std::endl;
+                    std::cout << "old_idle = " << previous->idle << std::endl;
                     std::cout << "idle = " << idle << std::endl;
-                    total = total + idle;
+                    std::cout << "old_total = " << previous->total << std::endl;
                     std::cout << "total = " << total << std::endl;
 
-                    // Convert to percentage
-                    *usage = 100.0 * (1.0 - (double)(idle) / (double)(total));
+                    // Convert to percentage, save ticks
+                    //*usage = 100.0 * (1.0 - (double)(idle - old_idle) / (double)(total - old_total));
+                    std::cout << "(busy-old_busy) = " << (busy-previous->busy) << std::endl;
+                    std::cout << "(total-old_total) = " << (total-previous->total) << std::endl;
+                    std::cout << "(busy-old_busy)/(total-old_total) = ";
+                    std::cout << ((busy-previous->busy)/(total-previous->total)) << std::endl;
+                    *usage = 100 * (busy - previous->busy) / (total - previous->total);
+                    std::cout << "usage = " << *usage << std::endl;
+                    previous->busy = busy;
+                    previous->idle = idle;
+                    previous->total = total;
 
                     return SUCCESS;
                 }

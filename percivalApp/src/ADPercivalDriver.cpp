@@ -324,6 +324,15 @@ ADPercivalDriver::ADPercivalDriver(const char *portName,
     return;
   }
   cpustats_ = new CPUstats();
+  previousFrameCpu_.busy = 0;
+  previousFrameCpu_.idle = 0;
+  previousFrameCpu_.total = 0;
+  previousResetCpu_.busy = 0;
+  previousResetCpu_.idle = 0;
+  previousResetCpu_.total = 0;
+  previousPktServCpu_.busy = 0;
+  previousPktServCpu_.idle = 0;
+  previousPktServCpu_.total = 0;
 }
 
 ADPercivalDriver::~ADPercivalDriver()
@@ -354,7 +363,6 @@ void ADPercivalDriver::stats_task()
     sPtr_->readErrorStats(&dupPkt, &misPkt, &ltePkt, &incPkt, &dupRPkt, &misRPkt, &lteRPkt, &incRPkt, &resetFramesMissing);
     sPtr_->readProcessTime(&processTime, &resetProcessTime, &serviceTime);
     cpuGroup = sPtr_->getCpuGroup();
-    std::cout << "cpuGroup = " << cpuGroup << std::endl;
     if (cpuGroup == -1) {
         // No thread pinning taking place, report dummy values
         frameProcCpu = -1;
@@ -362,9 +370,9 @@ void ADPercivalDriver::stats_task()
         pktServCpu = -1;
     } else {
         // Get CPU usage
-        cpustats_->getCpuStats(3*cpuGroup, &frameProcCpu);
-        cpustats_->getCpuStats(3*cpuGroup+1, &resetProcCpu);
-        cpustats_->getCpuStats(3*cpuGroup+2, &pktServCpu);
+        cpustats_->getCpuStats(3*cpuGroup, &previousFrameCpu_, &frameProcCpu);
+        cpustats_->getCpuStats(3*cpuGroup+1, &previousResetCpu_, &resetProcCpu);
+        cpustats_->getCpuStats(3*cpuGroup+2, &previousPktServCpu_, &pktServCpu);
     }
     this->lock();
     setIntegerParam(PercErrorDupPkt, dupPkt);
@@ -382,7 +390,9 @@ void ADPercivalDriver::stats_task()
     setIntegerParam(PercFrameProcCpu, frameProcCpu);
     std::cout << "PercFrameProcCpu = " << PercFrameProcCpu << ", frameProcCpu = " << frameProcCpu << std::endl;
     setIntegerParam(PercResetProcCpu, resetProcCpu);
+    std::cout << "PercResetProcCpu = " << PercResetProcCpu << ", resetProcCpu = " << resetProcCpu << std::endl;
     setIntegerParam(PercPktServCpu, pktServCpu);
+    std::cout << "PercPktServCpu = " << PercPktServCpu << ", pktServCpu = " << pktServCpu << std::endl;
     callParamCallbacks();
     this->unlock();
     epicsThreadSleep(0.5);

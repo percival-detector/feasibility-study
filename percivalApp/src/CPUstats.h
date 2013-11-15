@@ -16,7 +16,12 @@
 class CPUstats
 {
     public:
-        int getCpuStats(int cpu_no, int *usage);
+        typedef struct trio { int busy;
+                              int idle;
+                              int total;
+        } trio;
+
+        int getCpuStats(int cpu_no, trio *previous, int *usage);
 
     private:
         static const unsigned int BUFFSIZE = 64*1024; //Stolen from procps/proc/sysinfo.h

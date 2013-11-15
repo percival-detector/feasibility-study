@@ -306,6 +306,9 @@ class ADPercivalDriver: public ADDriver, public IPercivalCallback
 
     // Bookkeeping
     CPUstats *cpustats_;
+    CPUstats::trio previousFrameCpu_;
+    CPUstats::trio previousResetCpu_;
+    CPUstats::trio previousPktServCpu_;
 };
 
 

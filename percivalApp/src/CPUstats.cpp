@@ -48,7 +48,6 @@ int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
 
                 // Check for CPU number match
                 if (CPU == cpu_no) {
-                    std::cout << "CPU = " << CPU << ", cpu_no = " << cpu_no << std::endl;
                     if (content[pos] == ' ') pos++;
                     tokeniser.seekg(pos);
 
@@ -67,24 +66,10 @@ int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
                         std::cout << "busy[" << (i+4) << "] = " << total << std::endl;
                     }
                     total = busy + idle;
-                    std::cout << "old_busy = " << previous->busy << std::endl;
-                    std::cout << "busy = " << busy << std::endl;
-                    std::cout << "old_idle = " << previous->idle << std::endl;
-                    std::cout << "idle = " << idle << std::endl;
-                    std::cout << "old_total = " << previous->total << std::endl;
-                    std::cout << "total = " << total << std::endl;
 
                     // Convert to percentage, save ticks
-                    //*usage = 100.0 * (1.0 - (double)(idle - old_idle) / (double)(total - old_total));
-                    std::cout << "(busy-old_busy) = " << (busy-previous->busy) << std::endl;
-                    std::cout << "(total-old_total) = " << (total-previous->total) << std::endl;
-                    std::cout << "(busy-old_busy)/(total-old_total) = ";
-                    std::cout << ((busy-previous->busy)/(total-previous->total)) << std::endl;
                     *usage = 100 * (busy - previous->busy) / (total - previous->total);
                     std::cout << "usage = " << *usage << std::endl;
-                    previous->busy = busy;
-                    previous->idle = idle;
-                    previous->total = total;
 
                     return SUCCESS;
                 }

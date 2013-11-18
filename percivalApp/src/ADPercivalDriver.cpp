@@ -388,11 +388,8 @@ void ADPercivalDriver::stats_task()
     setIntegerParam(PercResetProcTime, resetProcessTime);
     setIntegerParam(PercServiceTime, serviceTime);
     setIntegerParam(PercFrameProcCpu, frameProcCpu);
-    std::cout << "PercFrameProcCpu = " << PercFrameProcCpu << ", frameProcCpu = " << frameProcCpu << std::endl;
     setIntegerParam(PercResetProcCpu, resetProcCpu);
-    std::cout << "PercResetProcCpu = " << PercResetProcCpu << ", resetProcCpu = " << resetProcCpu << std::endl;
     setIntegerParam(PercPktServCpu, pktServCpu);
-    std::cout << "PercPktServCpu = " << PercPktServCpu << ", pktServCpu = " << pktServCpu << std::endl;
     callParamCallbacks();
     this->unlock();
     epicsThreadSleep(0.5);

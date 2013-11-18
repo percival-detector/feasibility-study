@@ -65,6 +65,9 @@ int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
 
                     // Convert to percentage, save ticks
                     *usage = 100 * (busy - previous->busy) / (total - previous->total);
+                    previous->busy = busy;
+                    previous->idle = idle;
+                    previous->total = total;
 
                     return SUCCESS;
                 }

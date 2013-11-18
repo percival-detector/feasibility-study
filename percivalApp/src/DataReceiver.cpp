@@ -212,6 +212,15 @@ int DataReceiver::startAcquisition(uint32_t packetBytes)
     if (cpu_ != -1){
       cpu_set_t cpuset;
       pthread_t thread = receiverThread_->native_handle();
+      //Set thread priority to maximum
+      pthread_attr_t thAttr;
+      int policy = 0;
+      int max_prio_for_policy = 0;
+      pthread_attr_init(&thAttr);
+      pthread_attr_getschedpolicy(&thAttr, &policy);
+      max_prio_for_policy = sched_get_priority_max(policy);
+      pthread_setschedprio(thread, max_prio_for_policy);
+      pthread_attr_destroy(&thAttr);
       //thread = pthread_self();
       // Set affinity mask to be cpu_
       CPU_ZERO(&cpuset);

@@ -1,46 +1,33 @@
 #!/bin/bash
 
-#export EPICS_CA_ADDR_LIST="cs04r-sc-serv-77 cs04r-sc-serv-78"
-#export EPICS_CA_AUTO_ADDR_LIST=NO
+# Make sure edm is on our path
+export DLS_EPICS_RELEASE=R3.14.12.3
+source /dls_sw/etc/profile
+TOP="$(cd $(dirname "$0"); pwd)"
 
-cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalGenerator/bin/linux-x86_64
-./stpercivalGenerator-gui &
+# first load the paths. These have been generated from the configure/RELEASE
+# tree. If we have a -d arg then load the opi/edl paths first
+unset EDMDATAFILES
+if [ "$1" = "-d" ]; then
+    if ls ${TOP}/*App/opi/edl > /dev/null 2>&1; then
+        for d in ${TOP}/*App/opi/edl; do
+            export EDMDATAFILES="${EDMDATAFILES}${d}:"
+        done
+    fi
+    export EDMDATAFILES="${EDMDATAFILES}${TOP}/data:"
+    export EDMDATAFILES="${EDMDATAFILES}/dls_sw/work/R3.14.12.3/support/percival/percivalApp/opi/edl:"
 
-cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector01/bin/linux-x86_64
-./stpercivalDetector01-gui &
-
-if [[ $1 -ge 2 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector02/bin/linux-x86_64
-  ./stpercivalDetector02-gui &
+    OPTS="-x -eolc"
+else
+    OPTS="-x -eolc -noedit"
 fi
+export EDMDATAFILES="${EDMDATAFILES}${TOP}/data"
+export EDMDATAFILES="${EDMDATAFILES}:/dls_sw/prod/R3.14.12.3/support/asyn/4-21/data"
+export EDMDATAFILES="${EDMDATAFILES}:/dls_sw/work/R3.14.12.3/support/percival/data"
 
-if [[ $1 -ge 3 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector03/bin/linux-x86_64
-  ./stpercivalDetector03-gui &
-fi
 
-if [[ $1 -ge 4 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector04/bin/linux-x86_64
-  ./stpercivalDetector04-gui &
-fi
+# Set the path to include any scripts in data dirs
+export PATH=${EDMDATAFILES}:${PATH}
+edm ${OPTS}  PercivalGeneratorMaster.edl &
 
-if [[ $1 -ge 5 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector05/bin/linux-x86_64
-  ./stpercivalDetector05-gui &
-fi
-
-if [[ $1 -ge 6 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector06/bin/linux-x86_64
-  ./stpercivalDetector06-gui &
-fi
-
-if [[ $1 -ge 7 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector07/bin/linux-x86_64
-  ./stpercivalDetector07-gui &
-fi
-
-if [[ $1 -ge 8 ]] ; then
-  cd /dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector08/bin/linux-x86_64
-  ./stpercivalDetector08-gui &
-fi
-
+edm ${OPTS}  ADPercivalMaster.edl &

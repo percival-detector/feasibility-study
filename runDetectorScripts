@@ -4,27 +4,27 @@
 #export EPICS_CA_AUTO_ADDR_LIST=NO
 
 if [[ $1 -ge 1 ]] ; then
-./det01_4096x4096.py
+./scripts/detector/det01_4096x4096.py
 fi
 if [[ $1 -ge 2 ]] ; then
-./det02_4096x4096.py
+./scripts/detector/det02_4096x4096.py
 fi
 if [[ $1 -ge 3 ]] ; then
-./det03_4096x4096.py
+./scripts/detector/det03_4096x4096.py
 fi
 if [[ $1 -ge 4 ]] ; then
-./det04_4096x4096.py
+./scripts/detector/det04_4096x4096.py
 fi
 if [[ $1 -ge 5 ]] ; then
-./det05_4096x4096.py
+./scripts/detector/det05_4096x4096.py
 fi
 if [[ $1 -ge 6 ]] ; then
-./det06_4096x4096.py
+./scripts/detector/det06_4096x4096.py
 fi
 if [[ $1 -ge 7 ]] ; then
-./det07_4096x4096.py
+./scripts/detector/det07_4096x4096.py
 fi
 if [[ $1 -ge 8 ]] ; then
-./det08_4096x4096.py
+./scripts/detector/det08_4096x4096.py
 fi
 

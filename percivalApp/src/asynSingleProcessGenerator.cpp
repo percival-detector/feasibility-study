@@ -10,7 +10,7 @@
 #include <iocsh.h>
 #include <epicsExport.h>
 
-#include "asynTemporalGeneratorDriver.h"
+#include "asynSingleProcessGenerator.h"
 
 static const char *driverName = "asynGeneratorDriver";
 
@@ -259,6 +259,9 @@ asynStatus asynGeneratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 value
       setIntegerParam(GDWidthBase+channel, width);
       setIntegerParam(GDHeightBase+channel, height);
     }
+  } else if (function == GDReport){
+    // Display the packet report
+    senderPtr->report();
   }
 
   // Call base class
@@ -751,7 +754,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
   double postTime = 0.0;     // Time in seconds of each frame post
   double frequency;          // Frames per second
-  DataSender *senderPtr;     // Pointer to the data sender
+//  DataSender *senderPtr;     // Pointer to the data sender
   static const char *functionName = "asynGeneratorDriver::posting_task";
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s\n", functionName);
 
@@ -1110,6 +1113,8 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   createParam(GDImageModeString,          asynParamInt32,           &GDImageMode);
   createParam(GDModeString,               asynParamInt32,           &GDMode);
 
+  createParam(GDReportString,             asynParamInt32,           &GDReport);
+
   // Parameters for thread control
   createParam(GDPostCommandString,        asynParamInt32,           &GDPostCommand);
   createParam(GDPostChannel1String,       asynParamInt32,           &GDPostChannel1);
@@ -1325,6 +1330,8 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   setIntegerParam(GDNumImagesCounter,   0);
   setIntegerParam(GDImageMode,          2);
   setIntegerParam(GDMode,               0);
+
+  setIntegerParam(GDReport,             0);
 
   setIntegerParam(GDPostCommand,        0);
   setIntegerParam(GDPostChannel1,       0);

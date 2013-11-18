@@ -233,6 +233,8 @@ typedef enum {
 
 #define GDPostFrequencyString    "GD_POST_FREQUENCY"             /**< (asynFloat64,  r/w) Frequency of image posting */
 
+#define GDReportString             "GD_REPORT"                   /**< (asynInt32,    r/w) Print out a report of packets sent */
+
 class epicsShareFunc asynGeneratorDriver : public asynPortDriver
 {
   public:
@@ -451,6 +453,8 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
     int GDErrorMsgChannel7;
     int GDErrorMsgChannel8;
 
+    int GDReport;
+
     int GDPostFrequency;
     #define LAST_GENERATOR_PARAM GDPostFrequency
 
@@ -473,6 +477,7 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
 
   private:
     Configurator *configPtr;
+    DataSender *senderPtr;
 
     epicsEventId startEventId_[8];
     epicsEventId stopEventId_[8];

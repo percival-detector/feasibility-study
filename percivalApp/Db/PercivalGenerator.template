@@ -8,6 +8,8 @@
 # % macro, PORT, Asyn Port name
 # % macro, TIMEOUT, Timeout
 # % macro, ADDR, Asyn Port address
+# % macro, TRIG1, Report trigger 1
+# % macro, TRIG2, Report trigger 2
 
 # This associates the template with an edm screen
 # % gui, $(PORT), edmtab, PercivalGenerator.edl, P=$(P),R=$(R)
@@ -43,6 +45,32 @@ record(longin, "$(P)$(R)GDDebugLevel_RBV")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_DEBUG_LEVEL")
    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records trigger a packet report from the counter         #
+###################################################################
+
+record(longout, "$(P)$(R)GDReportTrig1")
+{
+   field(DOL,  "$(TRIG1) CP")
+   field(OMSL, "closed_loop")
+   field(FLNK, "$(P)$(R)GDReportTrigger.PROC PP")
+}
+
+record(longout, "$(P)$(R)GDReportTrig2")
+{
+   field(DOL,  "$(TRIG2) CP")
+   field(OMSL, "closed_loop")
+   field(FLNK, "$(P)$(R)GDReportTrigger.PROC PP")
+}
+
+record(longout, "$(P)$(R)GDReportTrigger")
+{
+   field(PINI, "NO")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GD_REPORT")
+   field(VAL,  "1")
 }
 
 ###################################################################

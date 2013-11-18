@@ -39,6 +39,11 @@ std::string DataSender::errorMessage()
   return errorMessage_;
 }
 
+void DataSender::report()
+{
+  counter_->report();
+}
+
 int DataSender::setupSocket(const std::string& localHost,
                             unsigned short localPort,
                             const std::string& remoteHost,

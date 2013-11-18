@@ -33,6 +33,8 @@ class DataSender
 
     std::string errorMessage();
 
+    void report();
+
     int setupSocket(const std::string& localHost,
                     unsigned short localPort, 
                     const std::string& remoteHost,

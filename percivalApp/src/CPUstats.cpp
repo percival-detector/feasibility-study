@@ -55,7 +55,6 @@ int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
                     for (int i = 0; i < 3; i++) {
                         tokeniser >> total;
                         busy = busy + total;
-                        std::cout << "busy[" << i << "] = " << total << std::endl;
                     }
                     // Extract idle time
                     tokeniser >> idle;
@@ -63,13 +62,11 @@ int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
                     for (int i = 0; i < 3; i++) {
                         tokeniser >> total;
                         busy = busy + total;
-                        std::cout << "busy[" << (i+4) << "] = " << total << std::endl;
                     }
                     total = busy + idle;
 
                     // Convert to percentage, save ticks
                     *usage = 100 * (busy - previous->busy) / (total - previous->total);
-                    std::cout << "usage = " << *usage << std::endl;
 
                     return SUCCESS;
                 }

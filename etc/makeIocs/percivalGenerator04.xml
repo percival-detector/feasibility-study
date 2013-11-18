@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <components arch="linux-x86">
-	<percival.PercivalGenerator ADDR="0" P="PERC:" PORT="perc.gen" R="GEN-04:" TIMEOUT="1.0" name="generator"/>
+	<percival.PercivalGenerator ADDR="0" P="PERC:" PORT="perc.gen" R="GEN-04:" TIMEOUT="1.0" TRIG1="PERC:DET-04:PercErrorMisPkt_RBV" TRIG2="PERC:DET-04:PercErrorMisRPkt_RBV" name="generator"/>
 	<EPICS_BASE.EpicsEnvSet key="EPICS_CA_AUTO_ADDR_LIST" value="NO"/>
 	<EPICS_BASE.EpicsEnvSet key="EPICS_CA_ADDR_LIST" value="172.23.138.255"/>
 </components>

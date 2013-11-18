@@ -29,13 +29,11 @@ int CPUstats::getCpuStats(int cpu_no, trio *previous, int *usage)
 
     // Convenient Containers(TM)
     std::string content(buf);
-    std::cout << "CONTENT:" << std::endl << content << std::endl;
     std::istringstream tokeniser(content);
 
     // Look for CPU entry
     while ((pos < content.length()) && tokeniser.good()) {
         pos = content.find("cpu", pos);
-        std::cout << "pos = " << pos << std::endl;
 
         // Check for potential match
         if ((pos + 5) < content.length()) {

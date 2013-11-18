@@ -93,6 +93,7 @@ percGen_SRCS += asynSingleProcessGenerator.cpp
 percGen_SRCS += Configurator.cpp
 percGen_SRCS += DataSender.cpp
 percGen_SRCS += PercivalDebug.cpp
+percGen_SRCS += PercivalPacketCounter.cpp
 
 percGen_LIBS += asyn
 percGen_LIBS += hdf5

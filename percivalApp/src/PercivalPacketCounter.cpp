@@ -76,7 +76,7 @@ void PercivalPacketCounter::addPacket(//boost::posix_time::ptime ts,
 
 void PercivalPacketCounter::report()
 {
-  std::cout << "Bytes     FrameNo   SubFrameNo PacketNo PacketType" << std::endl;
+  std::cout << "FrameNo   SubFrameNo PacketNo PacketType" << std::endl;
   if (wrap_ == 0){
     for (uint32_t index = 0; index < index_; index++){
       std::cout << std::setw(10) << (uint32_t)frameNumber_[index] << " ";

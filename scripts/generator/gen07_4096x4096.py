@@ -21,7 +21,7 @@ class Worker(object):
         self.caPut('GDBotRightXChannel1', 511)
         self.caPut('GDBotRightYChannel1', 4095)
         self.caPut('GDSubFramesChannel1', 6)
-        self.caPut('GDPktSizeChannel1',   8966)
+        self.caPut('GDPktSizeChannel1',   8000)
         self.caPut('Channel1Enable',      'Enabled')
         self.caPut('GDRemPortChannel1',   9882)
 #        self.caPut('GDLocAddrChannel1',   '172.23.138.78')

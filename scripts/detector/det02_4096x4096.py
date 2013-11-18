@@ -19,8 +19,10 @@ class Worker(object):
 #        self.caPut('PercAddr',           '172.23.138.77')
         self.caPut('PercAddr',           '192.168.138.77')
         self.caPut('PercPort',           9877)
-        self.caPut('PercPacketBytes',    8966)
+#        self.caPut('PercPacketBytes',    8966)
+        self.caPut('PercPacketBytes',    8000)
         self.caPut('PercSubFrame',       0)
+        self.caPut('PercCpuGroup',       1)
 
 
         self.caPut('PercTopLeftXSF1',    0)

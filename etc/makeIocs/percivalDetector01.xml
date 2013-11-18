@@ -13,4 +13,6 @@
 	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-01:NumFramesChunks &quot;20&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-01:BoundaryAlign &quot;1048576&quot;" post_init="True"/>
 	<EPICS_BASE.StartupCommand command="dbpf PERC:HDF-01:BoundaryThreshold &quot;65536&quot;" post_init="True"/>
+	<EPICS_BASE.EpicsEnvSet key="EPICS_CA_AUTO_ADDR_LIST" value="NO"/>
+	<EPICS_BASE.EpicsEnvSet key="EPICS_CA_ADDR_LIST" value="172.23.138.255"/>
 </components>

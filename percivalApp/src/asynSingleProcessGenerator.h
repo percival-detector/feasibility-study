@@ -304,7 +304,7 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
     int GDImageMode;
     int GDMode;
 
-    // The following attributes are required for the four posting threads
+    // The following attributes are required for the eight posting threads
     int GDPostCommand;
     int GDPostChannel1;
     int GDPostChannel2;
@@ -314,7 +314,7 @@ class epicsShareFunc asynGeneratorDriver : public asynPortDriver
     int GDPostChannel6;
     int GDPostChannel7;
     int GDPostChannel8;
-    
+
     int GDCounterChannel1;
     int GDCounterChannel2;
     int GDCounterChannel3;

@@ -102,13 +102,13 @@ class Configurator
     int readScrambledImage();
     void generateMetaData();
     int readMetaData();
-    void scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray);
-    void scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray);
+    void scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, /*uint32_t *out32,*/ uint16_t *out16, /*uint8_t *out8,*/ uint32_t *descrambleArray);
+    void scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, /*uint32_t *out32,*/ uint16_t *out16, /*uint8_t *out8,*/ uint32_t *descrambleArray);
     void allocateDataArrays();
     void freeDataArrays();
-    void copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer);
+//    void copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer);
     void copyScrambledSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer);
-    void copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer);
+//    void copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer);
     void copyResetDataSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer);
     void copyDescrambleArray(uint32_t *buffer);
     void copyGainThresholds(uint32_t *buffer);
@@ -150,13 +150,13 @@ class Configurator
     hid_t       file_id_;
 
     // Pointer to raw data
-    uint32_t *rawDataUInt32_;
+//    uint32_t *rawDataUInt32_;
     uint16_t *rawDataUInt16_;
-    uint8_t *rawDataUInt8_;
+//    uint8_t *rawDataUInt8_;
     // Pointer to scrambled image
-    uint32_t *scrambledDataUInt32_;
+//    uint32_t *scrambledDataUInt32_;
     uint16_t *scrambledDataUInt16_;
-    uint8_t *scrambledDataUInt8_;
+//    uint8_t *scrambledDataUInt8_;
     // Pointer to the descramble array
     uint32_t *descrambleArray_;
     // Are the arrays allocated

@@ -43,12 +43,12 @@ asynStatus asynConfiguratorDriver::writeOctet(asynUser *pasynUser, const char *v
   status = (asynStatus)callParamCallbacks(addr, addr);
 
   if (status){
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%s",
                   driverName, functionName, status, function, value);
   } else {
-    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%s\n", 
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%s\n",
               driverName, functionName, function, value);
   }
   *nActual = nChars;
@@ -119,26 +119,26 @@ asynStatus asynConfiguratorDriver::writeInt32(asynUser *pasynUser, epicsInt32 va
     setStringParam(FileWriteMessage, "Raw image complete");
     setIntegerParam(FileWriteStatus, 0);
   } else if (function == ImageScrambleType){
-    switch (value){
-      case 0:
-        configPtr->setScrambleType(excalibur);
-        break;
-      case 1:
+//    switch (value){
+//      case 0:
+//        configPtr->setScrambleType(excalibur);
+//        break;
+//      case 1:
         configPtr->setScrambleType(percival);
-        break;
-    }
+//        break;
+//    }
   } else if (function == DataType){
-    switch (value){
-      case UInt8:
-        configPtr->setDataType(UnsignedInt8);
-        break;
-      case UInt16:
+//    switch (value){
+//      case UInt8:
+//        configPtr->setDataType(UnsignedInt8);
+//        break;
+//      case UInt16:
         configPtr->setDataType(UnsignedInt16);
-        break;
-      case UInt32:
-        configPtr->setDataType(UnsignedInt32);
-        break;
-    }
+//        break;
+//      case UInt32:
+//        configPtr->setDataType(UnsignedInt32);
+//        break;
+//    }
   } else if (function == ImageCount){
     configPtr->setNoOfImages(value);
   } else if (function == ImageMinValue){
@@ -199,10 +199,10 @@ void asynConfiguratorDriver::report(FILE *fp, int details)
 }
 
 /** Checks whether the directory specified FilePath parameter exists.
-  * 
-  * This is a convenience function that determines the directory specified 
+  *
+  * This is a convenience function that determines the directory specified
   * FilePath parameter exists.
-  * It sets the value of FilePathExists to 0 (does not exist) or 1 (exists).  
+  * It sets the value of FilePathExists to 0 (does not exist) or 1 (exists).
   * It also adds a trailing '/' character to the path if one is not present.
   * Returns a error status if the directory does not exist.
   */
@@ -216,7 +216,7 @@ int asynConfiguratorDriver::checkPath()
   int len;
   int isDir=0;
   int pathExists=0;
-    
+
   status = getStringParam(FilePath, sizeof(filePath), filePath);
   len = strlen(filePath);
   if (len == 0) return(asynSuccess);
@@ -245,7 +245,7 @@ int asynConfiguratorDriver::checkPath()
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] fullFileName The constructed file name including the file path.
-  * 
+  *
   * This is a convenience function that constructs a complete file name
   * from the FilePath, FileName, FileNumber, and FileTemplate parameters.
   * If AutoIncrement is true then it increments the FileNumber after creating
@@ -258,11 +258,11 @@ int asynConfiguratorDriver::createFileName(int maxChars, char *fullFileName)
   char filePath[MAX_FILENAME_LEN];
   char fileName[MAX_FILENAME_LEN];
   int len;
-    
+
   this->checkPath();
   status |= getStringParam(FilePath, sizeof(filePath), filePath);
-  status |= getStringParam(FileName, sizeof(fileName), fileName); 
-  //status |= getStringParam(FileTemplate, sizeof(fileTemplate), fileTemplate); 
+  status |= getStringParam(FileName, sizeof(fileName), fileName);
+  //status |= getStringParam(FileTemplate, sizeof(fileTemplate), fileTemplate);
   //status |= getIntegerParam(FileNumber, &fileNumber);
   //status |= getIntegerParam(AutoIncrement, &autoIncrement);
   if (status) return(status);
@@ -275,14 +275,14 @@ int asynConfiguratorDriver::createFileName(int maxChars, char *fullFileName)
   //  fileNumber++;
   //  status |= setIntegerParam(FileNumber, fileNumber);
   //}
-  return(status);   
+  return(status);
 }
 
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] filePath The file path.
   * \param[out] fileName The constructed file name without file file path.
-  * 
+  *
   * This is a convenience function that constructs a file path and file name
   * from the FilePath, FileName, FileNumber, and FileTemplate parameters.
   * If AutoIncrement is true then it increments the FileNumber after creating
@@ -293,11 +293,11 @@ int asynConfiguratorDriver::createFileName(int maxChars, char *filePath, char *f
   // Formats a complete file name from the components defined in NDStdDriverParams
   int status = asynSuccess;
   char name[MAX_FILENAME_LEN];
-    
+
   this->checkPath();
-  status |= getStringParam(FilePath, maxChars, filePath); 
-  status |= getStringParam(FileName, sizeof(name), fileName); 
-  return(status);   
+  status |= getStringParam(FilePath, maxChars, filePath);
+  status |= getStringParam(FileName, sizeof(name), fileName);
+  return(status);
 }
 
 /** This is the constructor for the asynConfiguratorDriver class.
@@ -374,8 +374,8 @@ asynConfiguratorDriver::asynConfiguratorDriver(const char *portName,
 
   /* Here we set the values of read-only parameters and of read/write parameters that cannot
    * or should not get their values from the database.  Note that values set here will override
-   * those in the database for output records because if asyn device support reads a value from 
-   * the driver with no error during initialization then it sets the output record to that value.  
+   * those in the database for output records because if asyn device support reads a value from
+   * the driver with no error during initialization then it sets the output record to that value.
    * If a value is not set here then the read request will return an error (uninitialized).
    * Values set here will be overridden by values from save/restore if they exist. */
   setStringParam (PortNameSelf,      portName);

@@ -475,7 +475,7 @@ void Configurator::generateConfiguration(const std::string& filename)
 
   // Close the configuration file
   closeHDF5File();
-  
+
 }
 
 void Configurator::generateRawImage()
@@ -490,76 +490,76 @@ void Configurator::generateRawImage()
 
   // Create the data space for the dataset.
   dims[0] = noOfImages_;
-  dims[1] = imageHeight_; 
+  dims[1] = imageHeight_;
   dims[2] = imageWidth_;
   dataspace_id = H5Screate_simple(3, dims, NULL);
 
   // Create the dataset.
-  if (dataType_ == UnsignedInt32){
-    dataset_id = H5Dcreate2(file_id_, "/raw_image", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-  } else if (dataType_ == UnsignedInt16){
+//  if (dataType_ == UnsignedInt32){
+//    dataset_id = H5Dcreate2(file_id_, "/raw_image", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+//  } else if (dataType_ == UnsignedInt16){
     dataset_id = H5Dcreate2(file_id_, "/raw_image", H5T_STD_U16LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-  } else if (dataType_ == UnsignedInt8){
-    dataset_id = H5Dcreate2(file_id_, "/raw_image", H5T_STD_U8LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-  }
+//  } else if (dataType_ == UnsignedInt8){
+//    dataset_id = H5Dcreate2(file_id_, "/raw_image", H5T_STD_U8LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+//  }
 
   // Create the data set according to the specified pattern.
   // Currently create each data type set, not the most efficient but configurator doesn't require efficiency
-  rawDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
+//  rawDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   rawDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
-  rawDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
+//  rawDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
   for (imageNo = 0; imageNo < noOfImages_; imageNo++){
     for (yIndex = 0; yIndex < imageHeight_; yIndex++){
       for (xIndex = 0; xIndex < imageWidth_; xIndex++){
         if (pattern_ == rectangle){
           if ((xIndex / repeatX_) % 2 == 0){
             if ((yIndex / repeatY_) % 2 == 0){
-              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
+//              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
               rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)maxValue_;
-              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] =  (uint8_t)maxValue_;
+//              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] =  (uint8_t)maxValue_;
             } else {
               if (xIndex % repeatX_ < 10 && yIndex % repeatY_ < 10){
-                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
                 rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
-                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
               } else {
-                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
+//                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
                 rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)minValue_;
-                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
+//                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
               }
             }
           } else {
             if ((yIndex / repeatY_) % 2 == 0){
               if (xIndex % repeatX_ < 10 && yIndex % repeatY_ < 10){
-                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
                 rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
-                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
               } else {
-                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
+//                rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
                 rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)minValue_;
-                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
+//                rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
               }
             } else {
-              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
+//              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
               rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)maxValue_;
-              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)maxValue_;
+//              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)maxValue_;
             }
           }
         } else if (pattern_ == triangle){
           double div = (double)repeatY_ / (double)repeatX_;
           if ((double)(yIndex % repeatY_) > (double)(xIndex % repeatX_) * div){
-            rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
+//            rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
             rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)maxValue_;
-            rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)maxValue_;
+//            rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)maxValue_;
           } else {
             if (xIndex % repeatX_ < 10 && yIndex % repeatY_ < 10){
-              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
               rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
-              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
             } else {
-              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
+//              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
               rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)minValue_;
-              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
+//              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
             }
           }
         } else if (pattern_ == ellipse){
@@ -568,21 +568,21 @@ void Configurator::generateRawImage()
           double x = (double)(xIndex % repeatX_)-a;
           double y = (double)(yIndex % repeatY_)-b;
           if (y*y > (1.0 - (x*x)/(a*a))*b*b){
-            rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
+//            rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)maxValue_;
             rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)maxValue_;
-            rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)maxValue_;
+//            rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)maxValue_;
           } else {
             if ((xIndex % repeatX_ < repeatX_/2 + 6) &&
                 (xIndex % repeatX_ > repeatX_/2 - 6) &&
                 (yIndex % repeatY_ < repeatY_/2 + 6) &&
                 (yIndex % repeatY_ > repeatY_/2 - 6)){
-              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
               rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
-              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
+//              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)((maxValue_ - minValue_) * imageNo / noOfImages_);
             } else {
-              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
+//              rawDataUInt32_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint32_t)minValue_;
               rawDataUInt16_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint16_t)minValue_;
-              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
+//              rawDataUInt8_[yIndex * imageWidth_ + xIndex + (imageNo * imageWidth_ * imageHeight_)] = (uint8_t)minValue_;
             }
           }
         }
@@ -591,13 +591,13 @@ void Configurator::generateRawImage()
   }
 
   // Write the dataset.
-  if (dataType_ == UnsignedInt32){
-    status = H5Dwrite(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rawDataUInt32_);
-  } else if (dataType_ == UnsignedInt16){
+//  if (dataType_ == UnsignedInt32){
+//    status = H5Dwrite(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rawDataUInt32_);
+//  } else if (dataType_ == UnsignedInt16){
     status = H5Dwrite(dataset_id, H5T_STD_U16LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rawDataUInt16_);
-  } else if (dataType_ == UnsignedInt8){
-    status = H5Dwrite(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rawDataUInt8_);
-  }
+//  } else if (dataType_ == UnsignedInt8){
+//    status = H5Dwrite(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, rawDataUInt8_);
+//  }
 
   // End access to the dataset and release resources used by it.
   status = H5Dclose(dataset_id);
@@ -672,7 +672,7 @@ void Configurator::generateScrambledImage()
   for (uint32_t index = 0; index < (imageWidth_ * imageHeight_ * noOfImages_); index++){
     resetDataUInt16_[index] = 0;
   }
-  // Create the data space, dataset and write out the thresholds 
+  // Create the data space, dataset and write out the thresholds
   gain_thresholds_dims[0] = 4;
   dataspace_gain_thresholds_id = H5Screate_simple(1, gain_thresholds_dims, NULL);
   dataset_gain_thresholds_id = H5Dcreate2(file_id_, "/gain_thresholds", H5T_STD_U32LE, dataspace_gain_thresholds_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -741,13 +741,13 @@ void Configurator::generateScrambledImage()
   dataspace_id = H5Screate_simple(3, dims, NULL);
 
   // Create the dataset.
-  if (dataType_ == UnsignedInt32){
-    dataset_id = H5Dcreate2(file_id_, "/scrambled_image", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-  } else if (dataType_ == UnsignedInt16){
+//  if (dataType_ == UnsignedInt32){
+//    dataset_id = H5Dcreate2(file_id_, "/scrambled_image", H5T_STD_U32LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+//  } else if (dataType_ == UnsignedInt16){
     dataset_id = H5Dcreate2(file_id_, "/scrambled_image", H5T_STD_U16LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-  } else if (dataType_ == UnsignedInt8){
-    dataset_id = H5Dcreate2(file_id_, "/scrambled_image", H5T_STD_U8LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-  }
+//  } else if (dataType_ == UnsignedInt8){
+//    dataset_id = H5Dcreate2(file_id_, "/scrambled_image", H5T_STD_U8LE, dataspace_id, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+//  }
 
   // Create the data space for the de-scrambling array
   descramble_dims[0] = imageHeight_ * imageWidth_;
@@ -760,13 +760,13 @@ void Configurator::generateScrambledImage()
   descrambleArray_ = (uint32_t *)malloc(imageWidth_ * imageHeight_ * sizeof(uint32_t));
 
   // Allocate the memory required for the scrambled image
-  scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
+//  scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   scrambledDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
-  scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
+//  scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
   uint32_t pixelsPerStripe = pixelsPerChipX_ * pixelsPerChipY_ * chipsPerStripeX_ * chipsPerStripeY_;
   for (uint32_t imageNo = 0; imageNo < noOfImages_; imageNo++){
     // Check for which type of scrambling we are going to carry out
-    if (scramble_ == excalibur){
+    /*if (scramble_ == excalibur){
       for (uint32_t stripe = 0; stripe < stripesPerImageX_; stripe++){
         // Scramble each stripe of data.
         if (stripe % 2 == 1){
@@ -775,7 +775,7 @@ void Configurator::generateScrambledImage()
           scrambleEvenStripe(imageNo, pixelsPerStripe, stripe, scrambledDataUInt32_+(stripe*pixelsPerStripe), scrambledDataUInt16_+(stripe*pixelsPerStripe), scrambledDataUInt8_+(stripe*pixelsPerStripe), descrambleArray_+(stripe*pixelsPerStripe));
         }
       }
-    } else if (scramble_ == percival){
+    } else if (scramble_ == percival){*/
       // We don't have a method for this yet
       for (uint32_t indexY = 0; indexY < (pixelsPerChipY_ * chipsPerStripeY_ * stripesPerImageY_); indexY++){
         for (uint32_t pixel = 0; pixel < pixelsPerChipX_; pixel++){
@@ -788,9 +788,9 @@ void Configurator::generateScrambledImage()
               if (imageNo == 0){
                 descrambleArray_[pixelDestAddress] = pixelSourceAddress;
               }
-              if (dataType_ == UnsignedInt8){
-                scrambledDataUInt8_[pixelDestAddress] = rawDataUInt8_[pixelSourceAddress];
-              } else if (dataType_ == UnsignedInt16){
+//              if (dataType_ == UnsignedInt8){
+//                scrambledDataUInt8_[pixelDestAddress] = rawDataUInt8_[pixelSourceAddress];
+//              } else if (dataType_ == UnsignedInt16){
                 scrambledDataUInt16_[pixelDestAddress] = (uint16_t)applyGains(pixelSourceAddress - (imageNo * imageWidth_ * imageHeight_),
                                                                               rawDataUInt16_[pixelSourceAddress],
                                                                               ADC_index_,
@@ -799,24 +799,24 @@ void Configurator::generateScrambledImage()
                                                                               ADC_offset_,
                                                                               stage_gains_,
                                                                               stage_offsets_);
-              } else if (dataType_ == UnsignedInt32){
-                scrambledDataUInt32_[pixelDestAddress] = rawDataUInt32_[pixelSourceAddress];
-              }
+//              } else if (dataType_ == UnsignedInt32){
+//                scrambledDataUInt32_[pixelDestAddress] = rawDataUInt32_[pixelSourceAddress];
+//              }
             }
           }
         }
       }
-    }
+//    }
   }
 
   // Write the dataset.
-  if (dataType_ == UnsignedInt32){
-    status = H5Dwrite(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt32_);
-  } else if (dataType_ == UnsignedInt16){
+//  if (dataType_ == UnsignedInt32){
+//    status = H5Dwrite(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt32_);
+//  } else if (dataType_ == UnsignedInt16){
     status = H5Dwrite(dataset_id, H5T_STD_U16LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt16_);
-  } else if (dataType_ == UnsignedInt8){
-    status = H5Dwrite(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt8_);
-  }
+//  } else if (dataType_ == UnsignedInt8){
+//    status = H5Dwrite(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt8_);
+//  }
 
   // End access to the dataset and release resources used by it.
   status = H5Dclose(dataset_id);
@@ -850,7 +850,7 @@ uint32_t Configurator::applyGains(uint32_t index,         // Unscrambled index o
     imageSize = imageWidth_ * imageHeight_;
     value = in_data;
     ADC   = ADC_index[index];
-        
+
     if ( value < gainThresholds_[0] ) gain = 0;
     else if ( value < gainThresholds_[1] ) gain = 1;
     else if ( value < gainThresholds_[2] ) gain = 2;
@@ -886,18 +886,18 @@ int Configurator::readScrambledImage()
   dbg.log(2, "Allocation", (uint32_t)(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t)));
 
   // Allocate the memory required for the scrambled image
-  scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
+//  scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   scrambledDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
-  scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
+//  scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
   dbg.log(2, "Datatype", (uint32_t)dataType_);
   // Read the dataset
-  if (dataType_ == UnsignedInt32){
-    status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt32_);
-  } else if (dataType_ == UnsignedInt16){
+//  if (dataType_ == UnsignedInt32){
+//    status = H5Dread(dataset_id, H5T_STD_U32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt32_);
+//  } else if (dataType_ == UnsignedInt16){
     status = H5Dread(dataset_id, H5T_STD_U16LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt16_);
-  } else if (dataType_ == UnsignedInt8){
-    status = H5Dread(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt8_);
-  }
+//  } else if (dataType_ == UnsignedInt8){
+//    status = H5Dread(dataset_id, H5T_STD_U8LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, scrambledDataUInt8_);
+//  }
 
   // End access to the dataset and release resources used by it.
   status = H5Dclose(dataset_id);
@@ -1231,15 +1231,15 @@ int Configurator::readMetaData()
   return 0;
 }
 
-void Configurator::scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray)
+void Configurator::scrambleOddStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, /*uint32_t *out32,*/ uint16_t *out16, /*uint8_t *out8,*/ uint32_t *descrambleArray)
 {
   PercivalDebug dbg(debug_, "Configurator::scrambleOddStripe");
 
   int gapStrip = 1;
   //int in = 0;
-  out32 += (imageNo * imageHeight_ * imageWidth_);
+//  out32 += (imageNo * imageHeight_ * imageWidth_);
   out16 += (imageNo * imageHeight_ * imageWidth_);
-  out8 += (imageNo * imageHeight_ * imageWidth_);
+//  out8 += (imageNo * imageHeight_ * imageWidth_);
   for(uint32_t block=0; block < blocksPerStripeX_; block++){
     for(uint32_t y=0; y < pixelsPerChipY_; y++){
       for(uint32_t x=0; x < pixelsPerChipX_/4; x++){
@@ -1262,12 +1262,12 @@ std::cout << "Pixel Y: " << pixelY << std::endl;
 std::cout << "Pixel Addr: " << pixelAddr << std::endl;
 pixelAddr = 0;
 }
-              *out32 = rawDataUInt32_[pixelAddr];
+//              *out32 = rawDataUInt32_[pixelAddr];
               *out16 = rawDataUInt16_[pixelAddr];
-              *out8 = rawDataUInt8_[pixelAddr];
-              out32++;
+//              *out8 = rawDataUInt8_[pixelAddr];
+//              out32++;
               out16++;
-              out8++;
+//              out8++;
               if (imageNo == 0){
                 *descrambleArray = pixelAddr;
                 descrambleArray++;
@@ -1290,15 +1290,15 @@ pixelAddr = 0;
   }
 }
 
-void Configurator::scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, uint32_t *out32, uint16_t *out16, uint8_t *out8, uint32_t *descrambleArray)
+void Configurator::scrambleEvenStripe(uint32_t imageNo, uint32_t pixelsPerStripe, uint32_t stripe, /*uint32_t *out32,*/ uint16_t *out16, /*uint8_t *out8,*/ uint32_t *descrambleArray)
 {
   PercivalDebug dbg(debug_, "Configurator::scrambleEvenStripe");
 
   int gapStrip = 1;
   //int in = 0;
-  out32 += (imageNo * imageHeight_ * imageWidth_);
+//  out32 += (imageNo * imageHeight_ * imageWidth_);
   out16 += (imageNo * imageHeight_ * imageWidth_);
-  out8 += (imageNo * imageHeight_ * imageWidth_);
+//  out8 += (imageNo * imageHeight_ * imageWidth_);
   for(uint32_t block=0; block < blocksPerStripeX_; block++){
     for(uint32_t y=0; y < pixelsPerChipY_; y++){
       for(uint32_t x=0; x < pixelsPerChipX_/4; x++){
@@ -1320,12 +1320,12 @@ std::cout << "Pixel Y: " << pixelY << std::endl;
 std::cout << "Pixel Addr: " << pixelAddr << std::endl;
 pixelAddr = 0;
 }
-              *out32 = rawDataUInt32_[pixelAddr];
+//              *out32 = rawDataUInt32_[pixelAddr];
               *out16 = rawDataUInt16_[pixelAddr];
-              *out8 = rawDataUInt8_[pixelAddr];
-              out32++;
+//              *out8 = rawDataUInt8_[pixelAddr];
+//              out32++;
               out16++;
-              out8++;
+//              out8++;
               if (imageNo == 0){
                 *descrambleArray = pixelAddr;
                 descrambleArray++;
@@ -1358,14 +1358,14 @@ void Configurator::allocateDataArrays()
   }
 
   // Allocate the memory required for the raw image
-  rawDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
+//  rawDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   rawDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
-  rawDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
+//  rawDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
   // Allocate the memory required for the scrambled image
-  scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
+//  scrambledDataUInt32_ = (uint32_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint32_t));
   scrambledDataUInt16_ = (uint16_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint16_t));
-  scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
-  
+//  scrambledDataUInt8_ = (uint8_t *)malloc(imageHeight_ * imageWidth_ * noOfImages_ * sizeof(uint8_t));
+
   arraysAllocated_ = true;
 }
 
@@ -1375,12 +1375,12 @@ void Configurator::freeDataArrays()
 
   if (arraysAllocated_){
     // Free both image arrays
-    free(rawDataUInt32_);
+//    free(rawDataUInt32_);
     free(rawDataUInt16_);
-    free(rawDataUInt8_);
-    free(scrambledDataUInt32_);
+//    free(rawDataUInt8_);
+//    free(scrambledDataUInt32_);
     free(scrambledDataUInt16_);
-    free(scrambledDataUInt8_);
+//    free(scrambledDataUInt8_);
     arraysAllocated_ = false;
   } else {
     // Attempting to free data that is not allocated
@@ -1388,7 +1388,7 @@ void Configurator::freeDataArrays()
   }
 }
 
-void Configurator::copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer)
+/*void Configurator::copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint32_t *buffer)
 {
   PercivalDebug dbg(debug_, "Configurator::copyScrambledSectionUInt32");
   uint32_t yIndex;
@@ -1402,7 +1402,7 @@ void Configurator::copyScrambledSectionUInt32(uint32_t imageNo, uint32_t topLeft
     ptr2 = scrambledDataUInt32_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
     memcpy(ptr1, ptr2, (width * sizeof(uint32_t)));
   }
-}
+}*/
 
 void Configurator::copyScrambledSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer)
 {
@@ -1420,7 +1420,7 @@ void Configurator::copyScrambledSectionUInt16(uint32_t imageNo, uint32_t topLeft
   }
 }
 
-void Configurator::copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer)
+/*void Configurator::copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint8_t *buffer)
 {
   PercivalDebug dbg(debug_, "Configurator::copyScrambledSectionUInt8");
   uint32_t yIndex;
@@ -1434,7 +1434,7 @@ void Configurator::copyScrambledSectionUInt8(uint32_t imageNo, uint32_t topLeftX
     ptr2 = scrambledDataUInt8_ + (yIndex * imageWidth_) + topLeftX + (imageNo * imageWidth_ * imageHeight_);
     memcpy(ptr1, ptr2, (width * sizeof(uint8_t)));
   }
-}
+}*/
 
 void Configurator::copyResetDataSectionUInt16(uint32_t imageNo, uint32_t topLeftX, uint32_t topLeftY, uint32_t botRightX, uint32_t botRightY, uint16_t *buffer)
 {

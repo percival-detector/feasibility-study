@@ -56,12 +56,12 @@ asynStatus asynGeneratorDriver::writeOctet(asynUser *pasynUser, const char *valu
   status = (asynStatus)callParamCallbacks(addr, addr);
 
   if (status){
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%s",
                   driverName, functionName, status, function, value);
   } else {
-    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%s\n", 
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%s\n",
               driverName, functionName, function, value);
   }
   *nActual = nChars;
@@ -309,10 +309,10 @@ void asynGeneratorDriver::report(FILE *fp, int details)
 }
 
 /** Checks whether the directory specified FilePath parameter exists.
-  * 
-  * This is a convenience function that determines the directory specified 
+  *
+  * This is a convenience function that determines the directory specified
   * FilePath parameter exists.
-  * It sets the value of FilePathExists to 0 (does not exist) or 1 (exists).  
+  * It sets the value of FilePathExists to 0 (does not exist) or 1 (exists).
   * It also adds a trailing '/' character to the path if one is not present.
   * Returns a error status if the directory does not exist.
   */
@@ -326,7 +326,7 @@ int asynGeneratorDriver::checkPath()
   int len;
   int isDir=0;
   int pathExists=0;
-    
+
   status = getStringParam(FilePath, sizeof(filePath), filePath);
   len = strlen(filePath);
   if (len == 0) return(asynSuccess);
@@ -355,7 +355,7 @@ int asynGeneratorDriver::checkPath()
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] fullFileName The constructed file name including the file path.
-  * 
+  *
   * This is a convenience function that constructs a complete file name
   * from the FilePath, FileName, FileNumber, and FileTemplate parameters.
   * If AutoIncrement is true then it increments the FileNumber after creating
@@ -368,11 +368,11 @@ int asynGeneratorDriver::createFileName(int maxChars, char *fullFileName)
   char filePath[MAX_FILENAME_LEN];
   char fileName[MAX_FILENAME_LEN];
   int len;
-    
+
   this->checkPath();
   status |= getStringParam(FilePath, sizeof(filePath), filePath);
-  status |= getStringParam(FileName, sizeof(fileName), fileName); 
-  //status |= getStringParam(FileTemplate, sizeof(fileTemplate), fileTemplate); 
+  status |= getStringParam(FileName, sizeof(fileName), fileName);
+  //status |= getStringParam(FileTemplate, sizeof(fileTemplate), fileTemplate);
   //status |= getIntegerParam(FileNumber, &fileNumber);
   //status |= getIntegerParam(AutoIncrement, &autoIncrement);
   if (status) return(status);
@@ -385,14 +385,14 @@ int asynGeneratorDriver::createFileName(int maxChars, char *fullFileName)
   //  fileNumber++;
   //  status |= setIntegerParam(FileNumber, fileNumber);
   //}
-  return(status);   
+  return(status);
 }
 
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] filePath The file path.
   * \param[out] fileName The constructed file name without file file path.
-  * 
+  *
   * This is a convenience function that constructs a file path and file name
   * from the FilePath, FileName, FileNumber, and FileTemplate parameters.
   * If AutoIncrement is true then it increments the FileNumber after creating
@@ -403,11 +403,11 @@ int asynGeneratorDriver::createFileName(int maxChars, char *filePath, char *file
   // Formats a complete file name from the components defined in NDStdDriverParams
   int status = asynSuccess;
   char name[MAX_FILENAME_LEN];
-    
+
   this->checkPath();
-  status |= getStringParam(FilePath, maxChars, filePath); 
-  status |= getStringParam(FileName, sizeof(name), fileName); 
-  return(status);   
+  status |= getStringParam(FilePath, maxChars, filePath);
+  status |= getStringParam(FileName, sizeof(name), fileName);
+  return(status);
 }
 
 void asynGeneratorDriver::freeImageBuffers()
@@ -550,7 +550,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer1_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer1_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset1_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset1_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -570,7 +570,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer2_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer2_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset2_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset2_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -590,7 +590,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer3_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer3_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset3_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset3_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -610,7 +610,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer4_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer4_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset4_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset4_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -630,7 +630,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer5_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer5_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset5_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset5_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -650,7 +650,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer6_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer6_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset6_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset6_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -670,7 +670,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer7_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer7_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset7_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset7_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -690,7 +690,7 @@ void asynGeneratorDriver::setupImageBuffers()
     buffer8_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
     configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer8_[imageIndex]);
   }
-  // Allocate the storage for the reset data and 
+  // Allocate the storage for the reset data
   reset8_ = (void **)malloc(images * sizeof(void *));
   for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
     reset8_[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
@@ -727,7 +727,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
   int remPort;               // Current value of the remote port to send to
   int errorAttribute;        // Address of attribute used for error status
   int errorMsgAttribute;     // Address of attribute used for error message
-  
+
   // Sub image coordinates
   int subTlxAttribute;       // Address of attribute used for sub image top left x
   int subTlx;                // Current value of sub image top left x
@@ -759,7 +759,7 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
   // Create the new data sender
   senderPtr = new DataSender();
-  
+
   // Setup the task post address
   postAttribute = GDPostBase + taskNumber;
   // Setup the counter address
@@ -858,36 +858,36 @@ void asynGeneratorDriver::posting_task(int taskNumber)
 
       sIWidth = subBrx - subTlx + 1;
       sIHeight = subBry - subTly + 1;
-      // Allocate the storage for the image and 
+      // Allocate the storage for the image and
       // load the sub image into the buffer
       images = configPtr->getNoOfImages();
       buffer = (void **)malloc(images * sizeof(void *));
       for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-        if (imageDataType == UInt8){
-          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint8_t));
-          configPtr->copyScrambledSectionUInt8(imageIndex, subTlx, subTly, subBrx, subBry, (uint8_t *)buffer[imageIndex]);
-        } else if (imageDataType == UInt16){
+//        if (imageDataType == UInt8){
+//          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint8_t));
+//          configPtr->copyScrambledSectionUInt8(imageIndex, subTlx, subTly, subBrx, subBry, (uint8_t *)buffer[imageIndex]);
+//        } else if (imageDataType == UInt16){
           buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
           configPtr->copyScrambledSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)buffer[imageIndex]);
-        } else if (imageDataType == UInt32){
-          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint32_t));
-          configPtr->copyScrambledSectionUInt32(imageIndex, subTlx, subTly, subBrx, subBry, (uint32_t *)buffer[imageIndex]);
-        }
+//        } else if (imageDataType == UInt32){
+//          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint32_t));
+//          configPtr->copyScrambledSectionUInt32(imageIndex, subTlx, subTly, subBrx, subBry, (uint32_t *)buffer[imageIndex]);
+//        }
       }
-      // Allocate the storage for the reset data and 
+      // Allocate the storage for the reset data and
       // load the sub image into the buffer
       resetBuffer = (void **)malloc(images * sizeof(void *));
       for (uint32_t imageIndex = 0; imageIndex < images; imageIndex++){
-        if (imageDataType == UInt8){
+//        if (imageDataType == UInt8){
 //          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint8_t));
 //          configPtr->copyScrambledSectionUInt8(imageIndex, subTlx, subTly, subBrx, subBry, (uint8_t *)buffer[imageIndex]);
-        } else if (imageDataType == UInt16){
+//        } else if (imageDataType == UInt16){
           resetBuffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint16_t));
           configPtr->copyResetDataSectionUInt16(imageIndex, subTlx, subTly, subBrx, subBry, (uint16_t *)resetBuffer[imageIndex]);
-        } else if (imageDataType == UInt32){
+//        } else if (imageDataType == UInt32){
 //          buffer[imageIndex] = malloc(sIWidth * sIHeight * sizeof(uint32_t));
 //          configPtr->copyScrambledSectionUInt32(imageIndex, subTlx, subTly, subBrx, subBry, (uint32_t *)buffer[imageIndex]);
-        }
+//        }
       }
 
       // Setup the debug level before doing any socket work
@@ -932,7 +932,7 @@ printf("Wait time: %lf\n", wait);
 //    this->unlock();
     if (posting){
 
-      if (mode == 0){
+      if (mode == 0){ //spatial mode?
         counter++;
         // Calculate buffer size in bytes
         uint32_t bufSize = ((uint32_t)pow(2.0, (double)imageDataType)) * sIWidth * sIHeight;
@@ -1251,7 +1251,7 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
   createParam(GDRemPortChannel7String,    asynParamInt32,           &GDRemPortChannel7);
   createParam(GDRemPortChannel8String,    asynParamInt32,           &GDRemPortChannel8);
   GDRemPortBase = GDRemPortChannel1;
-  
+
   // Channel error parameters
   createParam(GDErrorChannel1String,      asynParamInt32,           &GDErrorChannel1);
   createParam(GDErrorChannel2String,      asynParamInt32,           &GDErrorChannel2);
@@ -1289,8 +1289,8 @@ asynGeneratorDriver::asynGeneratorDriver(const char *portName,
 
   /* Here we set the values of read-only parameters and of read/write parameters that cannot
    * or should not get their values from the database.  Note that values set here will override
-   * those in the database for output records because if asyn device support reads a value from 
-   * the driver with no error during initialization then it sets the output record to that value.  
+   * those in the database for output records because if asyn device support reads a value from
+   * the driver with no error during initialization then it sets the output record to that value.
    * If a value is not set here then the read request will return an error (uninitialized).
    * Values set here will be overridden by values from save/restore if they exist. */
   setStringParam (PortNameSelf,         portName);

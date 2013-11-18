@@ -59,15 +59,16 @@ void PercivalPacketChecker::init(uint32_t parcels, uint32_t packets)
 
 void PercivalPacketChecker::report()
 {
-  std::cout << "Current Mask, then Test Mask---------------------" << std::endl;
+  std::cout << "Current Mask---------------------" << std::endl;
   for (uint32_t index = 0; index < (parcels_ * packets_); index++){
     std::cout << (int)checks_[index];
   }
   std::cout << std::endl;
-  for (uint32_t index = 0; index < (parcels_ * packets_); index++){
-    std::cout << (int)test_[index];
-  }
-  std::cout << std::endl;
+  //for (uint32_t index = 0; index < (parcels_ * packets_); index++){
+  //  std::cout << (int)test_[index];
+  //}
+  //std::cout << std::endl;
+  std::cout << "Packet count: " << counter_ << std::endl;
 
 }
 
@@ -103,6 +104,11 @@ int PercivalPacketChecker::check(uint32_t parcel, uint32_t packet)
 {
   uint32_t index = (parcel * packets_) + packet;
   return checks_[index];
+}
+
+int PercivalPacketChecker::getCount()
+{
+  return counter_;
 }
 
 int PercivalPacketChecker::resetAll()

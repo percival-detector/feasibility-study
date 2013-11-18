@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <signal.h>
 
 #define MODE_SPATIAL  0
 #define MODE_TEMPORAL 1
@@ -57,6 +58,12 @@ PercivalServer::PercivalServer()
 
   // Init missing frame stats
   resetFramesMissing_ = 0;
+
+  // Start the frame processing thread
+  workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalFrame, this)));
+  // Start the reset frame processing thread
+  resetThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalResetFrame, this)));
+
 }
 
 PercivalServer::~PercivalServer()
@@ -125,6 +132,48 @@ void PercivalServer::setCpuGroup(int cpuGroup)
   PercivalDebug dbg(debug_, "PercivalServer::setCpuGroup");
   dbg.log(1, "CPU group", (uint32_t)cpuGroup);
   cpuGroup_ = cpuGroup;
+
+  // NOW PIN THE PROCESS THREAD
+  if (cpuGroup_ != -1){
+    cpu_set_t cpuset;
+    pthread_t thread = workerThread_->native_handle();
+    //Set thread priority to maximum
+    pthread_attr_t thAttr;
+    int policy = 0;
+    int max_prio_for_policy = 0;
+    pthread_attr_init(&thAttr);
+    pthread_attr_getschedpolicy(&thAttr, &policy);
+    max_prio_for_policy = sched_get_priority_max(policy);
+    pthread_setschedprio(thread, max_prio_for_policy);
+    pthread_attr_destroy(&thAttr);
+    // Set affinity mask to be group*3
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpuGroup_*3, &cpuset);
+    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+  }
+  // END OF THREAD PINNING
+
+  // NOW PIN THE RESET THREAD
+  if (cpuGroup_ != -1){
+    cpu_set_t cpuset;
+    pthread_t thread = resetThread_->native_handle();
+    //Set thread priority to maximum
+    pthread_attr_t thAttr;
+    int policy = 0;
+    int max_prio_for_policy = 0;
+    pthread_attr_init(&thAttr);
+    pthread_attr_getschedpolicy(&thAttr, &policy);
+    max_prio_for_policy = sched_get_priority_max(policy);
+    pthread_setschedprio(thread, max_prio_for_policy);
+    pthread_attr_destroy(&thAttr);
+    // Set affinity mask to be group*3+1
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpuGroup_*3+1, &cpuset);
+    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+  }
+  // END OF THREAD PINNING
+
+
 }
 
 int PercivalServer::setupFullFrame(uint32_t width,              // Width of full frame in pixels
@@ -684,14 +733,34 @@ void PercivalServer::temporalResetPacketReceived(PercivalBuffer *buffer, uint32_
       // We have a new frame before we expected it.  Notify immediately
       // And record the error as missing packets
       resetErrorStats_.missingPackets++;
+
+      // Before attempting to process this frame print the timing stats
+receiver_->report();
+      std::cout << "Missing Reset packet" << std::endl;
+      std::cout << "Current Frame " << resetFrameNumber_  << std::endl;
+      std::cout << "New Frame     " << frameNumber  << std::endl;
+      std::cout << "Packet        " << packetNumber << std::endl;
+      std::cout << "Last reset process time: " << resetProcessTime_ << " usec" << std::endl;
+      std::cout << "Reset Report:" << std::endl;
+      resetChecker_->report();
+      std::cout << "End Of Reset Report" << std::endl;
+
       dbg.log(1, "Missing Reset Packet");
       dbg.log(1, "Current Frame", resetFrameNumber_);
       dbg.log(1, "New Frame    ", frameNumber);
       dbg.log(1, "Packet       ", packetNumber);
 
+      raise(SIGINT);
+
       resetChecker_->resetAll();
+      {  // LOCK
+        boost::unique_lock<boost::mutex> lock(resetAccess_);
+        processResetFrameNumber_ = resetFrameNumber_;
+      }  // UNLOCK
       // Reset Frame is ready (although missing packets)
-      workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalResetFrame, this, resetFrameNumber_)));
+      // Notify the processing thread
+      resetCondition_.notify_one();
+      //workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalResetFrame, this, resetFrameNumber_)));
       //resetFrameReady_ = resetFrameNumber_;
       // Now set the new frame number
       resetFrameNumber_ = frameNumber;
@@ -723,105 +792,95 @@ void PercivalServer::temporalResetPacketReceived(PercivalBuffer *buffer, uint32_
 
   if (resetChecker_->checkAll()){
     dbg.log(2, "Notify reset frame complete");
+    std::cout << "Reset Packet count: " << resetChecker_->getCount() << std::endl;
     resetChecker_->resetAll();
-    workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalResetFrame, this, resetFrameNumber_)));
+    {  // LOCK
+      boost::unique_lock<boost::mutex> lock(resetAccess_);
+      processResetFrameNumber_ = resetFrameNumber_;
+    }  // UNLOCK
+    // Notify the processing thread
+    resetCondition_.notify_one();
+
+    //workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalResetFrame, this, resetFrameNumber_)));
     // Set the flag to expect a new frame
     expectNewResetFrame_ = 1;
   }
 }
 
-void PercivalServer::processTemporalResetFrame(uint16_t frameNumber)
+//void PercivalServer::processTemporalResetFrame(uint16_t frameNumber)
+void PercivalServer::processTemporalResetFrame()
 {
-  // Timing statistics
-  boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
-  long startTime = now.time_of_day().total_microseconds();
-
-  // THREAD PINNING
-  if (cpuGroup_ != -1){
-    cpu_set_t cpuset;
-    pthread_t thread = pthread_self();
-    //Set thread priority to maximum
-    pthread_attr_t thAttr;
-    int policy = 0;
-    int max_prio_for_policy = 0;
-    pthread_attr_init(&thAttr);
-    pthread_attr_getschedpolicy(&thAttr, &policy);
-    max_prio_for_policy = sched_get_priority_max(policy);
-    pthread_setschedprio(thread, max_prio_for_policy);
-    pthread_attr_destroy(&thAttr);
-    // Set affinity mask to be group*3+1
-    CPU_ZERO(&cpuset);
-    CPU_SET(cpuGroup_*3+1, &cpuset);
-    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-  }
-  // END OF THREAD PINNING
-
   PercivalDebug dbg(debug_, "PercivalServer::processTemporalResetFrame");
-  PercivalBuffer *resetFrameBuffers[8];
-  // First record each pointer to the subframe buffer
-  for (int subFrame = 0; subFrame < 8; subFrame++){
-    resetFrameBuffers[subFrame] = resetSubFrames_[subFrame];
-    // Allocate the next buffer for each subFrame
-    resetSubFrames_[subFrame] = subFrameMap_[subFrame]->allocate();
-  }
 
-// LOCK
-  {
-    boost::lock_guard<boost::mutex> lock(resetAccess_);
+  while (1){
 
-    // Descramble each subframe
-    for (int subFrame = 0; subFrame < 8; subFrame++){
-      PercivalSubFrame *sfPtr = subFrameMap_[subFrame];
-      // Unscramble
+    // LOCK
+    {
+      boost::unique_lock<boost::mutex> lock(resetAccess_);
 
-      int index;     // Index of point in subframe
-      int xp;        // X prime, x coordinate within subframe
-      int yp;        // Y prime, y coordinate within subframe
-      int ip;        // Index prime, index of point within full frame
-      int sfWidth;
-      int x1 = sfPtr->getTopLeftX();
-      int x2 = sfPtr->getBottomRightX();
-      int y1 = sfPtr->getTopLeftY();
-      uint16_t *destFrame = (uint16_t *)resetFrame1_->raw();
-      uint16_t *sourceFrame = (uint16_t *)resetFrameBuffers[subFrame]->raw();
-      int noOfPx = (int)sfPtr->getNumberOfPixels();
-      int noOfRows = noOfPx / (x2 - x1 + 1);
-      for (index = 0; index < noOfRows; index++ ){
-        yp = index; // Y point within subframe
-        xp = 0;     // X point within subframe
-        ip = (width_ * (yp + y1)) + x1 + xp;
-        sfWidth = x2-x1+1;
-        // OK, here we are just reconstructing the original raw frame
-        memcpy(destFrame+ip, sourceFrame+(index*sfWidth), (sfWidth*sizeof(uint16_t)));
-        //destFrame[ip] = sourceFrame[index];
+      // Wait for the signal
+      resetCondition_.wait(lock);
+
+      // Timing statistics
+      boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+      long startTime = now.time_of_day().total_microseconds();
+
+      PercivalBuffer *resetFrameBuffers[8];
+      // First record each pointer to the subframe buffer
+      for (int subFrame = 0; subFrame < 8; subFrame++){
+        resetFrameBuffers[subFrame] = resetSubFrames_[subFrame];
+        // Allocate the next buffer for each subFrame
+        resetSubFrames_[subFrame] = subFrameMap_[subFrame]->allocate();
       }
-/*
-      for (index = 0; index < noOfPx; index++ ){
-        yp = index / (x2 - x1 + 1);            // Y point within subframe
-        xp = index - (yp * (x2 - x1 + 1));     // X point within subframe
-        ip = (width_ * (yp + y1)) + x1 + xp;
-        // OK, here we are just reconstructing the original raw frame
-        destFrame[ip] = sourceFrame[index];
-      }
-*/
-      // Now free up the buffer
-      subFrameMap_[subFrame]->release(resetFrameBuffers[subFrame]);
-    }
-    // Reset Frame is ready
-    resetFrameReady_ = resetFrameNumber_;
-    // Add the frame to the map ready for when it is required
-    resetFrameMap_[resetFrameNumber_] = resetFrame1_;
-    // Allocate the new reset buffer
-    if (resetFrameMap_.size() > 1){
-      dbg.log(1, "Reset Frame Size", (uint32_t)resetFrameMap_.size());
-    }
-    resetFrame1_ = callback_->allocateBuffer();
-  } // UNLOCK
 
-  now = boost::posix_time::microsec_clock::local_time();
-  long duration = now.time_of_day().total_microseconds() - startTime;
-  resetProcessTime_ = (uint32_t)duration;
-//  std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
+      // Descramble each subframe
+      for (int subFrame = 0; subFrame < 8; subFrame++){
+        PercivalSubFrame *sfPtr = subFrameMap_[subFrame];
+        // Unscramble
+
+        int index;     // Index of point in subframe
+        int xp;        // X prime, x coordinate within subframe
+        int yp;        // Y prime, y coordinate within subframe
+        int ip;        // Index prime, index of point within full frame
+        int sfWidth;
+        int x1 = sfPtr->getTopLeftX();
+        int x2 = sfPtr->getBottomRightX();
+        int y1 = sfPtr->getTopLeftY();
+        uint16_t *destFrame = (uint16_t *)resetFrame1_->raw();
+        uint16_t *sourceFrame = (uint16_t *)resetFrameBuffers[subFrame]->raw();
+        int noOfPx = (int)sfPtr->getNumberOfPixels();
+        int noOfRows = noOfPx / (x2 - x1 + 1);
+        for (index = 0; index < noOfRows; index++ ){
+          yp = index; // Y point within subframe
+          xp = 0;     // X point within subframe
+          ip = (width_ * (yp + y1)) + x1 + xp;
+          sfWidth = x2-x1+1;
+          // OK, here we are just reconstructing the original raw frame
+          memcpy(destFrame+ip, sourceFrame+(index*sfWidth), (sfWidth*sizeof(uint16_t)));
+          //destFrame[ip] = sourceFrame[index];
+        }
+        // Now free up the buffer
+        subFrameMap_[subFrame]->release(resetFrameBuffers[subFrame]);
+      }
+      // Reset Frame is ready
+      resetFrameReady_ = processResetFrameNumber_;
+      // Add the frame to the map ready for when it is required
+      resetFrameMap_[processResetFrameNumber_] = resetFrame1_;
+      // Allocate the new reset buffer
+      if (resetFrameMap_.size() > 1){
+        dbg.log(1, "Reset Frame Size", (uint32_t)resetFrameMap_.size());
+      }
+      resetFrame1_ = callback_->allocateBuffer();
+
+      now = boost::posix_time::microsec_clock::local_time();
+      long duration = now.time_of_day().total_microseconds() - startTime;
+      resetProcessTime_ = (uint32_t)duration;
+      //std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
+
+    } // UNLOCK
+
+  } // END OF PROCESS LOOP
+
 }
 
 void PercivalServer::temporalFramePacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType)
@@ -852,6 +911,20 @@ startTime_ = now.time_of_day().total_microseconds();
       // We have a new frame before we expected it.  Notify immediately
       // And record the error as missing packets
       errorStats_.missingPackets++;
+
+      // Before attempting to process this frame print the timing stats
+receiver_->report();
+      std::cout << "Missing packet" << std::endl;
+      std::cout << "Current Frame " << frameNumber_  << std::endl;
+      std::cout << "New Frame     " << frameNumber  << std::endl;
+      std::cout << "Packet        " << packetNumber << std::endl;
+      std::cout << "Last process time: " << processTime_ << " usec" << std::endl;
+      std::cout << "Frame Report:" << std::endl;
+      checker_->report();
+      std::cout << "End Of Frame Report" << std::endl;
+
+      raise(SIGINT);
+
 //      dbg.log(1, "Missing packet");
 //      dbg.log(1, "Current Frame", frameNumber_);
 //      dbg.log(1, "New Frame    ", frameNumber);
@@ -859,15 +932,18 @@ startTime_ = now.time_of_day().total_microseconds();
 
       checker_->resetAll();
       {  // LOCK
-        boost::lock_guard<boost::mutex> lock(frameAccess_);
+        boost::unique_lock<boost::mutex> lock(frameAccess_);
         // First record each pointer to the subframe buffer
         for (int subFrame = 0; subFrame < 8; subFrame++){
           subFrameBuffers_[subFrame] = subFrames_[subFrame];
           // Allocate the next buffer for each subFrame
           subFrames_[subFrame] = subFrameMap_[subFrame]->allocate();
         }
+        processFrameNumber_ = frameNumber_;
       }  // UNLOCK
-      workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalFrame, this, frameNumber_, subFrameBuffers_)));
+      //workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalFrame, this, frameNumber_, subFrameBuffers_)));
+      // Notify the processing thread
+      frameCondition_.notify_one();
       // Now set the new frame number
       frameNumber_ = frameNumber;
     }
@@ -899,32 +975,39 @@ startTime_ = now.time_of_day().total_microseconds();
 boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
 long duration = now.time_of_day().total_microseconds() - startTime_;
 serviceTime_ = (uint32_t)duration;
-//std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
+if (duration > 199999){
+  std::cout << "Bad service time: " << duration << " usec" << std::endl;
+}
 //    dbg.log(1, "Notify temporal frame complete");
+    std::cout << "Frame Packet count: " << checker_->getCount() << std::endl;
     checker_->resetAll();
     {  // LOCK
-      boost::lock_guard<boost::mutex> lock(frameAccess_);
+      boost::unique_lock<boost::mutex> lock(frameAccess_);
       // First record each pointer to the subframe buffer
       for (int subFrame = 0; subFrame < 8; subFrame++){
         subFrameBuffers_[subFrame] = subFrames_[subFrame];
         // Allocate the next buffer for each subFrame
         subFrames_[subFrame] = subFrameMap_[subFrame]->allocate();
       }
+      processFrameNumber_ = frameNumber_;
     }  // UNLOCK
-    workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalFrame, this, frameNumber_, subFrameBuffers_)));
+    //workerThread_ = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&PercivalServer::processTemporalFrame, this, frameNumber_, subFrameBuffers_)));
+    // Notify the processing thread
+    frameCondition_.notify_one();
     // Set the flag to expect a new frame
     expectNewFrame_ = 1;
   }
 
 }
 
-void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *subFrameBuffers[8])
+//void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *subFrameBuffers[8])
+void PercivalServer::processTemporalFrame()
 {
-  boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
-  long startTime = now.time_of_day().total_microseconds();
+  PercivalDebug dbg(debug_, "PercivalServer::processFrame");
 
   // THREAD PINNING
-  if (cpuGroup_ != -1){
+  // THREAD NOW PINNED IN CPU GROUP ROUTINE
+  /*if (cpuGroup_ != -1){
     cpu_set_t cpuset;
     pthread_t thread = pthread_self();
     //Set thread priority to maximum
@@ -940,69 +1023,81 @@ void PercivalServer::processTemporalFrame(uint16_t frameNumber, PercivalBuffer *
     CPU_ZERO(&cpuset);
     CPU_SET(cpuGroup_*3, &cpuset);
     pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-  }
+  }*/ 
   // END OF THREAD PINNING
 
-  PercivalDebug dbg(debug_, "PercivalServer::processFrame");
-//  PercivalBuffer *subFrameBuffers[8];
-  PercivalBuffer *resetBuffer = NULL;
-  // Check we have the reset frame ready.  If not then we are
-  // lost, log the error for now
-  if (resetFrameMap_.count(frameNumber)){
-    // Set the local pointer to the buffer and remove from the map
-    resetBuffer = resetFrameMap_[frameNumber];
-    resetFrameMap_.erase(frameNumber);
-  } else {
-    dbg.log(1, "ERROR. Couldn't find reset frame", frameNumber);
-    resetFramesMissing_++;
+  // Loop forever
+  while (1){
 
-    // If we've lost a reset frame we should think about deleting any hanging around in here
-  }
-  // Descramble each subframe
+    // LOCK
+    {
+      boost::unique_lock<boost::mutex> lock(frameAccess_);
 
-// LOCK
-  {
-    boost::lock_guard<boost::mutex> lock(frameAccess_);
+      // Wait for the signal
+      frameCondition_.wait(lock);
 
-    for (int subFrame = 0; subFrame < 8; subFrame++){
-      PercivalSubFrame *sfPtr = subFrameMap_[subFrame];
-      // Unscramble
-      if (resetBuffer != NULL){
-        unscrambleToFull(sfPtr->getNumberOfPixels(),
-                         (uint16_t *)(subFrameBuffers[subFrame]->raw()),
-                         (uint16_t *)resetBuffer->raw(),
-                         (float *)fullFrame_->raw(),
-                         sfPtr->getTopLeftX(),
-                         sfPtr->getBottomRightX(),
-                         sfPtr->getTopLeftY());
+      // Record the frame processing time start
+      boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+      long startTime = now.time_of_day().total_microseconds();
+
+      //  PercivalBuffer *subFrameBuffers[8];
+      PercivalBuffer *resetBuffer = NULL;
+      // Check we have the reset frame ready.  If not then we are
+      // lost, log the error for now
+      if (resetFrameMap_.count(processFrameNumber_)){
+        // Set the local pointer to the buffer and remove from the map
+        resetBuffer = resetFrameMap_[processFrameNumber_];
+        resetFrameMap_.erase(processFrameNumber_);
       } else {
-        unscrambleToFull(sfPtr->getNumberOfPixels(),
-                         (uint16_t *)(subFrameBuffers[subFrame]->raw()),
-                         NULL,
-                         (float *)fullFrame_->raw(),
-                         sfPtr->getTopLeftX(),
-                         sfPtr->getBottomRightX(),
-                         sfPtr->getTopLeftY());
+        dbg.log(1, "ERROR. Couldn't find reset frame", processFrameNumber_);
+        resetFramesMissing_++;
+        // If we've lost a reset frame we should think about deleting any hanging around in here
       }
-      // Now free up the buffer
-      dbg.log(2, "Sub Frame Release", (uint32_t)subFrame);
-      subFrameMap_[subFrame]->release(subFrameBuffers[subFrame]);
-    }
+      // Descramble each subframe
 
-    if (callback_){
-      // Free the reset buffer at this point
-      if (resetBuffer != NULL){
-        callback_->releaseBuffer(resetBuffer);
+      for (int subFrame = 0; subFrame < 8; subFrame++){
+        PercivalSubFrame *sfPtr = subFrameMap_[subFrame];
+        // Unscramble
+        if (resetBuffer != NULL){
+          unscrambleToFull(sfPtr->getNumberOfPixels(),
+                           (uint16_t *)(subFrameBuffers_[subFrame]->raw()),
+                           (uint16_t *)resetBuffer->raw(),
+                           (float *)fullFrame_->raw(),
+                           sfPtr->getTopLeftX(),
+                           sfPtr->getBottomRightX(),
+                           sfPtr->getTopLeftY());
+        } else {
+          unscrambleToFull(sfPtr->getNumberOfPixels(),
+                           (uint16_t *)(subFrameBuffers_[subFrame]->raw()),
+                           NULL,
+                           (float *)fullFrame_->raw(),
+                           sfPtr->getTopLeftX(),
+                           sfPtr->getBottomRightX(),
+                           sfPtr->getTopLeftY());
+        }
+        // Now free up the buffer
+        dbg.log(2, "Sub Frame Release", (uint32_t)subFrame);
+        subFrameMap_[subFrame]->release(subFrameBuffers_[subFrame]);
       }
-      // Notify frame complete
-      callback_->imageReceived(fullFrame_, 0, frameNumber, 0, 0, 0);
-      fullFrame_ = callback_->allocateBuffer();
-    }
-  } // UNLOCK
-  now = boost::posix_time::microsec_clock::local_time();
-  long duration = now.time_of_day().total_microseconds() - startTime;
-  processTime_ = (uint32_t)duration;
-  //std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
+
+      if (callback_){
+        // Free the reset buffer at this point
+        if (resetBuffer != NULL){
+          callback_->releaseBuffer(resetBuffer);
+        }
+        // Notify frame complete
+        callback_->imageReceived(fullFrame_, 0, processFrameNumber_, 0, 0, 0);
+        fullFrame_ = callback_->allocateBuffer();
+      }
+      now = boost::posix_time::microsec_clock::local_time();
+      long duration = now.time_of_day().total_microseconds() - startTime;
+      processTime_ = (uint32_t)duration;
+      //std::cout << "[DEBUG] duration: " << duration << " usec" << std::endl;
+
+    } // UNLOCK
+
+  } // END OF PROCESS LOOP
+
 }
 
 void PercivalServer::timeout()

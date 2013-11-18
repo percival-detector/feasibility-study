@@ -28,6 +28,7 @@ DataReceiver::DataReceiver()
     frameHeaderLength_(sizeof(PacketHeader)),
     cpu_(-1)
 {
+  counter_ = new PercivalPacketCounter(8500);
 }
 
 DataReceiver::~DataReceiver()
@@ -266,6 +267,15 @@ void DataReceiver::handleReceive(const boost::system::error_code& errorCode, std
   uint8_t  subFrameNumber = packetHeader_.subFrameNumber;
   uint16_t packetNumber   = packetHeader_.packetNumber;
   uint8_t  packetType     = packetHeader_.packetType;
+
+//  counter_->addPacket(boost::posix_time::microsec_clock::local_time(),
+  counter_->addPacket(
+                      //bytesReceived,
+                      frameNumber,
+                      subFrameNumber,
+                      packetNumber,
+                      packetType);
+
 //  dbg.log(1, "Thread ID", boost::this_thread::get_id());
 //  dbg.log(1, "Bytes received", (uint32_t)bytesReceived);
 
@@ -288,6 +298,9 @@ if (errorCode.value() == boost::system::errc::success){
     // Initialize the buffer
 //    memset(currentBuffer_->raw(), 0, packetBytes_);
   }
+} else {
+  // Print out the error if there was one
+  std::cout << "Receive error: " << errorCode.value() << std::endl; 
 }
 
   if (acquiring_){
@@ -343,4 +356,8 @@ void DataReceiver::watchdogHandler(void)
   }
 }
 
+void DataReceiver::report()
+{
+  counter_->report();
+}
 

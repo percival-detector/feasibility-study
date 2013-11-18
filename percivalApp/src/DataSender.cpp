@@ -17,6 +17,7 @@ DataSender::DataSender()
     errorMessage_(""),
     running_(false)
 {
+  counter_ = new PercivalPacketCounter(16000);
 }
 
 DataSender::~DataSender()
@@ -157,12 +158,12 @@ int DataSender::sendImage(void     *buffer,
     }
     packetNumber++;
 
-//    if (packetNumber % 8 == 0){
+    if (packetNumber % 50 == 0){
 //      usleep(50);
 //      usleep(25);
       //boost::this_thread::sleep_for(boost::chrono::microseconds(1));
-//      boost::this_thread::sleep(boost::posix_time::microseconds(1));
-//    }
+      boost::this_thread::sleep(boost::posix_time::milliseconds(1));
+    }
 //std::cout << "SubFrame [" << frame << "] Bytes sent [" << bytesSent << "] Packet number [" << packetNumber << "]" << std::endl;
   }
   // Final check that we sent the correct number of bytes
@@ -194,6 +195,13 @@ void DataSender::send(uint16_t frameNumber,
   //dbg.log(2, "Packet Type", (uint32_t)reset);
   //dbg.log(2, "Payload Size", payloadSize);
 
+  counter_->addPacket(
+                      //bytesReceived,
+                      frameNumber,
+                      subFrameNumber,
+                      packetNumber,
+                      reset);
+
   //uint16_t *test;
   //test = (uint16_t *)payload;
 
@@ -208,9 +216,12 @@ void DataSender::send(uint16_t frameNumber,
       sndBufs[1] = boost::asio::buffer((void*)&packetHeader_, sizeof(packetHeader_));
     }
 
-    sendSocket_->send_to(sndBufs, remoteEndpoint_);
-
+    std::size_t bytes = sendSocket_->send_to(sndBufs, remoteEndpoint_);
+    if (bytes != 8006 && bytes != 2310){
+      std::cout << "Bytes Sent: " << bytes << std::endl;
+    }
   } catch(boost::exception& e){
+    std::cout << "[ERROR] send failed: " << diagnostic_information(e) << std::endl;
     // HERE we need to return an error so that the acquisition can be stopped gracefully
     //dbg.log(0, e);
     //dbg.log(0, "Frame Number", frameNumber);

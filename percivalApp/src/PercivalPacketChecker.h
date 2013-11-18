@@ -31,6 +31,7 @@ class PercivalPacketChecker
     int set(uint32_t parcel, uint32_t packet);
     int reset(uint32_t parcel, uint32_t packet);
     int check(uint32_t parcel, uint32_t packet);
+    int getCount();
 
     int resetAll();
     int checkAll();

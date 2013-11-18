@@ -20,6 +20,7 @@
 #include <time.h>
 
 #include "PercivalDataType.h"
+#include "PercivalPacketCounter.h"
 
 class DataSender
 {
@@ -91,6 +92,7 @@ class DataSender
 	//void handleReceive(const boost::system::error_code& errorCode, std::size_t bytesReceived);
 	//void simulateReceive(BufferInfo aBuffer);
 	//void watchdogHandler(void);
+    PercivalPacketCounter             *counter_;
 
 };
 

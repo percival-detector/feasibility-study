@@ -124,12 +124,13 @@ class PercivalServer : public IPercivalCallback
 
     void temporalResetPacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
 
-    void processTemporalResetFrame(uint16_t frameNumber);
+    //void processTemporalResetFrame(uint16_t frameNumber);
+    void processTemporalResetFrame();
 
     void temporalFramePacketReceived(PercivalBuffer *buffer, uint32_t bytes, uint16_t frameNumber, uint8_t subFrameNumber, uint16_t packetNumber, uint8_t packetType);
 
-    void processTemporalFrame(uint16_t frameNumber, PercivalBuffer *subFrameBuffers[8]);
-    //void processTemporalFrame(uint16_t frameNumber);
+    //void processTemporalFrame(uint16_t frameNumber, PercivalBuffer *subFrameBuffers[8]);
+    void processTemporalFrame();
 
     virtual void timeout();
 
@@ -155,19 +156,21 @@ class PercivalServer : public IPercivalCallback
 
   private:
 
-    uint32_t       debug_;           // Debug level
-    uint32_t       watchdogTimeout_; // Watchdog timeout (ms)
-    std::string    errorMessage_;    // Error message string
-    bool           acquiring_;       // Are we acquiring
-    boost::mutex   access_;          // Mutex for packet locking
-    boost::mutex   frameAccess_;     // Mutex for frame process locking
-    boost::mutex   resetAccess_;     // Mutex for reset process locking
-    uint32_t       descramble_;      // Should we (0 = reconstruct raw, 1 = full descramble, 2 = reorder only)
-    std::string    host_;            // Host IP address to bind to
-    unsigned short port_;            // Port to bind to
-    uint32_t       packetSize_;      // Size of UDP packet payload in bytes
-    uint32_t       mode_;            // Current mode, (0 = spatial, 1 = temporal)
-    uint32_t       currentSubFrame_; // When in spatial mode this informs which subframe to use
+    uint32_t                   debug_;           // Debug level
+    uint32_t                   watchdogTimeout_; // Watchdog timeout (ms)
+    std::string                errorMessage_;    // Error message string
+    bool                       acquiring_;       // Are we acquiring
+    boost::mutex               access_;          // Mutex for packet locking
+    boost::mutex               frameAccess_;     // Mutex for frame process locking
+    boost::condition_variable  frameCondition_;  // Condition to wait for data ready in processing thread
+    boost::condition_variable  resetCondition_;  // Condition to wait for data ready in reset processing thread
+    boost::mutex               resetAccess_;     // Mutex for reset process locking
+    uint32_t                   descramble_;      // Should we (0 = reconstruct raw, 1 = full descramble, 2 = reorder only)
+    std::string                host_;            // Host IP address to bind to
+    unsigned short             port_;            // Port to bind to
+    uint32_t                   packetSize_;      // Size of UDP packet payload in bytes
+    uint32_t                   mode_;            // Current mode, (0 = spatial, 1 = temporal)
+    uint32_t                   currentSubFrame_; // When in spatial mode this informs which subframe to use
 
 long startTime_;
 
@@ -189,21 +192,24 @@ long startTime_;
     float        *stageGains_;       // Gain to apply for each of the output stages (in scrambled order)
     float        *stageOffsets_;     // Offsets to apply for each of the output stages (in scrambled order)
     boost::shared_ptr<boost::thread>  workerThread_;
+    boost::shared_ptr<boost::thread>  resetThread_;
 
     int                                 cpuGroup_;            // Used to pin 3 threads to cpuGroup_*3, +1, +2
 
     std::map<int, PercivalSubFrame *>   subFrameMap_;         // Map to contain sub-image objects
 
-    uint32_t                            serverMask_;          // bitmask of servers setup
-    uint32_t                            serverReady_;         // bitmask of servers that have notified of frames
-    uint32_t                            frameNumber_;         // Current frame number
-    uint32_t                            expectNewFrame_;      // Set when we have completed a frame
-    uint32_t                            resetFrameNumber_;    // Current reset frame number
-    uint32_t                            expectNewResetFrame_; // Set when we have completed a reset frame
-    uint32_t                            resetFrameReady_;     // Set when we have completed a reset frame
-    uint32_t                            processTime_;         // Process time in microseconds for a frame
-    uint32_t                            serviceTime_;         // Service time in microseconds for a frame
-    uint32_t                            resetProcessTime_;    // Process time in microseconds for a reset frame
+    uint32_t                            serverMask_;              // bitmask of servers setup
+    uint32_t                            serverReady_;             // bitmask of servers that have notified of frames
+    uint32_t                            frameNumber_;             // Current frame number
+    uint32_t                            processFrameNumber_;      // Used by the frame processing thread
+    uint32_t                            expectNewFrame_;          // Set when we have completed a frame
+    uint32_t                            resetFrameNumber_;        // Current reset frame number
+    uint32_t                            processResetFrameNumber_; // Used by the reset frame processing thread
+    uint32_t                            expectNewResetFrame_;     // Set when we have completed a reset frame
+    uint32_t                            resetFrameReady_;         // Set when we have completed a reset frame
+    uint32_t                            processTime_;             // Process time in microseconds for a frame
+    uint32_t                            serviceTime_;             // Service time in microseconds for a frame
+    uint32_t                            resetProcessTime_;        // Process time in microseconds for a reset frame
 
     IPercivalCallback                   *callback_;           // Callback interface
     PercivalBuffer                      *fullFrame_;          // Full frame buffer

@@ -23,6 +23,7 @@
 
 #include "PercivalDataType.h"
 #include "PercivalPacketChecker.h"
+#include "PercivalPacketCounter.h"
 
 /*
 typedef struct bufferInfo_t
@@ -78,6 +79,8 @@ class DataReceiver
 
     int stopAcquisition();
 
+    void report();
+
   private:
 
     void handleReceive(const boost::system::error_code& errorCode, std::size_t bytesReceived);
@@ -117,6 +120,9 @@ class DataReceiver
 //    uint32_t                          expectNewFrameNumber_;      // If this is 1 we expect a new frame number in the next packet
 //    ErrorStats                        errorStats_;                // Structure for storing the error statistics
     int                               cpu_;                         // Pin receiver thread to a CPU core
+
+    PercivalPacketCounter             *counter_;
+
 };
 
 

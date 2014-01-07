@@ -74,7 +74,8 @@ class Worker(object):
         self.caPut('PercBotRightYSF8',   4095)
         self.caPut('PercSubFrameID8',    7)
 
-        self.caPut('Descramble',          'Descramble')
+        self.caPut('Descramble',         'Descramble')
+        self.caPut('ChannelMode',        'Temporal')
 
         self.caPut('PercFilePath',       '/dls_sw/work/R3.14.12.3/support/percival', True)
         self.caPut('PercFileName',       '4096x4096.hdf5', True)

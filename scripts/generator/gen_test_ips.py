@@ -153,6 +153,8 @@ class Worker(object):
 #        self.caPut('GDRemAddrChannel8',   '192.168.138.77')
         self.caPut('GDRemAddrChannel8',   '192.168.139.77')
 
+        self.caPut('GDMode',              'Temporal')
+
         self.caPut('FilePath',            '/dls_sw/work/R3.14.12.3/support/percival', True)
         self.caPut('FileName',            '4096x4096.hdf5', True)
         self.caPut('RawFileRead',         1)

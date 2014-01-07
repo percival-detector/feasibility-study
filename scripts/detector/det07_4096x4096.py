@@ -17,7 +17,8 @@ class Worker(object):
     def doConfig(self):
         '''Setup the Detector.'''
 #        self.caPut('PercAddr',           '172.23.138.77')
-        self.caPut('PercAddr',           '192.168.138.77')
+#        self.caPut('PercAddr',           '192.168.138.77')
+        self.caPut('PercAddr',           '192.168.139.77')
         self.caPut('PercPort',           9882)
 #        self.caPut('PercPacketBytes',    8966)
         self.caPut('PercPacketBytes',    8000)

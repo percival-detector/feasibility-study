@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#export EPICS_CA_ADDR_LIST="172.23.244.34 cs04r-sc-serv-77 cs04r-sc-serv-78"
+#export EPICS_CA_AUTO_ADDR_LIST=NO
+
+if [[ $1 -ge 1 ]] ; then
+./scripts/generator/gen01_4096x4096.py
+fi
+if [[ $1 -ge 2 ]] ; then
+./scripts/generator/gen02_4096x4096.py
+fi
+if [[ $1 -ge 3 ]] ; then
+./scripts/generator/gen03_4096x4096.py
+fi
+if [[ $1 -ge 4 ]] ; then
+./scripts/generator/gen04_4096x4096.py
+fi
+if [[ $1 -ge 5 ]] ; then
+./scripts/generator/gen05_4096x4096.py
+fi
+if [[ $1 -ge 6 ]] ; then
+./scripts/generator/gen06_4096x4096.py
+fi
+if [[ $1 -ge 7 ]] ; then
+./scripts/generator/gen07_4096x4096.py
+fi
+if [[ $1 -ge 8 ]] ; then
+./scripts/generator/gen08_4096x4096.py
+fi
+

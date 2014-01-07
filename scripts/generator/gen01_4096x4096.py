@@ -31,7 +31,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel1',   7274)
 #        self.caPut('GDRemAddrChannel1',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel1',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel1',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel1',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel2',  512)
         self.caPut('GDTopLeftYChannel2',  0)
@@ -47,7 +47,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel2',   7274)
 #        self.caPut('GDRemAddrChannel2',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel2',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel2',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel2',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel3',  1024)
         self.caPut('GDTopLeftYChannel3',  0)
@@ -63,7 +63,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel3',   7275)
 #        self.caPut('GDRemAddrChannel3',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel3',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel3',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel3',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel4',  1536)
         self.caPut('GDTopLeftYChannel4',  0)
@@ -79,7 +79,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel4',   7276)
 #        self.caPut('GDRemAddrChannel4',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel4',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel4',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel4',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel5',  2048)
         self.caPut('GDTopLeftYChannel5',  0)
@@ -95,7 +95,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel5',   7277)
 #        self.caPut('GDRemAddrChannel5',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel5',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel5',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel5',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel6',  2560)
         self.caPut('GDTopLeftYChannel6',  0)
@@ -111,7 +111,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel6',   7278)
 #        self.caPut('GDRemAddrChannel6',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel6',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel6',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel6',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel7',  3072)
         self.caPut('GDTopLeftYChannel7',  0)
@@ -127,7 +127,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel7',   7279)
 #        self.caPut('GDRemAddrChannel7',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel7',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel7',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel7',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel8',  3584)
         self.caPut('GDTopLeftYChannel8',  0)
@@ -143,7 +143,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel8',   7280)
 #        self.caPut('GDRemAddrChannel8',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel8',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel8',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel8',   '192.168.139.77')
 
         self.caPut('GDMode',              'Temporal')
 

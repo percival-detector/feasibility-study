@@ -30,7 +30,7 @@ class Worker(object):
         self.caPut('GDLocPortChannel1',   7280)
 #        self.caPut('GDRemAddrChannel1',   'cs04r-sc-serv-77')
 #        self.caPut('GDRemAddrChannel1',   '192.168.138.77')
-        self.caPut('GDLocAddrChannel1',   '192.168.139.77')
+        self.caPut('GDRemAddrChannel1',   '192.168.139.77')
 
         self.caPut('GDTopLeftXChannel2',  512)
         self.caPut('GDTopLeftYChannel2',  0)

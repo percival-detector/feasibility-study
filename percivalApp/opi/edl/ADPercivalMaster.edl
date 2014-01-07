@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 546
-y 357
+x 551
+y 379
 w 1218
 h 644
 font "arial-bold-r-12.0"
@@ -59,7 +59,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 160
 w 180
@@ -79,7 +79,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 5
 w 150
@@ -118,7 +118,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 180
 w 180
@@ -176,7 +176,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 120
 w 180
@@ -215,7 +215,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 140
 w 180
@@ -254,7 +254,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 240
 w 180
@@ -293,7 +293,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 260
 w 180
@@ -332,7 +332,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 200
 w 180
@@ -371,7 +371,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 220
 w 180
@@ -410,7 +410,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 310
 w 180
@@ -448,7 +448,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 10
 y 555
@@ -529,7 +529,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 45
 w 180
@@ -549,7 +549,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 70
 w 180
@@ -569,7 +569,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 90
 w 180
@@ -589,7 +589,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 245
 y 20
 w 42
@@ -839,7 +839,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 370
 y 20
 w 41
@@ -859,7 +859,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 230
 y 575
@@ -883,7 +883,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 355
 y 575
@@ -907,7 +907,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 265
 y 575
@@ -931,7 +931,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 390
 y 575
@@ -1265,7 +1265,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 495
 y 20
 w 42
@@ -1285,7 +1285,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 480
 y 575
@@ -1309,7 +1309,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 515
 y 575
@@ -1603,7 +1603,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 620
 y 20
 w 41
@@ -1623,7 +1623,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 605
 y 575
@@ -1647,7 +1647,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 640
 y 575
@@ -1941,7 +1941,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 745
 y 20
 w 42
@@ -2191,7 +2191,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 870
 y 20
 w 42
@@ -2211,7 +2211,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 730
 y 575
@@ -2235,7 +2235,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 855
 y 575
@@ -2259,7 +2259,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 765
 y 575
@@ -2283,7 +2283,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 890
 y 575
@@ -2617,7 +2617,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 995
 y 20
 w 43
@@ -2637,7 +2637,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 980
 y 575
@@ -2661,7 +2661,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 1015
 y 575
@@ -2955,7 +2955,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 1120
 y 20
 w 42
@@ -2975,7 +2975,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 1105
 y 575
@@ -2999,7 +2999,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 1140
 y 575
@@ -3064,7 +3064,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 280
 w 180
@@ -3236,7 +3236,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 330
 w 180
@@ -3408,7 +3408,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 350
 w 180
@@ -3579,7 +3579,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 240
 y 600
@@ -3593,7 +3593,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector01/bin/linux-x86_64/stpercivalDetector01-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector01/bin/linux-x86_64/stpercivalDetector01-gui"
 }
 endObjectProperties
 
@@ -3601,7 +3601,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 365
 y 600
@@ -3615,7 +3615,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector02/bin/linux-x86_64/stpercivalDetector02-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector02/bin/linux-x86_64/stpercivalDetector02-gui"
 }
 endObjectProperties
 
@@ -3623,7 +3623,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 490
 y 600
@@ -3637,7 +3637,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector03/bin/linux-x86_64/stpercivalDetector03-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector03/bin/linux-x86_64/stpercivalDetector03-gui"
 }
 endObjectProperties
 
@@ -3645,7 +3645,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 615
 y 600
@@ -3659,7 +3659,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector04/bin/linux-x86_64/stpercivalDetector04-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector04/bin/linux-x86_64/stpercivalDetector04-gui"
 }
 endObjectProperties
 
@@ -3667,7 +3667,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 740
 y 600
@@ -3681,7 +3681,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector05/bin/linux-x86_64/stpercivalDetector05-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector05/bin/linux-x86_64/stpercivalDetector05-gui"
 }
 endObjectProperties
 
@@ -3689,7 +3689,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 865
 y 600
@@ -3703,7 +3703,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector06/bin/linux-x86_64/stpercivalDetector06-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector06/bin/linux-x86_64/stpercivalDetector06-gui"
 }
 endObjectProperties
 
@@ -3711,7 +3711,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 990
 y 600
@@ -3725,7 +3725,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector07/bin/linux-x86_64/stpercivalDetector07-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector07/bin/linux-x86_64/stpercivalDetector07-gui"
 }
 endObjectProperties
 
@@ -3733,7 +3733,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 1115
 y 600
@@ -3747,7 +3747,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "../iocs/percivalDetector08/bin/linux-x86_64/stpercivalDetector08-gui"
+  0 "/dls_sw/R3.14.12.3/support/percival/iocs/percivalDetector08/bin/linux-x86_64/stpercivalDetector08-gui"
 }
 endObjectProperties
 
@@ -3813,7 +3813,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 420
 w 180
@@ -3833,7 +3833,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 400
 w 180
@@ -3853,7 +3853,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 380
 w 180

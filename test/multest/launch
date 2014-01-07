@@ -1,0 +1,2 @@
+export LD_LIBRARY_PATH=/dls_sw/prod/tools/RHEL6-x86_64/boost/1-48-0/prefix/lib
+./multest

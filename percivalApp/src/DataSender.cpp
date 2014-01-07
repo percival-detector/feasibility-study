@@ -164,9 +164,6 @@ int DataSender::sendImage(void     *buffer,
     packetNumber++;
 
     if (packetNumber % 50 == 0){
-//      usleep(50);
-//      usleep(25);
-      //boost::this_thread::sleep_for(boost::chrono::microseconds(1));
       boost::this_thread::sleep(boost::posix_time::milliseconds(1));
     }
 //std::cout << "SubFrame [" << frame << "] Bytes sent [" << bytesSent << "] Packet number [" << packetNumber << "]" << std::endl;

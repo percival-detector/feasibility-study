@@ -792,7 +792,7 @@ receiver_->report();
 
   if (resetChecker_->checkAll()){
     dbg.log(2, "Notify reset frame complete");
-    std::cout << "Reset Packet count: " << resetChecker_->getCount() << std::endl;
+    //std::cout << "Reset Packet count: " << resetChecker_->getCount() << std::endl;
     resetChecker_->resetAll();
     {  // LOCK
       boost::unique_lock<boost::mutex> lock(resetAccess_);
@@ -979,7 +979,7 @@ if (duration > 199999){
   std::cout << "Bad service time: " << duration << " usec" << std::endl;
 }
 //    dbg.log(1, "Notify temporal frame complete");
-    std::cout << "Frame Packet count: " << checker_->getCount() << std::endl;
+    //std::cout << "Frame Packet count: " << checker_->getCount() << std::endl;
     checker_->resetAll();
     {  // LOCK
       boost::unique_lock<boost::mutex> lock(frameAccess_);
@@ -1023,7 +1023,7 @@ void PercivalServer::processTemporalFrame()
     CPU_ZERO(&cpuset);
     CPU_SET(cpuGroup_*3, &cpuset);
     pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-  }*/ 
+  }*/
   // END OF THREAD PINNING
 
   // Loop forever

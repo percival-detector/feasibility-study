@@ -8,6 +8,7 @@
 #include "DataReceiver.h"
 #include "PercivalDebug.h"
 
+#include <sched.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,6 +30,7 @@ DataReceiver::DataReceiver()
     cpu_(-1)
 {
   counter_ = new PercivalPacketCounter(8500);
+  this->setSchedFifo();
 }
 
 DataReceiver::~DataReceiver()
@@ -300,7 +302,7 @@ if (errorCode.value() == boost::system::errc::success){
   }
 } else {
   // Print out the error if there was one
-  std::cout << "Receive error: " << errorCode.value() << std::endl; 
+  std::cout << "Receive error: " << errorCode.value() << std::endl;
 }
 
   if (acquiring_){
@@ -356,7 +358,20 @@ void DataReceiver::watchdogHandler(void)
   }
 }
 
-void DataReceiver::report()
+void DataReceiver::setSchedFifo(void)
+{
+    struct sched_param param;
+    int status;
+    printf("Setting scheduling policy to SCHED_FIFO\n");
+    param.__sched_priority = 10;
+    status = sched_setscheduler(0 /*this process*/, SCHED_FIFO, &param);
+    if(status != 0)
+    {
+        perror("sched_setscheduler");
+    }
+}
+
+void DataReceiver::report(void)
 {
   counter_->report();
 }

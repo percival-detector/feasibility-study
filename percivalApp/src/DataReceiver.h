@@ -85,6 +85,7 @@ class DataReceiver
 
     void handleReceive(const boost::system::error_code& errorCode, std::size_t bytesReceived);
     void watchdogHandler(void);
+    void setSchedFifo(void);
 
     IPercivalCallback                 *callback_;                 // Callback interface
     DataSenderHeaderPosition          headerPosition_;            // Header data position (start or end of packet)
@@ -103,8 +104,8 @@ class DataReceiver
 	  uint32_t                          recvWatchdogCounter_;
     boost::shared_ptr<boost::thread>  receiverThread_;
     boost::shared_ptr<boost::thread>  workerThread_;
-    uint32_t                          frameHeaderLength_;         // 
-//    uint32_t                          framePayloadBytesReceived_; // 
+    uint32_t                          frameHeaderLength_;         //
+//    uint32_t                          framePayloadBytesReceived_; //
 //    uint32_t                          frameTotalBytesReceived_;   // Running
 //    uint32_t                          subFramesReceived_;         // Number of sub-frames received
 //    uint32_t                          subFramePacketsReceived_;   // Number of sub-frame packets received

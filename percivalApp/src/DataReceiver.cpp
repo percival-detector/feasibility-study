@@ -360,15 +360,15 @@ void DataReceiver::watchdogHandler(void)
 
 void DataReceiver::setSchedFifo(void)
 {
-    struct sched_param param;
-    int status;
-    printf("Setting scheduling policy to SCHED_FIFO\n");
-    param.__sched_priority = 10;
-    status = sched_setscheduler(0 /*this process*/, SCHED_FIFO, &param);
-    if(status != 0)
-    {
-        perror("sched_setscheduler");
-    }
+    //struct sched_param param;
+    //int status;
+    //printf("Setting scheduling policy to SCHED_FIFO\n");
+    //param.__sched_priority = 10;
+    //status = sched_setscheduler(0 /*this process*/, SCHED_FIFO, &param);
+    //if(status != 0)
+    //{
+    //    perror("sched_setscheduler");
+    //}
 }
 
 void DataReceiver::report(void)

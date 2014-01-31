@@ -17,14 +17,19 @@ class PercivalBuffer
 {
   public:
     PercivalBuffer(uint32_t bufferSize);
+    PercivalBuffer(uint32_t bufferSize, void *bufferPtr);
     ~PercivalBuffer();
     void *raw();
     uint32_t size();
+    void setUserPtr(void *userPtr);
+    void *getUserPtr();
 
   private:
 
     void *buffer_;
     uint32_t bufferSize_;
+    void *userPtr_;
+    bool allocated_;
 
 };
 

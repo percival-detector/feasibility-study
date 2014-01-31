@@ -408,22 +408,25 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
 
   this->lock();
   // If we have an old buffer then its time to release
-  if (pBuffer_ != NULL){
+  //if (pBuffer_ != NULL){
       // Release the Percival buffer back into the pool
-      buffers_->free(pBuffer_);
-  }
-  pBuffer_ = buffer;
+  //    buffers_->free(pBuffer_);
+  //}
+  //pBuffer_ = buffer;
 
   // Allocate an NDArray
-  if (pImage_){
-    pImage_->release();
-  }
+  //if (pImage_){
+  //  pImage_->release();
+  //}
   // Allocate the buffer using the read image.
   //if (configPtr_->getDataType() == UnsignedInt8){
   //  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt8, buffer->size(), buffer->raw());
   //}else if (configPtr_->getDataType() == UnsignedInt16){
 
-  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDFloat32, buffer->size(), buffer->raw());
+  //pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDFloat32, buffer->size(), buffer->raw());
+
+  // Retrieve the NDArray from the PercivalBuffer
+  pImage_ = (NDArray *)(buffer->getUserPtr());
 
   //} else if (configPtr_->getDataType() == UnsignedInt32){
   //  pImage_ = this->pNDArrayPool->alloc(ndims_, dims_, NDUInt32, buffer->size(), buffer->raw());
@@ -477,6 +480,9 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
       doCallbacksGenericPointer(pImage_, NDArrayData, 0);
       this->lock();
     }
+
+    // Now release the NDArray reference
+    pImage_->release();
   }
 
 
@@ -494,11 +500,11 @@ void ADPercivalDriver::imageReceived(PercivalBuffer *buffer, uint32_t bytes, uin
     sPtr_->releaseAllSubFrames();
 
     // Release old buffers
-    if (pBuffer_ != NULL){
+    //if (pBuffer_ != NULL){
       // Release the Percival buffer back into the pool
-      buffers_->free(pBuffer_);
-    }
-    pBuffer_ = NULL;
+    //  buffers_->free(pBuffer_);
+    //}
+    //pBuffer_ = NULL;
 
     // Set the status
     //setIntegerParam(PercReceiveChannel1, 0);
@@ -527,9 +533,17 @@ void ADPercivalDriver::timeout()
 
 PercivalBuffer *ADPercivalDriver::allocateBuffer()
 {
+  NDArray *pArray;
   const char *functionName = "allocateBuffer";
   //PercivalBuffer *buffer = buffers_->allocateClean();
-  PercivalBuffer *buffer = buffers_->allocate();
+  //PercivalBuffer *buffer = buffers_->allocate();
+
+  // Allocate a new NDArray from the pool
+  pArray = this->pNDArrayPool->alloc(ndims_, dims_, NDFloat32, 0, NULL);
+  // Wrap the array inside a Percival buffer
+  PercivalBuffer *buffer = new PercivalBuffer(pArray->dataSize, pArray->pData);
+  buffer->setUserPtr((void *)pArray);
+
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s:%s: allocated buffer address: %ld\n",
               driverName, functionName, (long int)buffer);
@@ -538,7 +552,10 @@ PercivalBuffer *ADPercivalDriver::allocateBuffer()
 
 void ADPercivalDriver::releaseBuffer(PercivalBuffer *buffer)
 {
-  buffers_->free(buffer);
+  NDArray *pArray = (NDArray *)(buffer->getUserPtr());
+  pArray->release();
+
+  //buffers_->free(buffer);
 }
 
 /** Called when asyn clients call pasynOctet->write().
@@ -702,6 +719,14 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
           }
           setIntegerParam(PercReceive, 1);
 
+          // Preallocate 20 NDArrays/PercivalBuffers
+          PercivalBuffer *arrays[20];
+          for (int index = 0; index < 20; index++){
+            arrays[index] = this->allocateBuffer();
+          }
+          for (int index = 0; index < 20; index++){
+            this->releaseBuffer(arrays[index]);
+          }
           // Zero the image counter
           setIntegerParam(ADNumImagesCounter, 0);
           // Tell the server to start the acquisition
@@ -792,11 +817,11 @@ asynStatus ADPercivalDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
       // Release all of the subframes
       sPtr_->releaseAllSubFrames();
       // Release old buffers
-      if (pBuffer_ != NULL){
+      //if (pBuffer_ != NULL){
         // Release the Percival buffer back into the pool
-        buffers_->free(pBuffer_);
-      }
-      pBuffer_ = NULL;
+      //  buffers_->free(pBuffer_);
+      //}
+      //pBuffer_ = NULL;
       // Set the status
       setIntegerParam(PercReceive, 0);
       setIntegerParam(ADStatus, ADStatusIdle);
@@ -1173,23 +1198,25 @@ int ADPercivalDriver::createFileName(int maxChars, char *filePath, char *fileNam
 
 
 // Configuration command
-extern "C" int ADPercivalDriverConfigure(const char *portName)
+extern "C" int ADPercivalDriverConfigure(const char *portName, int maxBuffers, int maxMemory)
 {
     new ADPercivalDriver(portName,
-                         0,
-                         1,
+                         maxBuffers,
+                         maxMemory,
                          0,
                          1024288000);
     return(asynSuccess);
 }
 
 /* EPICS iocsh shell commands */
-static const iocshArg initArg0 = { "portName",iocshArgString};
-static const iocshArg * const initArgs[] = {&initArg0};
-static const iocshFuncDef initFuncDef = {"PercivalInit",1,initArgs};
+static const iocshArg initArg0 = { "portName",  iocshArgString};
+static const iocshArg initArg1 = { "maxBuffers",iocshArgInt};
+static const iocshArg initArg2 = { "maxMemory", iocshArgInt};
+static const iocshArg * const initArgs[] = {&initArg0, &initArg1, &initArg2};
+static const iocshFuncDef initFuncDef = {"PercivalInit",3,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-  ADPercivalDriverConfigure(args[0].sval);
+  ADPercivalDriverConfigure(args[0].sval, args[1].ival, args[2].ival);
 }
 
 extern "C" void ADPercivalDriverRegister(void)

@@ -14,11 +14,21 @@ PercivalBuffer::PercivalBuffer(uint32_t bufferSize)
 {
   buffer_ = malloc(bufferSize);
   bufferSize_ = bufferSize;
+  allocated_ = true;
+}
+
+PercivalBuffer::PercivalBuffer(uint32_t bufferSize, void *bufferPtr)
+{
+  buffer_ = bufferPtr;
+  bufferSize_ = bufferSize;
+  allocated_ = false;
 }
 
 PercivalBuffer::~PercivalBuffer()
 {
-  free(buffer_);
+  if (allocated_){
+    free(buffer_);
+  }
 }
 
 void *PercivalBuffer::raw()
@@ -30,3 +40,14 @@ uint32_t PercivalBuffer::size()
 {
   return bufferSize_;
 }
+
+void PercivalBuffer::setUserPtr(void *userPtr)
+{
+  userPtr_ = userPtr;
+}
+
+void *PercivalBuffer::getUserPtr()
+{
+  return userPtr_;
+}
+

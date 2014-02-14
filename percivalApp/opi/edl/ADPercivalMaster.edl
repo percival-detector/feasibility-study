@@ -3747,7 +3747,7 @@ font "arial-bold-r-12.0"
 buttonLabel "Details"
 numCmds 1
 command {
-  0 "/dls_sw/R3.14.12.3/support/percival/iocs/percivalDetector08/bin/linux-x86_64/stpercivalDetector08-gui"
+  0 "/dls_sw/work/R3.14.12.3/support/percival/iocs/percivalDetector08/bin/linux-x86_64/stpercivalDetector08-gui"
 }
 endObjectProperties
 

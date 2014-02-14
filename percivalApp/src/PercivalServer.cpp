@@ -1005,27 +1005,6 @@ void PercivalServer::processTemporalFrame()
 {
   PercivalDebug dbg(debug_, "PercivalServer::processFrame");
 
-  // THREAD PINNING
-  // THREAD NOW PINNED IN CPU GROUP ROUTINE
-  /*if (cpuGroup_ != -1){
-    cpu_set_t cpuset;
-    pthread_t thread = pthread_self();
-    //Set thread priority to maximum
-    pthread_attr_t thAttr;
-    int policy = 0;
-    int max_prio_for_policy = 0;
-    pthread_attr_init(&thAttr);
-    pthread_attr_getschedpolicy(&thAttr, &policy);
-    max_prio_for_policy = sched_get_priority_max(policy);
-    pthread_setschedprio(thread, max_prio_for_policy);
-    pthread_attr_destroy(&thAttr);
-    // Set affinity mask to be group*3
-    CPU_ZERO(&cpuset);
-    CPU_SET(cpuGroup_*3, &cpuset);
-    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-  }*/
-  // END OF THREAD PINNING
-
   // Loop forever
   while (1){
 

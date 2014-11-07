@@ -305,7 +305,17 @@ void doProcessor(int port)
         }
         else if(aPacket.packetNumber > nextPacketNumber)
         {
+        	time_t curtime;
+        	struct tm *loctime;
         	missingPacketNumberCount++;
+
+        	curtime = time(NULL);
+        	loctime = localtime(&curtime);
+        	printf("%02d:%02d:%02d packet loss: got %ld exp %ld delta %ld count %ld\n",
+        			loctime->tm_hour, loctime->tm_min, loctime->tm_sec,
+        			aPacket.packetNumber, nextPacketNumber,
+        			aPacket.packetNumber - nextPacketNumber, missingPacketNumberCount);
+        	packetsToNextStats = 0;
         	nextPacketNumber = aPacket.packetNumber;
         }
         else if(aPacket.packetNumber < nextPacketNumber)
@@ -319,7 +329,7 @@ void doProcessor(int port)
         }
         nextPacketNumber++;
         totalPacketCount++;
-        packetsToNextStats--;
+        // packetsToNextStats--;
 
         // Time to print stats?
         if(packetsToNextStats <= 0)

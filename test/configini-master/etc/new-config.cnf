@@ -1,0 +1,23 @@
+
+[SECT1]
+b=2
+c=3
+d=4
+e=5
+isModified=yes
+
+[SECT2]
+bb=22
+cc=33
+
+[OWNER]
+name=Taner YILMAZ
+title=Software Engineer
+
+[database]
+server=127.0.0.1
+port=5555
+
+[owner]
+country=Turkey
+

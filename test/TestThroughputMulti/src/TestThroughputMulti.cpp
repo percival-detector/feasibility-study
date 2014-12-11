@@ -147,6 +147,16 @@ void TestThroughputMulti::parseConfigFile(const string& configFileName )
 	pt::ptree pt;
 	pt::ini_parser::read_ini(configFileName, pt);
 
+	// Parse parameters from global section - these can be overridden on a node by node
+	// basis in the node section below
+	const int unsetGlobalReportInterval = -1;
+	int globalReportInterval = pt.get("global.reportInterval", unsetGlobalReportInterval);
+	if (globalReportInterval != unsetGlobalReportInterval)
+	{
+		LOG4CXX_DEBUG(mLogger, "Global reporting interval set to " << globalReportInterval);
+		mNodeConfig.reportInterval = globalReportInterval;
+	}
+
 	// Build the node section name for all parameters
 	ostringstream nodeSectionStrm;
 	nodeSectionStrm << "node" << mNode << ".";
@@ -538,6 +548,11 @@ void TestThroughputMulti::runReceiver(void)
 			else
 			{
 				goodPacketCount++;
+			}
+			// Report on first packet so there is some feedback if reporting is heavily suppressed
+			if (totalPacketCount == 0)
+			{
+				LOG4CXX_INFO(mLogger, "First packet detected, receiving data");
 			}
         }
         nextPacketNumber++;

@@ -45,6 +45,7 @@ namespace pt = boost::property_tree;
 struct packet_t
 {
 	long frameNumber;
+	long subframeNumber;
 	long packetNumber;
 	char payload[PAYLOAD_SIZE];
 };
@@ -200,11 +201,13 @@ void TestThroughputMulti::parseConfigFile(const string& configFileName )
 		mNodeConfig.txPort       = pt.get(nodeSection + "txPort",       mNodeConfig.txPort);
 		mNodeConfig.txBlockSize  = pt.get(nodeSection + "txBlockSize",  mNodeConfig.txBlockSize);
 		mNodeConfig.txBlockPause = pt.get(nodeSection + "txBlockPause", mNodeConfig.txBlockPause);
+		mNodeConfig.txSubFrame   = pt.get(nodeSection + "txSubFrame",   mNodeConfig.txSubFrame);
 		mNodeConfig.txNumDests   = pt.get(nodeSection + "txNumDests",   mNodeConfig.txNumDests);
 
 		LOG4CXX_DEBUG(mLogger, "TX port set to " << mNodeConfig.txPort);
 		LOG4CXX_DEBUG(mLogger, "TX block size set to " << mNodeConfig.txBlockSize);
 		LOG4CXX_DEBUG(mLogger, "TX block pause set to " << mNodeConfig.txBlockPause);
+		LOG4CXX_DEBUG(mLogger, "TX subframe set to " << mNodeConfig.txSubFrame);
 		LOG4CXX_DEBUG(mLogger, "TX number of destinations set to " << mNodeConfig.txNumDests);
 
 		for (int dest = 0; dest < mNodeConfig.txNumDests; dest++)
@@ -326,6 +329,7 @@ void TestThroughputMulti::runGenerator(void)
 	memset(aPacket.payload, 0x55, PAYLOAD_SIZE);
 	aPacket.frameNumber  = 0;
 	aPacket.packetNumber = 0;
+	aPacket.subframeNumber = mNodeConfig.txSubFrame;
 
 	// Open a socket for the transmission
 	int handle = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -484,8 +488,13 @@ void TestThroughputMulti::runReceiver(void)
     }
 
     // Initialise tracking information
-    long lastFrameNumber = -1;
-    long nextPacketNumber = 0;
+    long lastFrameNumber[TX_MAX_DESTS];
+    long nextPacketNumber[TX_MAX_DESTS];
+    for (int txSrc = 0; txSrc < TX_MAX_DESTS; txSrc++)
+    {
+    	lastFrameNumber[txSrc] = -1;
+    	nextPacketNumber[txSrc] = 0;
+    }
     long rxFailCount = 0;
     long packetWrongSizeCount = 0;
     long lossEventCount = 0;
@@ -520,29 +529,36 @@ void TestThroughputMulti::runReceiver(void)
         }
         else
         {
-        	if (aPacket.frameNumber != lastFrameNumber)
-        	{
-        		lastFrameNumber = aPacket.frameNumber;
-        		nextPacketNumber = aPacket.packetNumber;
-        	}
-			if (aPacket.packetNumber > nextPacketNumber)
+        	// Range check subframe number
+        	long subframe = aPacket.subframeNumber;
+        	if ((subframe < 0) || (subframe >= TX_MAX_DESTS))
 			{
-				long delta = aPacket.packetNumber - nextPacketNumber;
+        		LOG4CXX_ERROR(mLogger, "Illegal subframe number " << subframe << " detected");
+        		subframe = TX_MAX_DESTS;
+			}
+        	if (aPacket.frameNumber != lastFrameNumber[subframe])
+        	{
+        		lastFrameNumber[subframe] = aPacket.frameNumber;
+        		nextPacketNumber[subframe] = aPacket.packetNumber;
+        	}
+			if (aPacket.packetNumber > nextPacketNumber[subframe])
+			{
+				long delta = aPacket.packetNumber - nextPacketNumber[subframe];
 				lostPacketCount += delta;
 				lossEventCount++;
 
 				LOG4CXX_WARN(mLogger, "Packet loss detected: got packet num " << aPacket.packetNumber
-						<< " expected num " << nextPacketNumber
+						<< " expected num " << nextPacketNumber[subframe]
 						<< " delta " << delta
 						<< " loss events " << lossEventCount
 						<< " total loss count " << lostPacketCount);
 
-				nextPacketNumber = aPacket.packetNumber;
+				nextPacketNumber[subframe] = aPacket.packetNumber;
 			}
-			else if (aPacket.packetNumber < nextPacketNumber)
+			else if (aPacket.packetNumber < nextPacketNumber[subframe])
 			{
 				latePacketNumberCount++;
-				nextPacketNumber = aPacket.packetNumber;
+				nextPacketNumber[subframe] = aPacket.packetNumber;
 			}
 			else
 			{
@@ -553,8 +569,8 @@ void TestThroughputMulti::runReceiver(void)
 			{
 				LOG4CXX_INFO(mLogger, "First packet detected, receiving data");
 			}
+	        nextPacketNumber[subframe]++;
         }
-        nextPacketNumber++;
         totalPacketCount++;
 
         if (mNodeConfig.reportInterval)

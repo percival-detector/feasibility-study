@@ -32,6 +32,7 @@ public:
 		this->txBlockSize = 8192;
 		this->txBlockPause = 0;
 		this->txNumDests = 1;
+		this->txSubFrame = 0;
 
 		for (int i = 0; i < TX_MAX_DESTS; i++)
 		{
@@ -47,6 +48,7 @@ public:
 	int      txPort;
 	int      txBlockSize;
 	int      txBlockPause;
+	int		 txSubFrame;
 	int      txNumDests;
 	string   txDestAddr[TX_MAX_DESTS];
 	int      txDestPort[TX_MAX_DESTS];

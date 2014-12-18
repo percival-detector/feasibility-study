@@ -537,7 +537,6 @@ void TestThroughputMulti::runReceiver(void)
 						<< " loss events " << lossEventCount
 						<< " total loss count " << lostPacketCount);
 
-				packetsToNextStats = 0;
 				nextPacketNumber = aPacket.packetNumber;
 			}
 			else if (aPacket.packetNumber < nextPacketNumber)

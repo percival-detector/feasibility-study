@@ -198,13 +198,14 @@ void TestThroughputMulti::parseConfigFile(const string& configFileName )
 
 	case NodeConfig::tx_mode:
 
-		mNodeConfig.txPort       = pt.get(nodeSection + "txPort",       mNodeConfig.txPort);
+		mNodeConfig.txSrcAddr    = pt.get(nodeSection + "txSrcAddr",    mNodeConfig.txSrcAddr);
+		mNodeConfig.txSrcPort    = pt.get(nodeSection + "txSrcPort",    mNodeConfig.txSrcPort);
 		mNodeConfig.txBlockSize  = pt.get(nodeSection + "txBlockSize",  mNodeConfig.txBlockSize);
 		mNodeConfig.txBlockPause = pt.get(nodeSection + "txBlockPause", mNodeConfig.txBlockPause);
 		mNodeConfig.txSubFrame   = pt.get(nodeSection + "txSubFrame",   mNodeConfig.txSubFrame);
 		mNodeConfig.txNumDests   = pt.get(nodeSection + "txNumDests",   mNodeConfig.txNumDests);
 
-		LOG4CXX_DEBUG(mLogger, "TX port set to " << mNodeConfig.txPort);
+		LOG4CXX_DEBUG(mLogger, "TX port set to " << mNodeConfig.txSrcPort);
 		LOG4CXX_DEBUG(mLogger, "TX block size set to " << mNodeConfig.txBlockSize);
 		LOG4CXX_DEBUG(mLogger, "TX block pause set to " << mNodeConfig.txBlockPause);
 		LOG4CXX_DEBUG(mLogger, "TX subframe set to " << mNodeConfig.txSubFrame);
@@ -344,8 +345,13 @@ void TestThroughputMulti::runGenerator(void)
 	memset(&sockSrc, 0, sizeof(sockSrc));
 
     sockSrc.sin_family = AF_INET;
-    sockSrc.sin_port = htons(mNodeConfig.txPort);
-    sockSrc.sin_addr.s_addr = htonl(INADDR_ANY);
+    sockSrc.sin_port = htons(mNodeConfig.txSrcPort);
+    //sockSrc.sin_addr.s_addr = htonl(INADDR_ANY);
+    if (inet_aton((mNodeConfig.txSrcAddr).c_str(), &sockSrc.sin_addr) == 0)
+    {
+    	LOG4CXX_ERROR(mLogger, "Invalid IP address specified for source : " << mNodeConfig.txSrcAddr);
+    	return;
+    }
 
     if (bind(handle, (struct sockaddr*)&sockSrc, sizeof(sockSrc)) == -1)
     {

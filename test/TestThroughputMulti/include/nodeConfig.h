@@ -28,7 +28,8 @@ public:
 		this->mode = rx_mode;
 		this->cpuNum = -1;
 		this->rxPort = 8989;
-		this->txPort = 9999;
+		this->txSrcAddr = "0.0.0.0";
+		this->txSrcPort = 9999;
 		this->txBlockSize = 8192;
 		this->txBlockPause = 0;
 		this->txNumDests = 1;
@@ -45,7 +46,8 @@ public:
 
 	nodeMode mode;
 	int      cpuNum;
-	int      txPort;
+	string	 txSrcAddr;
+	int      txSrcPort;
 	int      txBlockSize;
 	int      txBlockPause;
 	int		 txSubFrame;

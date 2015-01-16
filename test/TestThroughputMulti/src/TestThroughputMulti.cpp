@@ -158,6 +158,22 @@ void TestThroughputMulti::parseConfigFile(const string& configFileName )
 		mNodeConfig.reportInterval = globalReportInterval;
 	}
 
+	const int unsetGlobalTxBlockSize = -1;
+	int globalTxBlockSize = pt.get("global.txBlockSize", unsetGlobalTxBlockSize);
+	if (globalTxBlockSize != unsetGlobalTxBlockSize)
+	{
+		LOG4CXX_DEBUG(mLogger, "Global TX block size set to " << globalTxBlockSize);
+		mNodeConfig.txBlockSize = globalTxBlockSize;
+	}
+
+	const int unsetGlobalTxBlockPause = -1;
+	int globalTxBlockPause = pt.get("global.txBlockPause", unsetGlobalTxBlockPause);
+	if (globalTxBlockPause != unsetGlobalTxBlockPause)
+	{
+		LOG4CXX_DEBUG(mLogger, "Global TX block pause set to " << globalTxBlockPause);
+		mNodeConfig.txBlockPause = globalTxBlockPause;
+	}
+
 	// Build the node section name for all parameters
 	ostringstream nodeSectionStrm;
 	nodeSectionStrm << "node" << mNode << ".";
@@ -320,8 +336,9 @@ void TestThroughputMulti::runGenerator(void)
 			<< ((mNodeConfig.txNumDests == 1) ? "" : "s") << ": ";
 	for (int dest = 0; dest < mNodeConfig.txNumDests; dest++) {
 		destInfo << mNodeConfig.txDestAddr[dest] << ":" << mNodeConfig.txDestPort[dest];
-		destInfo << (dest == mNodeConfig.txNumDests-1) ? "" : ", ";
+		destInfo << ((dest == mNodeConfig.txNumDests-1) ? "" : ", ");
 	}
+
 	LOG4CXX_INFO(mLogger,destInfo.str());
 
 
@@ -377,6 +394,7 @@ void TestThroughputMulti::runGenerator(void)
     long txFailCount = 0;
     long goodPacketCount = 0;
     long totalPacketCount = 0;
+    long lastFrameNumber = 0;
     long packetsToNextStats = mNodeConfig.reportInterval;
 
     struct timespec startTime;
@@ -416,12 +434,14 @@ void TestThroughputMulti::runGenerator(void)
 
 					double period = timeDiff(&startTime, &nowTime);
 					double bps = (double)(mNodeConfig.reportInterval*sizeof(aPacket))/period;
+					double fps = (double)(aPacket.frameNumber - lastFrameNumber)/period;
 
 					LOG4CXX_INFO(mLogger, "TX stats: TotalPkts=" << totalPacketCount
 							<< " TxFail=" << txFailCount
 							<< " MBps=" << fixed << setprecision(2) << bps/BYTES_PER_MEGABYTE
-							<< " FPS="  << fixed << setprecision(2) << bps/BYTES_PER_FRAME);
+							<< " FPS="  << fixed << setprecision(2) << fps);
 
+					lastFrameNumber = aPacket.frameNumber;
 					packetsToNextStats = mNodeConfig.reportInterval;
 					clock_gettime(CLOCK_REALTIME, &startTime);
 				}
@@ -508,6 +528,8 @@ void TestThroughputMulti::runReceiver(void)
     long latePacketNumberCount = 0;
     long goodPacketCount = 0;
     long totalPacketCount = 0;
+    long maxFrameNumber = -1;
+    long lastMaxFrameNumber = 0;
     long packetsToNextStats = mNodeConfig.reportInterval;
 
     struct timespec startTime;
@@ -546,6 +568,9 @@ void TestThroughputMulti::runReceiver(void)
         	{
         		lastFrameNumber[subframe] = aPacket.frameNumber;
         		nextPacketNumber[subframe] = aPacket.packetNumber;
+        		if (aPacket.frameNumber > maxFrameNumber) {
+        			maxFrameNumber = aPacket.frameNumber;
+        		}
         	}
 			if (aPacket.packetNumber > nextPacketNumber[subframe])
 			{
@@ -591,6 +616,7 @@ void TestThroughputMulti::runReceiver(void)
 				double period = this->timeDiff(&startTime, &nowTime);
 
 				double bps = (double)(mNodeConfig.reportInterval * sizeof(aPacket))/period;
+				double fps = (double)(maxFrameNumber - lastMaxFrameNumber)/period;
 
 				LOG4CXX_INFO(mLogger, "RX stats: TotalPkts=" << totalPacketCount
 						<< " LossEvts=" << lossEventCount
@@ -599,8 +625,9 @@ void TestThroughputMulti::runReceiver(void)
 						<< " RxFail=" << rxFailCount
 						<< " Late=" << latePacketNumberCount
 						<< " MBps=" << fixed << setprecision(2) << bps/BYTES_PER_MEGABYTE
-						<< " FPS="  << fixed << setprecision(2) << bps/BYTES_PER_FRAME);
+						<< " FPS="  << fixed << setprecision(2) << fps);
 
+				lastMaxFrameNumber = maxFrameNumber;
 				packetsToNextStats = mNodeConfig.reportInterval;
 				clock_gettime(CLOCK_REALTIME, &startTime);
 			}

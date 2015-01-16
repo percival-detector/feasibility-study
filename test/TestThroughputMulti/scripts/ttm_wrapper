@@ -1,0 +1,14 @@
+#!/bin/bash
+
+TTM_PATH=/u/tcn45/develop/projects/percival/feasibility-study/test/TestThroughputMulti/build/bin
+
+cd $TTM_PATH
+
+CONFIG_FILE=../../config/$1
+LOGCONFIG_FILE=../../config/$2
+NODE=$3
+
+TTM_EXEC=./testThroughputMulti
+
+sudo $TTM_EXEC --config $CONFIG_FILE --logconfig $LOGCONFIG_FILE --node $NODE
+

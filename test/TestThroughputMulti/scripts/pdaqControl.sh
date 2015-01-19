@@ -4,7 +4,8 @@ cd $HOME
 
 TMUX_SESSION_STEM=pdaq
 
-CONFIG_FILE=ttm_8rx8tx_parallel.config
+#CONFIG_FILE=ttm_8rx8tx_parallel.config
+CONFIG_FILE=ttm_8rx8tx_rr.config
 
 launch() 
 {
